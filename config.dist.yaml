@@ -1,0 +1,20 @@
+# CONFIGURATION FILE FOR WarController
+
+config:
+  debug: true
+  server:
+    address: '127.0.0.1'
+    port: 5000
+    authentication:
+      username: 'SuperAdmin'
+      password: 'SuperAdmin'
+  db:
+    driver: 'mysql'
+    username: 'root'
+    password: ''
+    schema: ''
+    database: 'warcontroller-dev'
+
+plugins:
+  cjs-chat:
+  cjs-localrecords:
