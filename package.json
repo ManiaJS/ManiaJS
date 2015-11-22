@@ -1,0 +1,26 @@
+{
+  "name": "Controller.JS",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./controller.js"
+  },
+  "dependencies": {
+    "async": "^1.5.0",
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "debug": "^2.2.0",
+    "dependency-graph": "^0.4.1",
+    "forever-monitor": "^1.7.0",
+    "gbxremote": "^0.1.4",
+    "joi": "^7.0.0",
+    "js-yaml": "^3.4.4",
+    "moment": "^2.10.6",
+    "request": "^2.67.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.3"
+  }
+}
