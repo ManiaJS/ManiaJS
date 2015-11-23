@@ -24,7 +24,25 @@ var configSchema = {
                 password: Joi.string().required()
             }
         },
-        db: Joi.any()
+        db: {
+            driver: Joi.array().items(Joi.string().valid('mysql', 'mariasql', 'sqlite3')),
+            authentication: {
+                host: Joi.string().required(),
+                username: Joi.string(),
+                password: Joi.string()
+            },
+            mysql: {
+                port: Joi.number().required(),
+                database: Joi.string().required()
+            },
+            mariasql: {
+                port: Joi.number().required(),
+                database: Joi.string().required()
+            },
+            sqlite3: {
+                database: Joi.string().required()
+            }
+        }
     },
     plugins: Joi.array()
 };

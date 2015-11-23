@@ -9,11 +9,29 @@ config:
       username: 'SuperAdmin'
       password: 'SuperAdmin'
   db:
-    driver: 'mysql'
-    username: 'root'
-    password: ''
-    schema: ''
-    database: 'warcontroller-dev'
+    driver: 'mysql' # Can be mysql, mariasql or sqlite3.
+    # ! ==> MariaSQL Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
+    # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
+    # When not having build tools, you will get warnings when starting for the first time or run the installation script.
+    # You can ignore this.
+
+    # Global Non-driver-dependent settings:
+    authentication:
+      host: '127.0.0.1'
+      username: 'root'
+      password: ''
+
+    # Driver settings
+    mysql:
+      port: 3306
+      database: 'controllerjs'
+
+    mariasql:
+      port: 3307
+      database: 'controllerjs'
+
+    sqlite3:
+      database: './database.sqlite' # Path, relative to root of Controller.JS
 
 plugins:
   cjs-chat:
