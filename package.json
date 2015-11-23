@@ -14,6 +14,7 @@
     "dependency-graph": "^0.4.1",
     "forever-monitor": "^1.7.0",
     "gbxremote": "^0.1.4",
+    "glob": "^6.0.1",
     "joi": "^7.0.0",
     "js-yaml": "^3.4.4",
     "knex": "^0.9.0",

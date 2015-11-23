@@ -100,6 +100,7 @@ module.exports.loadPlugin = function(pluginid, callback) {
 
     // Load plugin
     let plugin = require(directory.pluginsPath() + pluginid + directory.sep + "plugin");
+    plugin._path = directory.pluginsPath() + pluginid + directory.sep;
     module.exports.plugins[pluginid] = plugin;
 
     // Start plugin
