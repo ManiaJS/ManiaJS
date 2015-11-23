@@ -12,8 +12,10 @@ module.exports.pluginInfo = {
     ],
     version: "1.0.0",
     description: "Chat handlers, In and output for chat access.",
-    dependencies: [],
-    requirements: []
+    dependencies: [],   // What plugins are needed to operate
+    requirements: [],   // What plugins are required to be started before we can start
+    games: null,        // Define array with list of supported games, null for all (including future games)
+    modes: null         // Define array with list of supported gamemodes, null for all
 };
 
 module.exports.loadPlugin = function(pluginInterface, callback) {
