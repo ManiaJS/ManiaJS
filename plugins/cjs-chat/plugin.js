@@ -20,11 +20,6 @@ module.exports.pluginInfo = {
 
 module.exports.loadPlugin = function(pluginInterface, callback) {
     "use strict";
-    //console.log(pluginInterface);
-
-    console.log(async);
-    console.log(debug);
-    console.log(mkdirp);
 
     setTimeout(function() {
         return callback(null);

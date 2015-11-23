@@ -16,6 +16,5 @@ module.exports.pluginInfo = {
 
 module.exports.loadPlugin = function(pluginInterface, callback) {
     "use strict";
-    //console.log(pluginInterface);
     callback();
 };
