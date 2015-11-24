@@ -9,11 +9,11 @@ config:
       username: 'SuperAdmin'
       password: 'SuperAdmin'
   db:
-    driver: 'mysql' # Can be mysql, mariasql or sqlite3.
-    # ! ==> MariaSQL Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
+    dialect: 'mysql' # Can be mysql, mariadb or sqlite.
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
     # When not having build tools, you will get warnings when starting for the first time or run the installation script.
-    # You can ignore this.
+    # You can ignore this, but can't use the dialects then!
+    # To recompile run 'npm install sqlite3' in root
 
     # Global Non-driver-dependent settings:
     authentication:
@@ -26,11 +26,11 @@ config:
       port: 3306
       database: 'controllerjs'
 
-    mariasql:
+    mariadb:
       port: 3307
       database: 'controllerjs'
 
-    sqlite3:
+    sqlite:
       database: './database.sqlite' # Path, relative to root of Controller.JS
 
 plugins:

@@ -25,7 +25,7 @@ var configSchema = {
             }
         },
         db: {
-            driver: Joi.array().items(Joi.string().valid('mysql', 'mariasql', 'sqlite3')),
+            dialect: Joi.array().items(Joi.string().valid('mysql', 'mariadb', 'sqlite')),
             authentication: {
                 host: Joi.string().required(),
                 username: Joi.string(),
@@ -35,11 +35,11 @@ var configSchema = {
                 port: Joi.number().required(),
                 database: Joi.string().required()
             },
-            mariasql: {
+            mariadb: {
                 port: Joi.number().required(),
                 database: Joi.string().required()
             },
-            sqlite3: {
+            sqlite: {
                 database: Joi.string().required()
             }
         }
