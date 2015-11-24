@@ -14,7 +14,7 @@ clientLib.client.on('ready', function() {
     database._loadModels()
         .then(function() {
             // Check if database will load
-            return database._loadDatabase();
+            return database._syncDatabase();
         })
         .then(function() {
             // DB OK, Load all plugins
