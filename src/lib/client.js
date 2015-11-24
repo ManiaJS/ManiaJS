@@ -1,6 +1,4 @@
-/**
- * Created by tom on 22-11-2015.
- */
+
 'use strict';
 
 var configuration = require('./configuration');
@@ -9,6 +7,7 @@ var gbx = require('gbxremote');
 
 var times = require('./times');
 
+console.log('Info: Connecting to ManiaPlanet Server...');
 var client = gbx.createClient(configuration.config.server.port, configuration.config.server.address);
 client.on('connect', function() {
     module.exports.connected = true;
@@ -44,8 +43,14 @@ client.on('connect', function() {
 
 client.on('close', function(had_error) {
     if(configuration.config.debug) {
-        console.log('Closed!');
+        console.log('Warn: ManiaPlanet Connection Closed!');
     }
+});
+
+client.on('error', function(err) {
+    console.error("Error with connection to ManiaPlanet:");
+    console.error(err);
+    process.exit(1);
 });
 
 

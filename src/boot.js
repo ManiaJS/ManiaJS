@@ -1,19 +1,30 @@
 
 // REQUIRE
+var async = require('async');
 var fs = require('fs');
 
 var clientLib = require('./lib/client');
 var pluginManager = require('./lib/plugin');
+var database = require('./lib/database');
 
 clientLib.client.on('ready', function() {
     "use strict";
-    // Load all plugins
-    pluginManager.loadPlugins()
+
+    // Load database and database models
+    database._loadModels()
+        .then(function() {
+            // Check if database will load
+            return database._loadDatabase();
+        })
+        .then(function() {
+            // DB OK, Load all plugins
+            return pluginManager.loadPlugins();
+        })
         .then(function() {
             console.log("Info: Plugins Loaded!");
         })
         .catch(function(err) {
-            console.error("Error: Plugins not loaded correctly!");
+            console.error("Error: Error with loading Controller.JS:");
             console.error(err);
             process.exit(1);
         });
