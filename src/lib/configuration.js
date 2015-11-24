@@ -26,21 +26,26 @@ var configSchema = {
         },
         db: {
             dialect: Joi.array().items(Joi.string().valid('mysql', 'mariadb', 'sqlite')),
+            database: Joi.string(),
             authentication: {
-                host: Joi.string().required(),
                 username: Joi.string(),
                 password: Joi.string()
             },
+            pool: {
+                max: Joi.number().required(),
+                min: Joi.number().required(),
+                idle: Joi.number().required()
+            },
             mysql: {
-                port: Joi.number().required(),
-                database: Joi.string().required()
+                host: Joi.string().required(),
+                port: Joi.number().required()
             },
             mariadb: {
-                port: Joi.number().required(),
-                database: Joi.string().required()
+                host: Joi.string().required(),
+                port: Joi.number().required()
             },
             sqlite: {
-                database: Joi.string().required()
+                storage: Joi.string().required()
             }
         }
     },

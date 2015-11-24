@@ -16,22 +16,26 @@ config:
     # To recompile run 'npm install sqlite3' in root
 
     # Global Non-driver-dependent settings:
+    database: 'controllerjs'
     authentication:
-      host: '127.0.0.1'
       username: 'root'
       password: ''
+    pool:
+      max: 5
+      min: 0
+      idle: 10000
 
     # Driver settings
     mysql:
+      host: '127.0.0.1'
       port: 3306
-      database: 'controllerjs'
 
     mariadb:
+      host: '127.0.0.1'
       port: 3307
-      database: 'controllerjs'
 
     sqlite:
-      database: './database.sqlite' # Path, relative to root of Controller.JS
+      storage: './database.sqlite' # Path, relative to root of Controller.JS
 
 plugins:
   cjs-chat:
