@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node ./controller.js"
   },
+  "engines": {
+    "node": ">= 4.0.0"
+  },
   "dependencies": {
     "async": "^1.5.0",
     "colors": "^1.1.2",
