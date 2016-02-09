@@ -53,7 +53,9 @@ client.on('error', function(err) {
     process.exit(1);
 });
 
-
+/**
+ * Callback all-catcher.
+ */
 client.on('callback', function(method, params) {
     console.log("Call: %s", method);
 });
