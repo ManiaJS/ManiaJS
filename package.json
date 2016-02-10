@@ -1,12 +1,12 @@
 {
-  "name": "Controller.JS",
+  "name": "ManiaJS",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node ./controller.js"
   },
   "engines": {
-    "node": ">= 4.0.0"
+    "node": ">= 5.0.0"
   },
   "dependencies": {
     "async": "^1.5.0",
