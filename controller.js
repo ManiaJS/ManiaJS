@@ -24,4 +24,3 @@ try {
 
 /** Boot Controller */
 require('./src/boot');
-
