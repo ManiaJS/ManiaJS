@@ -5,3 +5,17 @@
 [![GitHub license](https://img.shields.io/badge/license-ISC-blue.svg)](https://raw.githubusercontent.com/ManiaJS/ManiaJS/master/LICENSE)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/895aead1328043e799ce0e82d3274948)](https://www.codacy.com/app/tomvalk/Mania-JS)
 [![Code Climate](https://codeclimate.com/github/ManiaJS/ManiaJS/badges/gpa.svg)](https://codeclimate.com/github/ManiaJS/ManiaJS)
+
+
+# Installation
+(todo).
+
+# Getting started
+
+To start the controller, open a terminal in the installation folder and run the following command:
+
+```
+npm start
+```
+
+(run npm install after installing, before executing npm start)

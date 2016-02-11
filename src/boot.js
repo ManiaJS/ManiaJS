@@ -1,12 +1,16 @@
+
 'use strict';
 
-// REQUIRE
-var async = require('async');
-var fs = require('fs');
+import * as async from 'async';
+import * as fs from 'fs';
 
-var clientLib = require('./lib/client');
-var pluginManager = require('./lib/plugin');
-var database = require('./lib/database');
+
+import * as clientManager from './server/client';
+import * as databaseManager from './database/client';
+
+import * as pluginManager from './plugin/plugin';
+
+/*
 
 clientLib.client.on('ready', function () {
   // Load database and database models
@@ -31,6 +35,8 @@ clientLib.client.on('ready', function () {
 clientLib.client.on('close', function () {
   // What happened here? TODO
 });
+
+*/
 
 /** Add exit handlers */
 process.stdin.resume();

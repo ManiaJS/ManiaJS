@@ -5,14 +5,16 @@
 'use strict';
 
 // Imports
-var fs = require('fs');
-var yaml = require('js-yaml');
-var Joi = require('joi');
-var _ = require('underscore');
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+import * as Joi from 'joi';
+import * as _ from 'underscore';
 
-var directory = require('./directory');
+import * as directory from './directory'
 
-
+/**
+ * Config Schema.
+ */
 var configSchema = {
   config: {
     debug: Joi.boolean(),
@@ -52,14 +54,12 @@ var configSchema = {
   plugins: Joi.array()
 };
 
-var config = yaml.safeLoad(fs.readFileSync(directory.rootPath() + 'config.yaml', 'utf8'));
+export var config = yaml.safeLoad(fs.readFileSync(directory.rootPath() + 'config.yaml', 'utf8')).config;
 
-module.exports = {};
-_.extend(module.exports, config);
-module.exports.validate = function () {
+export function validate() {
   var res = Joi.validate(this._config, configSchema);
   if (res.error) {
     throw res.error;
   }
   return true;
-};
+}

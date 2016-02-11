@@ -1,4 +1,0 @@
-/**
- * Client Callback Manager
- */
-// TODO

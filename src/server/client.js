@@ -1,20 +1,26 @@
+/**
+ * Client Manager - Will connect to the maniaplanet server
+ */
 'use strict';
 
-var configuration = require('./configuration');
+import * as gbx from 'gbxremote';
 
-var gbx = require('gbxremote');
+import { config } from './../util/configuration';
+import * as times from './../lib/times';
 
-var times = require('./times');
 
+export var connected = false;
+
+// TODO: This is just for testing, should be removed and rebuild.
 console.log('Info: Connecting to ManiaPlanet Server...');
-var client = gbx.createClient(configuration.config.server.port, configuration.config.server.address);
+var client = gbx.createClient(config.server.port, config.server.address);
 client.on('connect', function () {
-  module.exports.connected = true;
+  // module.exports.connected = true;
 
   console.log("Info: Connected to ManiaPlanet Server.");
 
   // Authenticate
-  client.query("Authenticate", [configuration.config.server.authentication.username, configuration.config.server.authentication.password], function (err, res) {
+  client.query("Authenticate", [config.server.authentication.username, config.server.authentication.password], function (err, res) {
     if (err) {
       console.error("Error: Can't authenticate to ManiaPlanet Server!");
       console.error(err);
@@ -68,6 +74,4 @@ client.on('TrackMania.PlayerFinish', function (params) {
   }
 });
 
-module.exports = {};
-module.exports.client = client;
-module.exports.connected = false;
+export { client };
