@@ -54,7 +54,7 @@ var configSchema = {
   plugins: Joi.array()
 };
 
-export default yaml.safeLoad(fs.readFileSync(directory.rootPath() + 'config.yaml', 'utf8'));
+export var config = yaml.safeLoad(fs.readFileSync(directory.rootPath() + 'config.yaml', 'utf8')).config;
 
 export function validate() {
   var res = Joi.validate(this._config, configSchema);
