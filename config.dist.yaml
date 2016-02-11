@@ -1,4 +1,4 @@
-# CONFIGURATION FILE FOR WarController
+# CONFIGURATION FILE FOR MANIAJS
 
 config:
   debug: true
@@ -16,7 +16,7 @@ config:
     # To recompile run 'npm install sqlite3' in root
 
     # Global Non-driver-dependent settings:
-    database: 'controllerjs'
+    database: 'maniajs'
     authentication:
       username: 'root'
       password: ''
