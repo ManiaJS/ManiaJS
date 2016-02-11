@@ -26,7 +26,7 @@ client.on('connect', function() {
             process.exit(1);
         }
 
-        client.query('ChatSendServerMessage', ["$o$f90Controller$z$fff$o$w.$z$o$f90JS$z$fff: Booting Controller..."], function(err) {
+        client.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."], function(err) {
             // We need to reindex the players on the server!
             client.query('GetPlayerList', [999,0], function(err, res) {
                 if(!err && res) {
@@ -72,4 +72,3 @@ client.on('TrackMania.PlayerFinish', function(params) {
 module.exports = {};
 module.exports.client = client;
 module.exports.connected = false;
-
