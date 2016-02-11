@@ -12,10 +12,6 @@ var client = gbx.createClient(configuration.config.server.port, configuration.co
 client.on('connect', function() {
     module.exports.connected = true;
 
-    // Enable callbacks and set api version
-    client.query('SetApiVersion', ['2015-02-10']);
-    client.query('EnableCallbacks', [true]);
-
     console.log("Info: Connected to ManiaPlanet Server.");
 
     // Authenticate
@@ -25,6 +21,10 @@ client.on('connect', function() {
             console.error(err);
             process.exit(1);
         }
+
+        // Enable callbacks and set api version
+        client.query('SetApiVersion', ['2015-02-10']);
+        client.query('EnableCallbacks', [true]);
 
         client.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."], function(err) {
             // We need to reindex the players on the server!
