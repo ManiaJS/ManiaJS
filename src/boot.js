@@ -1,4 +1,6 @@
 
+'use strict';
+
 // REQUIRE
 var async = require('async');
 var fs = require('fs');
@@ -8,8 +10,6 @@ var pluginManager = require('./lib/plugin');
 var database = require('./lib/database');
 
 clientLib.client.on('ready', function() {
-    "use strict";
-
     // Load database and database models
     database._loadModels()
         .then(function() {
@@ -30,7 +30,6 @@ clientLib.client.on('ready', function() {
         });
 });
 clientLib.client.on('close', function() {
-    "use strict";
     // What happened here? TODO
 });
 
