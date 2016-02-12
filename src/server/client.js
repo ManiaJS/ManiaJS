@@ -4,8 +4,8 @@
  */
 import Gbx from 'gbxremote';
 
-import { config } from './../util/configuration';
-import * as times from './../lib/times';
+import config from './../util/configuration';
+import times from './../lib/times';
 
 /**
  * Server Client.
