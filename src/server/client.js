@@ -1,13 +1,56 @@
+'use strict';
 /**
  * Client Manager - Will connect to the maniaplanet server
  */
-'use strict';
-
-import * as gbx from 'gbxremote';
+import Gbx from 'gbxremote';
 
 import { config } from './../util/configuration';
 import * as times from './../lib/times';
 
+/**
+ * Server Client.
+ * @class ServerClient
+ */
+export default class {
+
+  /**
+   * Prepare the client. parse configuration and pass it to the gbx client.
+   *
+   * @param {App} app context
+   */
+  constructor(app) {
+    this.app = app;
+
+    this.gbx = null;
+
+    this.server = app.config.server;
+  }
+
+  /**
+   * Connect to the server.
+   *
+   * @returns {Promise}
+   */
+  connect() {
+    let self = this;
+
+    // TODO: Replace for logging stuff
+    console.log("Starting connection to MP Server...");
+
+    return new Promise(function (resolve, reject) {
+      self.gbx = Gbx.createClient(self.server.port, self.server.address, function(err) {
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+
+        console.log("MP Server connected!");
+        return resolve();
+      });
+    });
+  }
+}
+/*
 
 export var connected = false;
 
@@ -58,9 +101,13 @@ client.on('error', function (err) {
   process.exit(1);
 });
 
+*/
+
 /**
  * Callback all-catcher.
  */
+
+/*
 client.on('callback', function (method, params) {
   console.log("Call: %s", method);
 });
@@ -75,3 +122,4 @@ client.on('TrackMania.PlayerFinish', function (params) {
 });
 
 export { client };
+*/

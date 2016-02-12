@@ -1,5 +1,7 @@
 'use strict';
 
+
+/*
 var glob = require('glob');
 var async = require('async');
 var fs = require('fs');
@@ -106,3 +108,4 @@ module.exports._loadModels = function () {
     });
   });
 };
+*/
