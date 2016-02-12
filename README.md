@@ -10,7 +10,11 @@
 
 
 # Installation
-(todo).
+1. Follow the [installation instructions for installing NodeSource](https://github.com/nodesource/distributions#debinstall)
+2. Make sure NodeJS has been succesfully installed (check `npm -v`)
+3. Clone the git repository (`git clone https://github.com/ManiaJS/ManiaJS.git` via git, or download the zip)
+4. Move the `config.dist.yaml` to `config.yaml` and make sure to enter all information in that file
+5. Install all dependencies by using: `npm install`
 
 # Getting started
 
