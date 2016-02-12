@@ -9,7 +9,8 @@ import * as directory from './../util/directory';
 
 // var pluginInterface = require('./interface');
 
-import * as configuration from './../util/configuration';
+import configuration from './../util/configuration';
+
 
 var graph = new DepGraph();
 var pluginOrder = [];
