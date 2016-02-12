@@ -1,9 +1,9 @@
 'use strict';
 
-var Sequelize = require('sequelize');
-var sequelize = require('./../lib/database').sequelize;
+import Sequelize from 'sequelize';
+import sequelize from './../lib/database';
 
-let Player = sequelize.define('Player', {
+export let Player = sequelize.define('Player', {
   playerid: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -21,5 +21,3 @@ let Player = sequelize.define('Player', {
 }, {
   tableName: 'core__player'
 });
-
-module.exports = Player;
