@@ -1,0 +1,3 @@
+/**
+ * ManiaJS Package Manager
+ */
