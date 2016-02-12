@@ -7,7 +7,7 @@
 // Imports
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 import * as directory from './directory'
 
