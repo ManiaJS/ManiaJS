@@ -2,10 +2,12 @@
 /**
  * App Public Interface. Facade to the class instances.
  */
+import DatabaseFacade  from './database/facade';
+import ServerFacade    from './server/facade';
+import PluginFacade    from './plugin/facade';
 
-import { DatabaseFacade }  from './database/facade';
-import { ServerFacade }    from './server/facade';
-import { PluginFacade }    from './plugin/facade';
+import { config }      from './util/configuration';
+
 
 /**
  * App Interface Class.
@@ -15,19 +17,18 @@ import { PluginFacade }    from './plugin/facade';
 export default class {
 
   constructor () {
-    this.server = new ServerFacade();
-    this.database = new DatabaseFacade();
-    this.plugin = new PluginFacade();
+    this.server =   new ServerFacade(this);
+    this.database = new DatabaseFacade(this);
+    this.plugin =   new PluginFacade(this);
+
+    this.config =   config;
   }
 
   prepare() {
-    return new Promise(function (resolve, reject) {
-      return this.server.init();
-    }).then(function() {
-      return this.database.init();
-    }).then(function() {
-      return this.plugin.init();
-    });
+    return this.server.init().then(this.database.init).then(this.plugin.init);
   }
 
+  run() {
+    // Run YOW!
+  }
 }
