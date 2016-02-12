@@ -1,47 +1,72 @@
-
+/**
+ * Boot.js
+ *
+ * Read out all the configs. register exit handlers. start logging.
+ *
+ * Then finally start maniajs facades.
+ */
 'use strict';
 
-// REQUIRE
-var async = require('async');
-var fs = require('fs');
+import * as async   from 'async';
+import * as fs      from 'fs';
 
-var clientLib = require('./lib/client');
-var pluginManager = require('./lib/plugin');
-var database = require('./lib/database');
+import App          from './app';
 
-clientLib.client.on('ready', function() {
-    // Load database and database models
-    database._loadModels()
-        .then(function() {
-            // Check if database will load
-            return database._syncDatabase();
-        })
-        .then(function() {
-            // DB OK, Load all plugins
-            return pluginManager.loadPlugins();
-        })
-        .then(function() {
-            console.log("Info: Plugins Loaded!");
-        })
-        .catch(function(err) {
-            console.error("Error: Error with loading Controller.JS:");
-            console.error(err);
-            process.exit(1);
-        });
+
+// TODO: Start any logger!
+
+
+
+// Start ManiaJS.. Finally..
+let app = new App();
+
+console.log("Starting ManiaJS...");
+app.prepare()
+  .then(()=>app.run());
+
+
+// Resume application.
+process.stdin.resume();
+
+// Start handlers for exitting.
+process.on('exit', exitHandler.bind(null, {cleanup: true}));
+process.on('SIGINT', exitHandler.bind(null, {exit: true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
+
+/*
+
+clientLib.client.on('ready', function () {
+  // Load database and database models
+  database._loadModels()
+    .then(function () {
+      // Check if database will load
+      return database._syncDatabase();
+    })
+    .then(function () {
+      // DB OK, Load all plugins
+      return pluginManager.loadPlugins();
+    })
+    .then(function () {
+      console.log("Info: Plugins Loaded!");
+    })
+    .catch(function (err) {
+      console.error("Error: Error with loading Controller.JS:");
+      console.error(err);
+      process.exit(1);
+    });
 });
-clientLib.client.on('close', function() {
-    // What happened here? TODO
+clientLib.client.on('close', function () {
+  // What happened here? TODO
 });
+
+*/
 
 /** Add exit handlers */
-process.stdin.resume();
+
 function exitHandler(options, err) {
-    if (options.cleanup) {
-        // TODO: Implement termination of plugins and client connection
-    }
-    if (err) console.log(err.stack);
-    if (options.exit) process.exit();
+  if (options.cleanup) {
+    // TODO: Implement termination of plugins and client connection
+  }
+  if (err) console.log(err.stack);
+  if (options.exit) process.exit();
 }
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));

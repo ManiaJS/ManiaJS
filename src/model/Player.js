@@ -1,26 +1,23 @@
-
 'use strict';
 
-var Sequelize = require('sequelize');
-var sequelize = require('./../lib/database').sequelize;
+import Sequelize from 'sequelize';
+import sequelize from './../lib/database';
 
-let Player = sequelize.define('Player', {
-    playerid: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true
-    },
-    login: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    nickname: {
-        type: Sequelize.STRING,
-        allowNull: true
-    }
+export let Player = sequelize.define('Player', {
+  playerid: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    autoIncrement: true
+  },
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  nickname: {
+    type: Sequelize.STRING,
+    allowNull: true
+  }
 }, {
-    tableName: 'core__player'
+  tableName: 'core__player'
 });
-
-module.exports = Player;

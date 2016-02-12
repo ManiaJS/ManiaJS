@@ -1,7 +1,8 @@
-# CONFIGURATION FILE FOR WarController
+# CONFIGURATION FILE FOR MANIAJS
 
 config:
   debug: true
+
   server:
     address: '127.0.0.1'
     port: 5000
@@ -10,13 +11,16 @@ config:
       password: 'SuperAdmin'
   db:
     dialect: 'mysql' # Can be mysql, mariadb or sqlite.
+
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
     # When not having build tools, you will get warnings when starting for the first time or run the installation script.
     # You can ignore this, but can't use the dialects then!
     # To recompile run 'npm install sqlite3' in root
 
+
+
     # Global Non-driver-dependent settings:
-    database: 'controllerjs'
+    database: 'maniajs'
     authentication:
       username: 'root'
       password: ''
@@ -37,6 +41,13 @@ config:
     sqlite:
       storage: './database.sqlite' # Path, relative to root of Controller.JS
 
+
 plugins:
   cjs-chat:
+    version: *
+    github: ManiaJS/cjs-chat
+
   cjs-localrecords:
+    version: *
+    github: ManiaJS/cjs-localrecords
+
