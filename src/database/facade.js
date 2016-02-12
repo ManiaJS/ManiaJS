@@ -16,4 +16,12 @@ export default class extends Facade {
 
     this.client = new Client();
   }
+
+  init() {
+    let self = this;
+
+    return new Promise((resolve, reject) => {
+      resolve();
+    })
+  }
 }

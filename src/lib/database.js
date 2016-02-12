@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: Rework into database/client.js
+// We will wait on the db decision first.!
 
 /*
 var glob = require('glob');
