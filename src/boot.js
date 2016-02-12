@@ -1,14 +1,37 @@
-
+/**
+ * Boot.js
+ *
+ * Read out all the configs. register exit handlers. start logging.
+ *
+ * Then finally start maniajs facades.
+ */
 'use strict';
 
-import * as async from 'async';
-import * as fs from 'fs';
+import * as async   from 'async';
+import * as fs      from 'fs';
+
+import App          from './app';
 
 
-import * as clientManager from './server/client';
-import * as databaseManager from './database/client';
+// TODO: Start any logger!
 
-import * as pluginManager from './plugin/plugin';
+
+
+// Start ManiaJS.. Finally..
+let app = new App();
+
+console.log("Starting ManiaJS...");
+app.prepare()
+  .then(()=>app.run());
+
+
+// Resume application.
+process.stdin.resume();
+
+// Start handlers for exitting.
+process.on('exit', exitHandler.bind(null, {cleanup: true}));
+process.on('SIGINT', exitHandler.bind(null, {exit: true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
 
 /*
 
@@ -39,7 +62,7 @@ clientLib.client.on('close', function () {
 */
 
 /** Add exit handlers */
-process.stdin.resume();
+
 function exitHandler(options, err) {
   if (options.cleanup) {
     // TODO: Implement termination of plugins and client connection
@@ -47,6 +70,3 @@ function exitHandler(options, err) {
   if (err) console.log(err.stack);
   if (options.exit) process.exit();
 }
-process.on('exit', exitHandler.bind(null, {cleanup: true}));
-process.on('SIGINT', exitHandler.bind(null, {exit: true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit: true}));

@@ -1,5 +1,7 @@
 var sprintf = require('sprintf-js').sprintf;
 
+// TODO: Rework this, put it anywere.
+
 module.exports = {};
 module.exports.getStringTime = function (numberTime) {
   "use strict";

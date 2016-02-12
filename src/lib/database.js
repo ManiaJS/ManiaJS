@@ -1,5 +1,9 @@
 'use strict';
 
+// TODO: Rework into database/client.js
+// We will wait on the db decision first.!
+
+/*
 var glob = require('glob');
 var async = require('async');
 var fs = require('fs');
@@ -106,3 +110,4 @@ module.exports._loadModels = function () {
     });
   });
 };
+*/

@@ -4,6 +4,8 @@
  *
  * @author Tom Valk <tomvalk@lt-box.info>
  *
+ * @deprecated NEEDS TO BE REMOVED :P
+ *
  */
 module.exports = {};
 
