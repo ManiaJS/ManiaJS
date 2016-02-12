@@ -1,8 +1,8 @@
 'use strict';
 
-import { Facade } from './../lib/base-facade';
+import Facade  from './../lib/base-facade';
 
-import { Manager } from './plugin';
+import Manager from './plugin';
 
 /**
  * Plugin Facade

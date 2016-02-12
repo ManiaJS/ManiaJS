@@ -2,23 +2,28 @@
 
 /**
  * base facade
+ * @class BaseFacade
+ *
+ * @property {App} app
+ * @function {Promise} init
  */
 export default class {
 
   /**
+   * Construct Facade
    *
+   * @param {App} app Application Context
    */
-  constructor() {
-
+  constructor(app) {
+    this.app = app;
   }
 
   /**
-   * Initiate the facade classes, will init server connections.
+   * Init Facade (promise!)
    *
-   * @abstract
-   * @returns {Promise}
+   * @return {Promise}
    */
-  init();
+  init() {}
 
   /**
    * Is Facade?

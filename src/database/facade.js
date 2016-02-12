@@ -1,8 +1,8 @@
 'use strict';
 
-import { Facade } from './../lib/base-facade';
+import Facade from './../lib/base-facade';
 
-import { Client } from './client';
+import Client from './client';
 
 /**
  * Database Facade
