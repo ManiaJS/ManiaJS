@@ -6,6 +6,7 @@ import Gbx from 'gbxremote';
 import { EventEmitter } from 'events';
 
 import CallbackManager from './callback-manager';
+import Send from './send';
 
 import config from './../util/configuration';
 import times from './../lib/times';
@@ -30,6 +31,15 @@ export default class extends EventEmitter {
     this.callback = null;
 
     this.server = app.config.server;
+  }
+
+  /**
+   * Build a sending query.
+   *
+   * @returns {{}|*}
+   */
+  send() {
+    return new Send(this.app, this);
   }
 
   /**
@@ -106,7 +116,10 @@ export default class extends EventEmitter {
           }
           self.app.log.debug("Connection to ManiaPlanet Server, Successfully enabled callbacks!");
 
-          self.gbx.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."]);
+          // Send welcome message
+          self.send().chat("$o$f90Mania$z$o$f90JS$z$fff: Booting Controller...").exec();
+
+          // self.gbx.query('ChatSendServerMessage', []);
 
           return resolve(res);
         });

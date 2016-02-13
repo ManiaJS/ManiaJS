@@ -16,7 +16,6 @@ import ManiaPlanetCalls from './callbacks/maniaplanet-callbacks';
 export default class {
 
   /**
-   *
    * @param {ServerClient} client
    */
   constructor(client) {
@@ -30,7 +29,7 @@ export default class {
    * @param {string} options.callback Callback name that will be fired by the GBX Client.
    * @param {string} options.event Converting into event name.
    * @param {object} options.parameters Parameters mapping.
-   * @param {array} options.game Optional game strings. Provide the titleid of the parent title (the game title).
+   * @param {object} options.game Optional game strings. Provide the titleid of the parent title (the game title).
    */
   register(options) {
     let self = this;
