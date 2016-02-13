@@ -43,7 +43,9 @@ process.stdin.resume();
 // Start handlers for exitting.
 process.on('exit', exitHandler.bind(null, {cleanup: true}));
 process.on('SIGINT', exitHandler.bind(null, {exit: true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
+process.on('uncaughtException', (err) => {
+  log.error(err);
+});
 
 /*
 
