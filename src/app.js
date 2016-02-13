@@ -6,7 +6,7 @@ import DatabaseFacade  from './database/facade';
 import ServerFacade    from './server/facade';
 import PluginFacade    from './plugin/facade';
 
-import { config }      from './util/configuration';
+import { config, raw as rawConfig } from './util/configuration';
 
 
 /**
@@ -19,18 +19,33 @@ export default class {
   constructor (log) {
     this.log = log;
 
+    this.config =         config;
+    this.config.plugins = rawConfig.plugins; // Map plugin into config.
+
     this.server =   new ServerFacade(this);
     this.database = new DatabaseFacade(this);
     this.plugin =   new PluginFacade(this);
-
-    this.config =   config;
   }
 
+  /**
+   * Prepare by loading core's facade and managers.
+   * Prepare the plugins by loading the info.
+   *
+   * @returns {Promise}
+   */
   prepare() {
-    return this.server.init().then(this.database.init).then(this.plugin.init);
+    let self = this;
+    return self.server.init()
+      .then(() => {
+        return self.database.init();
+      })
+      .then(() => {
+        return self.plugin.init();
+      });
   }
 
   run() {
     // Run YOW!
+    this.log.debug("Run!");
   }
 }
