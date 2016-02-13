@@ -2,6 +2,8 @@
 'use strict';
 
 import * as fs from 'fs';
+import * as path from 'path';
+import * as glob from 'glob';
 import * as async from 'async';
 import { DepGraph } from 'dependency-graph';
 
@@ -13,6 +15,7 @@ import * as configuration from './../util/configuration';
 
 /**
  * Plugin class.
+ * @class PluginManager
  */
 export default class {
 
@@ -127,5 +130,58 @@ export default class {
   }
 
 
+  /**
+   * Load all models from plugins.
+   *
+   * @param sequelize
+   */
+  loadModels(sequelize) {
+    this.order.forEach((id) => {
+      if (this.plugins[id].directory) {
+        let modelDirectory = path.normalize(this.plugins[id].directory + '/models/');
+
+        try {
+          if (modelDirectory && fs.existsSync(modelDirectory)) {
+            let list = glob.sync(modelDirectory + '*.js');
+
+            if (list.length > 0) {
+              list.forEach((file) => {
+                // Import sequelize model.
+                let model = sequelize.import(file);
+
+                // Set in the plugin.
+                if (! this.plugins[id].models) {
+                  this.plugins[id].models = {};
+                }
+                this.plugins[id].models.push(model);
+              });
+            }
+          }
+
+        } catch (err) {
+          this.app.log.warn('Warning, can\'t load models for plugin ' + id);
+        }
+      }
+    })
+  }
+
+
+  /**
+   * Emit event on all plugins!
+   * Will be in the order calculated on dependencies.
+   *
+   * @param {string} event
+   * @param {object} params
+   * @param {object} options
+   */
+  emitAll (event, params, options) {
+    params = params || {};
+    options = options || {};
+
+    // Always do it on the specific order we always use!
+    this.order.forEach((id) => {
+      this.plugins[id].emit(event, params);
+    });
+  }
 
 }

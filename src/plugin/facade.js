@@ -2,7 +2,7 @@
 
 import Facade  from './../lib/base-facade';
 
-import Manager from './plugin';
+import PluginManager from './plugin';
 
 /**
  * Plugin Facade
@@ -14,7 +14,7 @@ export default class extends Facade {
   constructor(app) {
     super(app);
 
-    this.manager = new Manager(app);
+    this.manager = new PluginManager(app);
   }
 
   /**
