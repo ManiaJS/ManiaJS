@@ -5,6 +5,8 @@
  */
 'use strict';
 
+import * as util from 'util';
+
 import ManiaPlanetCalls from './callbacks/maniaplanet-callbacks';
 
 /**
@@ -42,7 +44,7 @@ export default class {
     console.log(callbackName);
 
     this.client.gbx.on(callbackName, function(rawParams) {
-      var params = parameters;
+      var params = util._extend({}, parameters); // (clone it).
       let paramKeys = Object.keys(parameters);
 
       for (var i = 0; i < paramKeys.length; i++) {
