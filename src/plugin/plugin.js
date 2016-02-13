@@ -7,13 +7,9 @@ import { DepGraph } from 'dependency-graph';
 
 import * as directory from './../util/directory';
 
-import Interface from 'maniajs-plugin';
+import { inject } from 'maniajs-plugin';
 
 import * as configuration from './../util/configuration';
-
-
-var graph = new DepGraph();
-var pluginOrder = [];
 
 /**
  * Plugin class.
@@ -27,7 +23,12 @@ export default class {
    */
   constructor(app) {
     this.app = app;
-    this.plugins = [];
+    this.graph = new DepGraph();
+
+    // ObjectArray
+    this.plugins = {};
+    // Array of plugin ids in order for starting.
+    this.order = [];
   }
 
 
@@ -43,10 +44,6 @@ export default class {
     return new Promise((resolve, reject) => {
       // Get all plugin info's first
       let pluginIds = Object.keys(self.app.config.plugins) || [];
-      console.log(pluginIds);
-
-      // Inject APP into plugin interface
-      Interface.prototype.app = self.app;
 
       // Init plugins.
       pluginIds.forEach((pluginId) => {
@@ -54,15 +51,18 @@ export default class {
 
         // Import plugin.
         try {
-          var plugin = require(pluginId).default.plugin;
-
-          // Inject app.
-          plugin.app = self.app;
+          var PluginClass = require(pluginId).default;
 
           // Save plugin details to plugin array.
-          self.plugins[pluginId] = plugin;
+          self.plugins[pluginId] = new PluginClass();
+
+          // Inject App.
+          self.plugins[pluginId].inject(self.app);
+
+          // Register node
+          self.graph.addNode(pluginId);
         } catch  (err) {
-          self.app.log.error("Error with loading plugin '%s'. Stack: %O", pluginId, err);
+          self.app.log.error("Error with loading plugin '%s'.", pluginId, err.stack);
         }
       });
 
@@ -70,61 +70,62 @@ export default class {
     });
   }
 
-
-
-
-
   /**
-   * Load Plugin
-   * @param pluginid {string}
-   * @param callback {function}
+   * Start all plugins, this will first determinate the start order, then ask the plugins to init, async and in order.
+   *
+   * @return {Promise}
    */
-  loadPlugin(pluginid, callback) {
-    console.log("Info: Loading plugin '" + pluginid + "'...");
+  startPlugins() {
+    let self = this;
+    this.app.log.debug("Starting all plugins... Determinate order...");
 
-    // Load plugin
-    // TODO: IMPORT syntax
-    let plugin = require(directory.pluginsPath() + pluginid + directory.sep + "plugin");
-    plugin._path = directory.pluginsPath() + pluginid + directory.sep;
-
-    this.plugins[pluginid] = plugin;
-
-    // Start plugin TODO: New plugin interface
-    /*plugin.loadPlugin(pluginInterface, function (err) {
-     callback(err);
-     });*/
-  }
-
-
-
-  /**
-   * Get module info object
-   * @param pluginid
-   * @return {Object}
-   */
-  getPluginInfo(pluginid) {
-    if (fs.existsSync(directory.pluginsPath() + pluginid + directory.sep + "plugin.js")) {
-      return require(directory.pluginsPath() + pluginid + directory.sep + "plugin").pluginInfo;
+    // Determinate order.
+    try {
+      this.determinateOrder();
+    } catch (err) {
+      console.error(err);
+      return;
     }
-    return null;
+
+    this.app.log.debug("Starting all plugins... Calling init...");
+
+    return new Promise((resolve, reject) => {
+      async.eachSeries(self.order, (id, callback) => {
+        self.plugins[id].init()
+          .then(() => {callback();})
+          .catch((err) => {callback(err);});
+      }, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
+        });
+    });
   }
-
-
-
-
-
 
 
   /**
-   * Unload all plugins from configuration
+   * Determinate start order.
    */
-  unloadPlugins() {
+  determinateOrder() {
+    let ids = Object.keys(this.plugins);
 
+    // Loop and register dependencies to nodes.
+    for (var i = 0; i < ids.length; i++) {
+      let id =     ids[i];
+      let plugin = this.plugins[id];
+
+      if (plugin.hasOwnProperty('dependencies')) {
+        let dependencies = plugin.dependencies;
+        if (dependencies.length > 0) {
+          // Parse, add node and go on.
+          this.graph.addDependency(plugin);
+        }
+      }
+    }
+    this.order = this.graph.overallOrder();
   }
 
 
-  unloadPlugin(pluginid) {
 
-  }
 }
-
