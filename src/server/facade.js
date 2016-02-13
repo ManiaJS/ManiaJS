@@ -1,7 +1,6 @@
 'use strict';
 
 import Facade from './../lib/base-facade';
-import log from 'bunyan';
 
 import Client from './client';
 
