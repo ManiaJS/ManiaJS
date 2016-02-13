@@ -7,9 +7,9 @@ import { DepGraph } from 'dependency-graph';
 
 import * as directory from './../util/directory';
 
-// var pluginInterface = require('./interface');
+import Interface from 'maniajs-plugin';
 
-import configuration from './../util/configuration';
+import * as configuration from './../util/configuration';
 
 
 var graph = new DepGraph();
@@ -20,8 +20,14 @@ var pluginOrder = [];
  */
 export default class {
 
-  constructor() {
-    this.plugins = {};
+  /**
+   * Construct plugin manager.
+   *
+   * @param {App} app
+   */
+  constructor(app) {
+    this.app = app;
+    this.plugins = [];
   }
 
 
@@ -31,71 +37,36 @@ export default class {
    * @returns {Promise}
    */
   loadPlugins() {
-    return new Promise(function (resolve, reject) {
+    let self = this;
+    this.app.log.debug("Loading plugins from configuration...");
+
+    return new Promise((resolve, reject) => {
       // Get all plugin info's first
-      let pluginIds = Object.keys(configuration.plugins);
+      let pluginIds = Object.keys(self.app.config.plugins) || [];
+      console.log(pluginIds);
 
-      var pluginInfo = [];
-      var i = 0;
+      // Inject APP into plugin interface
+      Interface.prototype.app = self.app;
 
-      // Info getter
-      for (i = 0; i < pluginIds.length; i++) {
-        let pluginId = pluginIds[i];
+      // Init plugins.
+      pluginIds.forEach((pluginId) => {
+        self.app.log.debug("Loading plugin '" + pluginId + "'...");
 
-        // Get info
-        let info = this.getPluginInfo(pluginId);
+        // Import plugin.
+        try {
+          var plugin = require(pluginId).default.plugin;
 
-        // Error and exit when not loaded
-        if (!info) {
-          console.error("Error loading plugin: '" + pluginId + "'. No pluginInfo found/No file's found!");
-          process.exit(1);
+          // Inject app.
+          plugin.app = self.app;
+
+          // Save plugin details to plugin array.
+          self.plugins[pluginId] = plugin;
+        } catch  (err) {
+          self.app.log.error("Error with loading plugin '%s'. Stack: %O", pluginId, err);
         }
+      });
 
-        // Add to info
-        pluginInfo.push(info);
-
-        // Add node
-        graph.addNode(pluginId);
-      }
-
-      // Add dependencies
-      for (i = 0; i < pluginInfo.length; i++) {
-        //let pluginId = pluginInfo[i];
-        let pluginDependencies = pluginInfo[i].dependencies || [];
-        let pluginRequirements = pluginInfo[i].requirements || [];
-
-        // Check if dependencies will also be loaded
-        for (var d = 0; d < pluginDependencies.length; d++) {
-          if (pluginIds.indexOf(pluginDependencies[d]) == -1) {
-            let error = Error("Error: Plugin '" + pluginInfo[i].id + "' needs to have plugin '" + pluginDependencies[d] + "'! Try to install the plugin or disable the plugin.");
-            console.error(error);
-            reject(error);
-          }
-        }
-
-        // Enter dependencies
-        for (var r = 0; r < pluginRequirements.length; r++) {
-          graph.addDependency(pluginInfo[i].id, pluginRequirements[r]);
-        }
-      }
-
-      // Calculate dependencies
-      pluginOrder = graph.overallOrder();
-
-      // Load plugins async
-      async.eachSeries(pluginOrder, function (id, callback) {
-          this.loadPlugin(id, function (err) {
-            callback(err);
-          });
-        },
-        function (err) {
-          if (err) {
-            console.error(err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
+      return resolve();
     });
   }
 
