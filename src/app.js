@@ -61,11 +61,12 @@ export default class {
    * @returns {Promise}
    */
   run() {
-    let self = this;
-
     return this.serverFacade.run()
-      .then(() => { return this.pluginFacade.run();   })
       .then(() => { return this.databaseFacade.run(); })
-      .then(() => { self.log.debug("Ready...");       });
+      .then(() => { return this.pluginFacade.run();   })
+      .then(() => { this.log.debug("Ready...");       })
+      .catch((err) => {
+        console.error(err.stack);
+      });
   }
 }
