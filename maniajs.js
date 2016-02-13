@@ -5,5 +5,5 @@
  * @author ManiaJS
  * @version 0.0.0
  */
-require('babel-register'); // Require hook, babel
-require('./src/maniajs');  // Start ManiaJS
+require('babel-register')({ignore:false}); // Require hook, babel
+require('./src/maniajs');                  // Start ManiaJS
