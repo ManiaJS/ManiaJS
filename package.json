@@ -26,13 +26,12 @@
     "joi": "^7.3.0",
     "js-yaml": "^3.5.2",
     "maniajs-plugin": "ManiaJS/maniajs-plugin",
+    "maniajs-plugin-sample": "ManiaJS/maniajs-sample",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",
     "request": "^2.69.0",
     "sequelize": "^3.19.2",
-    "sprintf-js": "^1.0.3",
-
-    "maniajs-plugin-sample": "ManiaJS/maniajs-sample"
+    "sprintf-js": "^1.0.3"
   },
   "optionalDependencies": {
     "sqlite3": "^3.1.1"

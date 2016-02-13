@@ -22,9 +22,21 @@ export default class {
     this.config =         config;
     this.config.plugins = rawConfig.plugins; // Map plugin into config.
 
-    this.server =   new ServerFacade(this);
-    this.database = new DatabaseFacade(this);
-    this.plugin =   new PluginFacade(this);
+    /**
+     * INTERNAL FACADE
+     * Facade classes of components.
+     */
+    this.serverFacade   =   new ServerFacade(this);
+    this.databaseFacade =   new DatabaseFacade(this);
+    this.pluginFacade   =   new PluginFacade(this);
+
+
+    /**
+     * PUBLIC INTERFACE VARIABLES
+     * Will be used for providing plugins features. Keep stable please.
+     */
+    this.server        = null;
+    this.plugins       = null;
   }
 
   /**
@@ -35,17 +47,24 @@ export default class {
    */
   prepare() {
     let self = this;
-    return self.server.init()
+    return self.serverFacade.init()
       .then(() => {
-        return self.database.init();
+        return self.databaseFacade.init();
       })
       .then(() => {
-        return self.plugin.init();
+        return self.pluginFacade.init();
       });
   }
 
+  /**
+   * Run the Controller.
+   * @returns {Promise}
+   */
   run() {
-    // Run YOW!
-    this.log.debug("Run!");
+    let self = this;
+
+    return this.serverFacade.run()
+      .then(() => { return this.pluginFacade.run();   })
+      .then(() => { self.log.debug("Ready..."); });
   }
 }

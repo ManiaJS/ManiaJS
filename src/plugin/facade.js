@@ -17,7 +17,19 @@ export default class extends Facade {
     this.manager = new Manager(app);
   }
 
+  /**
+   * Construct plugins.
+   * @returns {Promise}
+   */
   init() {
     return this.manager.loadPlugins();
+  }
+
+  /**
+   * Start plugins.
+   * @returns {Promise}
+   */
+  run() {
+    return this.manager.startPlugins();
   }
 }

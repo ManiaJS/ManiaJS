@@ -3,6 +3,10 @@
  * Client Manager - Will connect to the maniaplanet server
  */
 import Gbx from 'gbxremote';
+import { EventEmitter } from 'events';
+
+import CallbackManager from './callback-manager';
+import Send from './send';
 
 import config from './../util/configuration';
 import times from './../lib/times';
@@ -11,7 +15,7 @@ import times from './../lib/times';
  * Server Client.
  * @class ServerClient
  */
-export default class {
+export default class extends EventEmitter {
 
   /**
    * Prepare the client. parse configuration and pass it to the gbx client.
@@ -19,11 +23,23 @@ export default class {
    * @param {App} app context
    */
   constructor(app) {
-    this.app = app;
+    super();
 
+    this.app = app;
     this.gbx = null;
+    /** @type {CallbackManager} */
+    this.callback = null;
 
     this.server = app.config.server;
+  }
+
+  /**
+   * Build a sending query.
+   *
+   * @returns {{}|*}
+   */
+  send() {
+    return new Send(this.app, this);
   }
 
   /**
@@ -100,11 +116,40 @@ export default class {
           }
           self.app.log.debug("Connection to ManiaPlanet Server, Successfully enabled callbacks!");
 
-          self.gbx.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."]);
+          // Send welcome message
+          self.send().chat("$o$f90Mania$z$o$f90JS$z$fff: Booting Controller...").exec();
+
+          // self.gbx.query('ChatSendServerMessage', []);
 
           return resolve(res);
         });
       });
+    });
+  }
+
+  /**
+   * Register the Callbacks.
+   *
+   * @return {Promise}
+   */
+  register() {
+    let self = this;
+
+    this.app.log.debug('Registering callbacks...');
+    return new Promise((resolve, reject) => {
+      self.callback = new CallbackManager(self);
+
+      self.callback.loadSet('maniaplanet');
+
+
+
+
+      // Test
+      self.on('player.chat', (data) => {
+        console.log(data);
+      });
+
+      return resolve();
     });
   }
 }
