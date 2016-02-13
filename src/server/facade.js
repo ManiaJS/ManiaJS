@@ -24,9 +24,11 @@ export default class extends Facade {
    * @returns {Promise}
    */
   init() {
+    let self = this;
+
     this.client = new Client(this.app);
     return this.client.connect().catch((err) => {
-      console.error(err);
+      self.app.log.error(err);
     });
   }
 }

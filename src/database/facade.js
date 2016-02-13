@@ -11,8 +11,8 @@ import Client from './client';
  */
 export default class extends Facade {
 
-  constructor() {
-    super();
+  constructor(app) {
+    super(app);
 
     this.client = new Client();
   }
@@ -21,7 +21,8 @@ export default class extends Facade {
     let self = this;
 
     return new Promise((resolve, reject) => {
-      resolve();
+      setTimeout(resolve, 1000);
+      //resolve();
     })
   }
 }

@@ -41,13 +41,6 @@ config:
     sqlite:
       storage: './database.sqlite' # Path, relative to root of Controller.JS
 
-
 plugins:
-  cjs-chat:
-    version: *
-    github: ManiaJS/cjs-chat
-
-  cjs-localrecords:
-    version: *
-    github: ManiaJS/cjs-localrecords
-
+  maniajs-plugin-sample:
+    test: true

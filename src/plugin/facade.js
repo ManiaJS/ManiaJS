@@ -11,17 +11,13 @@ import Manager from './plugin';
  */
 export default class extends Facade {
 
-  constructor() {
-    super();
+  constructor(app) {
+    super(app);
 
-    this.manager = new Manager();
+    this.manager = new Manager(app);
   }
 
   init() {
-    let self = this;
-
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
+    return this.manager.loadPlugins();
   }
 }
