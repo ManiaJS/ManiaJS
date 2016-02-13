@@ -7,8 +7,6 @@
  */
 'use strict';
 
-import * as async         from 'async';
-import * as fs            from 'fs';
 import Bunyan             from 'bunyan';
 import PrettyStream       from 'bunyan-prettystream';
 

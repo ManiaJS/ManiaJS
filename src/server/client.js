@@ -8,7 +8,6 @@ import { EventEmitter } from 'events';
 import CallbackManager from './callback-manager';
 import Send from './send';
 
-import config from './../util/configuration';
 import times from './../lib/times';
 
 /**
@@ -136,7 +135,7 @@ export default class extends EventEmitter {
     let self = this;
 
     this.app.log.debug('Registering callbacks...');
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       self.callback = new CallbackManager(self);
 
       self.callback.loadSet('maniaplanet');
