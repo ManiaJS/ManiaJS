@@ -20,4 +20,8 @@ export default class extends Facade {
   init() {
     return this.manager.loadPlugins();
   }
+
+  run() {
+    this.manager.startPlugins();
+  }
 }

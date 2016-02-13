@@ -47,5 +47,6 @@ export default class {
   run() {
     // Run YOW!
     this.log.debug("Run!");
+    this.plugin.run();
   }
 }
