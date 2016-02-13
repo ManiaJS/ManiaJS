@@ -16,7 +16,9 @@ import { config }      from './util/configuration';
  */
 export default class {
 
-  constructor () {
+  constructor (log) {
+    this.log = log;
+
     this.server =   new ServerFacade(this);
     this.database = new DatabaseFacade(this);
     this.plugin =   new PluginFacade(this);
