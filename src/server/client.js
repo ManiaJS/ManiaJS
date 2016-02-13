@@ -6,6 +6,7 @@ import Gbx from 'gbxremote';
 import { EventEmitter } from 'events';
 
 import CallbackManager from './callback-manager';
+import Send from './send';
 
 import config from './../util/configuration';
 import times from './../lib/times';
@@ -30,6 +31,15 @@ export default class extends EventEmitter {
     this.callback = null;
 
     this.server = app.config.server;
+  }
+
+  /**
+   * Build a sending query.
+   *
+   * @returns {{}|*}
+   */
+  send() {
+    return new Send(this.app, this);
   }
 
   /**
