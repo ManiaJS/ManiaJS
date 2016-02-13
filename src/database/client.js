@@ -46,8 +46,8 @@ export default class Client {
 
     this.options = options;
     this.database = config.database;
-    this.username = config.username;
-    this.password = config.password;
+    this.username = config.authentication.username;
+    this.password = config.authentication.password;
   }
 
 
@@ -74,10 +74,7 @@ export default class Client {
    * @returns {Promise}
    */
   sync() {
-    let self = this;
-    return new Promise((resolve, reject) => {
-      return resolve();
-    });
+    return this.sequelize.sync({force: false});
   }
 
 }

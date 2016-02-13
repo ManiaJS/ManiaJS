@@ -22,29 +22,42 @@ export default class extends Facade {
    * @returns {Promise}
    */
   init() {
-    this.app.log.debug("Connecting to database...");
+    this.app.log.debug('Connecting to database...');
 
     return this.client.connect();
   }
 
-
+  /**
+   * Run
+   * @returns {Promise}
+   */
   run() {
-    this.app.log.debug("Registering models...");
-    this.defineModels();
+    this.app.log.debug('Registering models...');
 
-    this.app.log.debug("Syncing models with database...");
-
+    return this.defineModels().then(() => {
+      this.app.log.debug('Syncing models with database...');
+      return this.client.sync();
+    }).catch((err) => {
+      this.app.log.fatal('Fatal error with syncing/connecting to the database', err.stack);
+      process.exit(0);
+    });
   }
 
 
   /**
    * Define Models of ManiaJS and Plugins!
+   *
+   * @returns {Promise}
    */
   defineModels() {
-    // First the core models.
+    return new Promise((resolve, reject) => {
+      // First the core models.
 
 
-    // Plugin models.
-    this.app.pluginFacade.manager.loadModels(this.client.sequelize);
+      // Plugin models.
+      this.app.pluginFacade.manager.loadModels(this.client.sequelize);
+
+      resolve();
+    });
   }
 }

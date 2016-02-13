@@ -134,8 +134,14 @@ export default class {
    * Load all models from plugins.
    *
    * @param sequelize
+   *
+   * @returns {Promise}
    */
   loadModels(sequelize) {
+    if (this.order.length === 0) {
+      this.determinateOrder();
+    }
+
     this.order.forEach((id) => {
       if (this.plugins[id].directory) {
         let modelDirectory = path.normalize(this.plugins[id].directory + '/models/');
@@ -153,16 +159,16 @@ export default class {
                 if (! this.plugins[id].models) {
                   this.plugins[id].models = {};
                 }
-                this.plugins[id].models.push(model);
+                this.plugins[id].models[model.name] = model;
               });
             }
           }
 
         } catch (err) {
-          this.app.log.warn('Warning, can\'t load models for plugin ' + id);
+          this.app.log.warn('Warning, can\'t load models for plugin ' + id, err.stack);
         }
       }
-    })
+    });
   }
 
 
