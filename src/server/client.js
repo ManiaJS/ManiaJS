@@ -34,13 +34,12 @@ export default class {
   connect() {
     let self = this;
 
-    // TODO: Replace for logging stuff
-    console.log("Starting connection to MP Server...");
+    this.app.log.debug("Connecting to ManiaPlanet Server...");
 
     return new Promise( (resolve, reject) => {
       self.gbx = Gbx.createClient(self.server.port, self.server.address, (err) => {
         if (err) {
-          console.error(err);
+          self.app.log.error(err);
           return reject(err);
         }
 
@@ -49,7 +48,8 @@ export default class {
         // DEBUG, print every call we get.
         if (self.app.config.debug) {
           self.gbx.on('callback', (method, params) => {
-            console.log("Call: %s [%O]", method, params);
+            self.app.log.debug("Callback '"+method+"'", params);
+            //console.log("Call: %s [%O]", method, params);
           });
           // finish
           self.gbx.on('TrackMania.PlayerFinish', function (params) {
@@ -62,7 +62,7 @@ export default class {
           });
         }
 
-        console.log("MP Server connected!");
+        self.app.log.debug("Connection to ManiaPlanet Server Successful!");
 
         return resolve();
       });
@@ -74,7 +74,7 @@ export default class {
           if (err) {
             return reject(err);
           }
-          console.log("MP Server authenticated!");
+          self.app.log.debug("Connection to ManiaPlanet Server, Successfully authenticated!");
           return resolve(res);
         });
       });
@@ -86,7 +86,7 @@ export default class {
           if (err) {
             return reject(err);
           }
-          console.log("MP Server set api version done!");
+          self.app.log.debug("Connection to ManiaPlanet Server, Successfully set api version!");
           return resolve(res);
         });
       });
@@ -98,7 +98,8 @@ export default class {
           if (err) {
             return reject(err);
           }
-          console.log("MP Server enabled callbacks!");
+          self.app.log.debug("Connection to ManiaPlanet Server, Successfully enabled callbacks!");
+
           self.gbx.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."]);
 
           return resolve(res);

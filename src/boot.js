@@ -7,22 +7,34 @@
  */
 'use strict';
 
-import * as async   from 'async';
-import * as fs      from 'fs';
+import * as async         from 'async';
+import * as fs            from 'fs';
+import Bunyan             from 'bunyan';
+import PrettyStream       from 'bunyan-prettystream';
 
-import App          from './app';
+import App                from './app';
 
 
-// TODO: Start any logger!
-
-
+// Logger
+var prettyOut = new PrettyStream();
+    prettyOut.pipe(process.stdout);
+var log = Bunyan.createLogger({
+  name: 'maniajs',
+  streams: [{
+    level: 'debug',
+    type: 'raw',
+    stream: prettyOut
+  }]
+});
+log.debug("Init ManiaJS..");
 
 // Start ManiaJS.. Finally..
-let app = new App();
+let app = new App(log);
 
-console.log("Starting ManiaJS...");
 app.prepare()
   .then(()=>app.run());
+
+
 
 
 // Resume application.
