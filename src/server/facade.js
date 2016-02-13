@@ -3,7 +3,6 @@
 import Facade from './../lib/base-facade';
 
 import Client from './client';
-import CallbackManager from './callback-manager';
 
 /**
  * Server Client Facade
