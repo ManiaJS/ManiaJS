@@ -7,7 +7,7 @@ import { DepGraph } from 'dependency-graph';
 
 import * as directory from './../util/directory';
 
-import Interface from 'maniajs-plugin';
+import { inject } from 'maniajs-plugin';
 
 import * as configuration from './../util/configuration';
 
@@ -44,10 +44,6 @@ export default class {
     return new Promise((resolve, reject) => {
       // Get all plugin info's first
       let pluginIds = Object.keys(self.app.config.plugins) || [];
-      console.log(pluginIds);
-
-      // Inject APP into plugin interface
-      Interface.prototype.app = self.app;
 
       // Init plugins.
       pluginIds.forEach((pluginId) => {
@@ -55,18 +51,18 @@ export default class {
 
         // Import plugin.
         try {
-          var plugin = require(pluginId).default.plugin;
-
-          // Inject app.
-          plugin.app = self.app;
+          var PluginClass = require(pluginId).default;
 
           // Save plugin details to plugin array.
-          self.plugins[pluginId] = plugin;
+          self.plugins[pluginId] = new PluginClass();
+
+          // Inject App.
+          self.plugins[pluginId].inject(self.app);
 
           // Register node
           self.graph.addNode(pluginId);
         } catch  (err) {
-          self.app.log.error("Error with loading plugin '%s'. Stack: %O", pluginId, err);
+          self.app.log.error("Error with loading plugin '%s'.", pluginId, err.stack);
         }
       });
 
@@ -88,9 +84,23 @@ export default class {
       this.determinateOrder();
     } catch (err) {
       console.error(err);
+      return;
     }
 
-    // Foreach async promise.
+    this.app.log.debug("Starting all plugins... Calling init...");
+
+    return new Promise((resolve, reject) => {
+      async.eachSeries(self.order, (id, callback) => {
+        self.plugins[id].init()
+          .then(() => {callback();})
+          .catch((err) => {callback(err);});
+      }, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
+        });
+    });
   }
 
 

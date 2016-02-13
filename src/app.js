@@ -44,9 +44,14 @@ export default class {
       });
   }
 
+  /**
+   * Run the Controller.
+   * @returns {Promise}
+   */
   run() {
-    // Run YOW!
-    this.log.debug("Run!");
-    this.plugin.run();
+    let self = this;
+
+    return this.plugin.run()
+      .then(() => {self.log.debug("Ready...")});
   }
 }
