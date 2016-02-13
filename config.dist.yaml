@@ -10,14 +10,11 @@ config:
       username: 'SuperAdmin'
       password: 'SuperAdmin'
   db:
-    dialect: 'mysql' # Can be mysql, mariadb or sqlite.
-
+    dialect: 'mysql' # Can be mysql, mariadb, sqlite, mssql, postgres.
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
     # When not having build tools, you will get warnings when starting for the first time or run the installation script.
     # You can ignore this, but can't use the dialects then!
     # To recompile run 'npm install sqlite3' in root
-
-
 
     # Global Non-driver-dependent settings:
     database: 'maniajs'
@@ -38,8 +35,16 @@ config:
       host: '127.0.0.1'
       port: 3307
 
+    mssql:
+      host: '127.0.0.1'
+      port: 1433
+
+    postgres:
+      host: '127.0.0.1'
+      port: 5432
+
     sqlite:
-      storage: './database.sqlite' # Path, relative to root of Controller.JS
+      storage: './database.sqlite' # Path, relative to root of ManiaJS.
 
 plugins:
   maniajs-plugin-sample:

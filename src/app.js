@@ -65,6 +65,7 @@ export default class {
 
     return this.serverFacade.run()
       .then(() => { return this.pluginFacade.run();   })
-      .then(() => { self.log.debug("Ready..."); });
+      .then(() => { return this.databaseFacade.run(); })
+      .then(() => { self.log.debug("Ready...");       });
   }
 }
