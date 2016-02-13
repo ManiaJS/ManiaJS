@@ -116,7 +116,10 @@ export default class extends EventEmitter {
           }
           self.app.log.debug("Connection to ManiaPlanet Server, Successfully enabled callbacks!");
 
-          self.gbx.query('ChatSendServerMessage', ["$o$f90Mania$z$o$f90JS$z$fff: Booting Controller..."]);
+          // Send welcome message
+          self.send().chat("$o$f90Mania$z$o$f90JS$z$fff: Booting Controller...").exec();
+
+          // self.gbx.query('ChatSendServerMessage', []);
 
           return resolve(res);
         });

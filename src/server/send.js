@@ -29,6 +29,8 @@ export default class {
    * @param {string} text
    * @param {object} options Optional options.
    * @param {string} options.source Source of message, could be 'player', 'server' or 'global' (default)
+   *
+   * @return {self}
    */
   chat(text, options) {
     options = options || {};
@@ -40,6 +42,7 @@ export default class {
         params: [text]
       }
     }
+    return this;
   }
 
 
