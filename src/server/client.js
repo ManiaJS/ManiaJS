@@ -3,6 +3,9 @@
  * Client Manager - Will connect to the maniaplanet server
  */
 import Gbx from 'gbxremote';
+import { EventEmitter } from 'events';
+
+import CallbackManager from './callback-manager';
 
 import config from './../util/configuration';
 import times from './../lib/times';
@@ -11,7 +14,7 @@ import times from './../lib/times';
  * Server Client.
  * @class ServerClient
  */
-export default class {
+export default class extends EventEmitter {
 
   /**
    * Prepare the client. parse configuration and pass it to the gbx client.
@@ -19,9 +22,12 @@ export default class {
    * @param {App} app context
    */
   constructor(app) {
-    this.app = app;
+    super();
 
+    this.app = app;
     this.gbx = null;
+    /** @type {CallbackManager} */
+    this.callback = null;
 
     this.server = app.config.server;
   }
@@ -105,6 +111,32 @@ export default class {
           return resolve(res);
         });
       });
+    });
+  }
+
+  /**
+   * Register the Callbacks.
+   *
+   * @return {Promise}
+   */
+  register() {
+    let self = this;
+
+    this.app.log.debug('Registering callbacks...');
+    return new Promise((resolve, reject) => {
+      self.callback = new CallbackManager(self);
+
+      self.callback.loadSet('maniaplanet');
+
+
+
+
+      // Test
+      self.on('player.chat', (data) => {
+        console.log(data);
+      });
+
+      return resolve();
     });
   }
 }
