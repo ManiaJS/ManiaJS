@@ -8,8 +8,6 @@ import { EventEmitter } from 'events';
 import CallbackManager from './callback-manager';
 import Send from './send';
 
-import times from './../lib/times';
-
 /**
  * Server Client.
  * @class ServerClient
