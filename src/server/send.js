@@ -29,19 +29,29 @@ export default class {
    * @param {string} text
    * @param {object} options Optional options.
    * @param {string} options.source Source of message, could be 'player', 'server' or 'global' (default)
+   * @param {string} options.destination Destination, false for all, string for login (default false).
    *
    * @return {self}
    */
   chat(text, options) {
     options = options || {};
     let source = options.source || 'global';
+    let destination = options.destination || false;
 
     if (source === 'global') {
-      this.query = {
-        query: 'ChatSendServerMessage',
-        params: [text]
+      if (! destination) {
+        this.query = {
+          query: 'ChatSendServerMessage',
+          params: [text]
+        }
+      } else {
+        this.query = {
+          query: 'ChatSendServerMessageToLogin',
+          params: [destination, text]
+        }
       }
     }
+
     return this;
   }
 
