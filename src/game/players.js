@@ -103,10 +103,11 @@ export default class {
    * @param login
    */
   disconnect(login) {
-    // Remove from this.list;
-    if (this.list.hasOwnProperty(login)) {
-      delete this.list[login];
-      console.log(this.list);
-    }
+    // Remove from this.list (after 5 seconds);
+    setTimeout(() => {
+      if (this.list.hasOwnProperty(login)) {
+        delete this.list[login];
+      }
+    }, 5000);
   }
 }
