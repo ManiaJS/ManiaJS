@@ -131,19 +131,17 @@ export default class extends EventEmitter {
    * @return {Promise}
    */
   register() {
-    let self = this;
-
     this.app.log.debug('Registering callbacks...');
     return new Promise((resolve) => {
-      self.callback = new CallbackManager(self);
+      this.callback = new CallbackManager(this.app, this);
 
-      self.callback.loadSet('maniaplanet');
+      this.callback.loadSet('maniaplanet');
 
 
 
 
       // Test
-      self.on('player.chat', (data) => {
+      this.on('player.chat', (data) => {
         console.log(data);
       });
 

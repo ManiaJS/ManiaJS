@@ -2,24 +2,25 @@
 
 export default function (sequelize, DataTypes) {
   let Map = sequelize.define('Map', {
-    Uid: {
+    uid: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    Name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    Author: {
+    author: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    Environment: {
+    environment: {
       type: DataTypes.STRING,
       allowNull: false
     }
   }, {
-    tableName: 'core__map'
+    tableName: 'core__map',
+    charset: 'utf8'
   });
 
   return Map;
