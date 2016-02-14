@@ -3,6 +3,8 @@
  */
 'use strict';
 
+import * as async from 'async';
+
 
 /**
  * Players game flow class.
@@ -27,9 +29,31 @@ export default class {
 
   boot() {
     // Get all current players, controller just boot.
-    // TODO: Make this working.
+    return new Promise((resolve, reject) => {
+      this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0], (err, players) => {
+        // Loop and fetch players.
+        async.eachSeries(players, (player, callback) => {
+          if (player.PlayerId === 0) {
+            // Skip, its the server.
+            return callback();
+          }
 
-    return Promise.resolve();
+          // Fetch from database
+          this.update(player.Login, player.NickName)
+            .then(() => {
+              callback();
+            })
+            .catch((err) => {
+              callback(err);
+            });
+        }, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
+        });
+      });
+    });
   }
 
 
