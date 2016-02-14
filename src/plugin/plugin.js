@@ -160,6 +160,12 @@ export default class {
                   this.plugins[id].models = {};
                 }
                 this.plugins[id].models[model.name] = model;
+
+                // Set in the global models.
+                if (! this.app.models.hasOwnProperty(id)) {
+                  this.app.models[id] = {};
+                }
+                this.app.models[id][model.name] = model;
               });
             }
           }
