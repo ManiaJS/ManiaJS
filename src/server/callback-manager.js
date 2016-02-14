@@ -30,6 +30,7 @@ export default class {
    * @param {string} options.event Converting into event name.
    * @param {object} options.parameters Parameters mapping.
    * @param {function} options.parse Custom parse mapping function.
+   * @param {function} options.pass Custom pass function. Optional! Give false as return to ignore the callback!
    * @param {object} options.game Optional game strings. Provide the titleid of the parent title (the game title).
    */
   register(options) {
@@ -39,14 +40,21 @@ export default class {
     let eventName = options.event;
     let parameters = options.parameters;
     let parse = options.parse;
+    let pass = options.pass;
     let game = options.game || []; // Default all games
 
     // Register callback, make it an event.
-    console.log(callbackName);
-
     this.client.gbx.on(callbackName, function(rawParams) {
       // Output var
       var params = {};
+
+      // Check if we can continue first.
+      if (typeof pass === 'function') {
+        if (pass(rawParams) === false) {
+          // Skip
+          return;
+        }
+      }
 
       // If we have custom parser, then call it, if not we go with the mapping.
       if (typeof parse === 'function') {
