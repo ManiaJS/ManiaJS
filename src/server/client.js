@@ -63,8 +63,7 @@ export default class extends EventEmitter {
         // DEBUG, print every call we get.
         if (self.app.config.debug) {
           self.gbx.on('callback', (method, params) => {
-            self.app.log.debug("Callback '"+method+"'", params);
-            //console.log("Call: %s [%O]", method, params);
+            self.app.log.debug("Callback '"+method+"':", params);
           });
           // finish
           self.gbx.on('TrackMania.PlayerFinish', function (params) {
