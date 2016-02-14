@@ -47,7 +47,7 @@ export default class {
       } else {
         this.query = {
           query: 'ChatSendServerMessageToLogin',
-          params: [destination, text]
+          params: [text, destination]
         }
       }
     }
@@ -59,7 +59,7 @@ export default class {
   skip() {
     this.query = {
       query: 'NextMap'
-    }
+    };
     return this;
   }
 
