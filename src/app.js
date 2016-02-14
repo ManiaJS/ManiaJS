@@ -60,6 +60,10 @@ export default class {
       })
       .then(() => {
         return this.gameFacade.init();
+      })
+      .catch((err) => {
+        this.log.fatal(err);
+        process.exit(1);
       });
   }
 
