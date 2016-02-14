@@ -5,6 +5,7 @@
 import DatabaseFacade  from './database/facade';
 import ServerFacade    from './server/facade';
 import PluginFacade    from './plugin/facade';
+import GameFacade      from './game/facade';
 
 import { config, raw as rawConfig } from './util/configuration';
 
@@ -29,6 +30,7 @@ export default class {
     this.serverFacade   =   new ServerFacade(this);
     this.databaseFacade =   new DatabaseFacade(this);
     this.pluginFacade   =   new PluginFacade(this);
+    this.gameFacade     =   new GameFacade(this);
 
 
     /**
@@ -38,6 +40,8 @@ export default class {
     this.server        = null;
     this.plugins       = null;
     this.models        = {  };
+    this.players       = this.gameFacade.players;
+    this.maps          = this.gameFacade.maps;
   }
 
   /**
@@ -47,13 +51,15 @@ export default class {
    * @returns {Promise}
    */
   prepare() {
-    let self = this;
-    return self.serverFacade.init()
+    return this.serverFacade.init()
       .then(() => {
-        return self.databaseFacade.init();
+        return this.databaseFacade.init();
       })
       .then(() => {
-        return self.pluginFacade.init();
+        return this.pluginFacade.init();
+      })
+      .then(() => {
+        return this.gameFacade.init();
       });
   }
 
@@ -64,6 +70,7 @@ export default class {
   run() {
     return this.serverFacade.run()
       .then(() => { return this.databaseFacade.run(); })
+      .then(() => { return this.gameFacade.run();     })
       .then(() => { return this.pluginFacade.run();   })
       .then(() => { this.log.debug("Ready...");       })
       .catch((err) => {

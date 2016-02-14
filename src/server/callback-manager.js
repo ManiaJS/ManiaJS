@@ -16,9 +16,11 @@ import ManiaPlanetCalls from './callbacks/maniaplanet-callbacks';
 export default class {
 
   /**
+   * @param {App} app
    * @param {ServerClient} client
    */
-  constructor(client) {
+  constructor(app, client) {
+    this.app = app;
     this.client = client;
   }
 
@@ -33,22 +35,23 @@ export default class {
    * @param {function} options.parse Custom parse mapping function.
    * @param {function} options.pass Custom pass function. Optional! Give false as return to ignore the callback!
    * @param {object} options.game Optional game strings. Provide the titleid of the parent title (the game title).
+   *
+   * @param {function} options.flow Optional promise returning funciton for controlling the game flow. Calls with first parameter app and second params.
    */
   register(options) {
-    let self = this;
-
     let callbackName = options.callback;
     let eventName = options.event;
     let parameters = options.parameters || {};
 
     let parse = options.parse;
     let pass = options.pass;
+    let flow = options.flow;
 
     let type = options.type || 'native';
     let game = options.game || []; // Default all games
 
     // Register callback, make it an event.
-    this.client.gbx.on(callbackName, function(rawParams) {
+    this.client.gbx.on(callbackName, (rawParams) => {
       // Output var
       var params = {};
 
@@ -80,8 +83,21 @@ export default class {
         }
       }
 
-      // Trigger the event on our client
-      self.client.emit(eventName, params);
+      // Maybe we want to pass it to the game flow manager before we want to give
+      // the event to the plugins and core (for player connect for example).
+      if (typeof flow !== 'function') {
+        flow = () => Promise.resolve();
+      }
+
+      // Promise the flow.
+      flow(this.app, params)
+        .then(() => {
+          // Trigger the event on our client
+          this.client.emit(eventName, params);
+        })
+        .catch((err) => {
+          this.app.log.warn(err.stack);
+        });
     });
 
   }

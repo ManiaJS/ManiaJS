@@ -23,6 +23,9 @@ export default function (manager) {
     parameters: {
       login: 0,
       spectator: 1
+    },
+    flow: (app, params) => {
+      return app.gameFacade.players.connect(params.login);
     }
   });
 
@@ -55,7 +58,7 @@ export default function (manager) {
   manager.register({
     callback: 'ManiaPlanet.PlayerInfoChanged',
     event: 'player.change',
-    parse: function(raw) {
+    parse: (raw) => {
       let info = raw[0];
 
       let isSpectator =       info.SpectatorStatus           % 10;
@@ -78,6 +81,9 @@ export default function (manager) {
         autoTarget: autoTarget,
         targetId: targetId
       };
+    },
+    flow: (app, params) => {
+      return app.gameFacade.players.update(params.login, params.nickName, params.playerId);
     }
   });
 
@@ -139,8 +145,11 @@ export default function (manager) {
   manager.register({
     callback: 'ManiaPlanet.BeginMap',
     event: 'map.begin',
-    parameters: {
-      map: 0
+    parse: (raw) => {
+      return raw[0];
+    },
+    flow: (app, params) => {
+      return app.gameFacade.maps.begin(params.UId);
     }
   });
 
