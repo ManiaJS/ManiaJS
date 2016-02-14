@@ -69,7 +69,7 @@ export default class {
               // Already in there.
               // Name update?
               if (map.name !== data.Name) {
-                map.set('name', name);
+                map.set('name', data.Name);
                 map.save().then((map) => {
                   this.list[data.UId] = map;
                   return callback();
