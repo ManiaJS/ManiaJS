@@ -3,6 +3,7 @@
 import Facade from './../lib/base-facade';
 
 import Players from './players';
+import Maps from './maps';
 
 
 /**
@@ -16,6 +17,7 @@ export default class extends Facade {
     super(app);
 
     this.players = new Players(app);
+    this.maps = new Maps(app);
   }
 
   /**
@@ -31,6 +33,9 @@ export default class extends Facade {
    * @returns {Promise}
    */
   run() {
-    return Promise.resolve();
+    return this.players.boot()
+      .then(() => {
+        return this.maps.boot();
+      });
   }
 }

@@ -28,6 +28,8 @@ export default class {
   boot() {
     // Get all current players, controller just boot.
     // TODO: Make this working.
+
+    return Promise.resolve();
   }
 
 

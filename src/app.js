@@ -40,6 +40,8 @@ export default class {
     this.server        = null;
     this.plugins       = null;
     this.models        = {  };
+    this.players       = this.gameFacade.players;
+    this.maps          = this.gameFacade.maps;
   }
 
   /**
