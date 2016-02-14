@@ -6,6 +6,7 @@ import DatabaseFacade  from './database/facade';
 import ServerFacade    from './server/facade';
 import PluginFacade    from './plugin/facade';
 import GameFacade      from './game/facade';
+import UtilFacade      from './util/facade';
 
 import { config, raw as rawConfig } from './util/configuration';
 
@@ -32,6 +33,8 @@ export default class {
     this.pluginFacade   =   new PluginFacade(this);
     this.gameFacade     =   new GameFacade(this);
 
+    this.utilFacade     =   new UtilFacade(this);
+
 
     /**
      * PUBLIC INTERFACE VARIABLES
@@ -42,6 +45,7 @@ export default class {
     this.models        = {  };
     this.players       = this.gameFacade.players;
     this.maps          = this.gameFacade.maps;
+    this.util          = this.utilFacade;
   }
 
   /**

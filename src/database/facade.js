@@ -50,7 +50,7 @@ export default class extends Facade {
    * @returns {Promise}
    */
   defineModels() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // First the core models.
       this.client.loadCoreModels();
 

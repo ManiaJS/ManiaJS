@@ -7,12 +7,6 @@ import * as glob from 'glob';
 import * as async from 'async';
 import { DepGraph } from 'dependency-graph';
 
-import * as directory from './../util/directory';
-
-import { inject } from 'maniajs-plugin';
-
-import * as configuration from './../util/configuration';
-
 /**
  * Plugin class.
  * @class PluginManager
