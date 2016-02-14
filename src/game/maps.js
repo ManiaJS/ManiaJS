@@ -77,10 +77,6 @@ export default class {
                   return callback(err);
                 });
               }
-
-              // add to list.
-              this.list[data.UId] = map;
-              return callback();
             }
           }).catch((err) => {
             return callback(err);
