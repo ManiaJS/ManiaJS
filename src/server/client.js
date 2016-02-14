@@ -68,8 +68,8 @@ export default class extends EventEmitter {
             let finish = {PlayerUid: params[0], Login: params[1], TimeOrScore: params[2]};
 
             if (finish.TimeOrScore > 0) {
-              let msg = "Player $i'" + finish.Login + "'$i drove " + times.getStringTime(finish.TimeOrScore);
-              self.gbx.query('ChatSendServerMessage', [msg])
+              //let msg = "Player $i'" + finish.Login + "'$i drove " + times.getStringTime(finish.TimeOrScore);
+              //self.gbx.query('ChatSendServerMessage', [msg])
             }
           });
         }
