@@ -41,31 +41,34 @@ export default class {
    * @returns {Promise}
    */
   loadPlugins() {
-    let self = this;
     this.app.log.debug("Loading plugins from configuration...");
 
     return new Promise((resolve, reject) => {
       // Get all plugin info's first
-      let pluginIds = Object.keys(self.app.config.plugins) || [];
+      let pluginIds = Object.keys(this.app.config.plugins) || [];
 
       // Init plugins.
       pluginIds.forEach((pluginId) => {
-        self.app.log.debug("Loading plugin '" + pluginId + "'...");
+        this.app.log.debug("Loading plugin '" + pluginId + "'...");
 
         // Import plugin.
         try {
+          // Plugin config.
+          let config = this.app.config.plugins[pluginId];
+
+          // Load plugin (require).
           var PluginClass = require(pluginId).default;
 
           // Save plugin details to plugin array.
-          self.plugins[pluginId] = new PluginClass();
+          this.plugins[pluginId] = new PluginClass();
 
           // Inject App.
-          self.plugins[pluginId].inject(self.app);
+          this.plugins[pluginId].inject(this.app, config);
 
           // Register node
-          self.graph.addNode(pluginId);
+          this.graph.addNode(pluginId);
         } catch  (err) {
-          self.app.log.error("Error with loading plugin '%s'.", pluginId, err.stack);
+          return reject(err);
         }
       });
 
