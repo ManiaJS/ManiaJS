@@ -11,7 +11,8 @@ export default function (sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'core__player'
+    tableName: 'core__player',
+    charset: 'utf8'
   });
 
   return Player;
