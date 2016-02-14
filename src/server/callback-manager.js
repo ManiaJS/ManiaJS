@@ -28,6 +28,7 @@ export default class {
    * @param {object} options Provide gbx and event details.
    * @param {string} options.callback Callback name that will be fired by the GBX Client.
    * @param {string} options.event Converting into event name.
+   * @param {string} options.type Type of callback, could be 'native' or 'scripted'. Native is default.
    * @param {object} options.parameters Parameters mapping.
    * @param {function} options.parse Custom parse mapping function.
    * @param {function} options.pass Custom pass function. Optional! Give false as return to ignore the callback!
@@ -38,9 +39,12 @@ export default class {
 
     let callbackName = options.callback;
     let eventName = options.event;
-    let parameters = options.parameters;
+    let parameters = options.parameters || {};
+
     let parse = options.parse;
     let pass = options.pass;
+
+    let type = options.type || 'native';
     let game = options.game || []; // Default all games
 
     // Register callback, make it an event.
