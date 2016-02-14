@@ -8,6 +8,7 @@
 import * as util from 'util';
 
 import ManiaPlanetCalls from './callbacks/maniaplanet-callbacks';
+import TrackManiaCalls from './callbacks/trackmania-callbacks';
 
 /**
  * CallbackManager
@@ -111,6 +112,7 @@ export default class {
   loadSet(name) {
     switch(name) {
       case 'maniaplanet': ManiaPlanetCalls(this); break;
+      case 'trackmania' : TrackManiaCalls(this);  break;
 
       default: return;
     }
