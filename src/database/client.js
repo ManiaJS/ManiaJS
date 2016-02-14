@@ -39,9 +39,13 @@ export default class Client {
       });
     }
 
-    if (app.config.debug) {
+    if (app.config.db.debug) {
       Object.assign(options, {
         logging: (input) => {app.log.debug(input);}
+      });
+    } else {
+      Object.assign(options, {
+        logging: false
       });
     }
 

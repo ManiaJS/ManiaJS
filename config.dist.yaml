@@ -17,6 +17,7 @@ config:
     # To recompile run 'npm install sqlite3' in root
 
     # Global Non-driver-dependent settings:
+    debug: false
     database: 'maniajs'
     authentication:
       username: 'root'
