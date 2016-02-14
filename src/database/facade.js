@@ -52,7 +52,7 @@ export default class extends Facade {
   defineModels() {
     return new Promise((resolve, reject) => {
       // First the core models.
-
+      this.client.loadCoreModels();
 
       // Plugin models.
       this.app.pluginFacade.manager.loadModels(this.client.sequelize);

@@ -37,6 +37,7 @@ export default class {
      */
     this.server        = null;
     this.plugins       = null;
+    this.models        = {  };
   }
 
   /**
