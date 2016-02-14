@@ -24,7 +24,7 @@ export default function (manager) {
   });
 
   manager.register({
-    callback: 'TrackMania.PlayerFinishCheckpoint',
+    callback: 'TrackMania.PlayerFinish',
     event: 'trackmania.player.finish',
     parameters: {
       playerId: 0,
