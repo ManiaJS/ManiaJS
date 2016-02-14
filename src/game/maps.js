@@ -64,7 +64,7 @@ export default class {
                 this.list[data.UId] = map;
 
                 return callback();
-              })
+              });
             } else {
               // Already in there.
               // Name update?
@@ -76,6 +76,9 @@ export default class {
                 }).catch((err) => {
                   return callback(err);
                 });
+              } else {
+                this.list[data.UId] = map;
+                return resolve();
               }
             }
           }).catch((err) => {
