@@ -78,7 +78,7 @@ export default class {
                 });
               } else {
                 this.list[data.UId] = map;
-                return resolve();
+                return callback();
               }
             }
           }).catch((err) => {
