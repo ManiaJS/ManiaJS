@@ -137,7 +137,9 @@ export default class extends EventEmitter {
 
       this.callback.loadSet('maniaplanet');
 
-
+      if (1==1) { // TODO: Check if trackmania
+        this.callback.loadSet('trackmania');
+      }
 
 
       // Test
