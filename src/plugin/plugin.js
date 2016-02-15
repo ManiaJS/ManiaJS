@@ -66,6 +66,9 @@ export default class {
         }
       });
 
+      // Set plugins to app plugins.
+      this.app.plugins = this.plugins;
+
       return resolve();
     });
   }

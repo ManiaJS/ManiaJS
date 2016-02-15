@@ -31,7 +31,7 @@ export default class {
    * @param {string} options.source Source of message, could be 'player', 'server' or 'global' (default)
    * @param {string} options.destination Destination, false for all, string for login (default false).
    *
-   * @return {self}
+   * @return {Send}
    */
   chat(text, options) {
     options = options || {};
@@ -63,6 +63,21 @@ export default class {
     return this;
   }
 
+
+  /**
+   * Custom Query (maniaplanet query).
+   * @param {string} query query string.
+   * @param {object} params array of parameters.
+   * @return {Send}
+   */
+  custom(query, params) {
+    params = params || [];
+    this.query = {
+      query: query,
+      params: params
+    };
+    return this;
+  }
 
   /**
    * Execute builded query.
