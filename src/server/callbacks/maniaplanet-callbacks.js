@@ -83,7 +83,7 @@ export default function (manager) {
       };
     },
     flow: (app, params) => {
-      return app.gameFacade.players.update(params.login, params.nickName, params.playerId);
+      return app.gameFacade.players.update(params.login, params.nickName, params);
     }
   });
 

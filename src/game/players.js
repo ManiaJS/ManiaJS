@@ -34,14 +34,31 @@ export default class {
         // Loop and fetch players.
         async.eachSeries(players, (player, callback) => {
           if (player.PlayerId === 0) {
-            // Skip, its the server. But give to the server.
-            this.app.serverFacade.client.login = player.Login;
-
             return callback();
           }
 
+          let isSpectator =       player.SpectatorStatus           % 10;
+          let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
+          let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
+          let autoTarget =       (player.SpectatorStatus / 1000)   % 10;
+          let targetId =         (player.SpectatorStatus / 10000)      ;
+          let info = {
+            login: player.Login,
+            nickName: player.NickName,
+            playerId: player.PlayerId,
+            teamId: player.TeamId,
+            spectatorStatus: player.SpectatorStatus,
+            flags: player.Flags,
+
+            isSpectator: isSpectator,
+            isTempSpectator: isTempSpectator,
+            isPureSpectator: isPureSpectator,
+            autoTarget: autoTarget,
+            targetId: targetId
+          };
+
           // Fetch from database
-          this.update(player.Login, player.NickName)
+          this.update(player.Login, player.NickName, info)
             .then(() => {
               callback();
             })
@@ -56,6 +73,26 @@ export default class {
         });
       });
     });
+  }
+
+  /**
+   * Count players (non-spectators).
+   * @returns {int}
+   */
+  countPlayers() {
+    return this.list.filter((value) => {
+      return value.hasOwnProperty('info') && ! value.info.isSpectator;
+    }).length;
+  }
+
+  /**
+   * Count players (non-spectators).
+   * @returns {int}
+   */
+  countSpectators() {
+    return this.list.filter((value) => {
+      return value.hasOwnProperty('info') && value.info.isSpectator;
+    }).length;
   }
 
 
@@ -74,9 +111,12 @@ export default class {
    *
    * @param login
    * @param nickname
+   * @param info
    * @returns {Promise}
    */
-  update(login, nickname) {
+  update(login, nickname, info) {
+    info = info || {};
+
     let Player = this.app.models.Player;
 
     return new Promise((resolve, reject) => {
@@ -93,6 +133,7 @@ export default class {
               login: login,
               nickname: nickname
             }).then((player) => {
+              player.info = info;
               this.list[login] = player;
 
               return resolve();
@@ -102,6 +143,7 @@ export default class {
           }
 
           if (player.nickname === nickname) {
+            player.info = info;
             this.list[login] = player;
             return resolve();
           }
@@ -110,6 +152,7 @@ export default class {
           player.set('nickname', nickname);
           player.save()
             .then((player) => {
+              player.info = info;
               this.list[login] = player;
               resolve();
             })
@@ -120,6 +163,9 @@ export default class {
         }).catch((err) => {
           reject(err);
         });
+      } else {
+        // Update info only.
+        this.list[login].info = info;
       }
     });
   }
