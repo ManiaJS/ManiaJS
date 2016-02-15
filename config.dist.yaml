@@ -54,3 +54,11 @@ config:
 plugins:
   maniajs-plugin-sample:
     test: true
+
+  maniajs-localrecords:
+
+  maniajs-welcome:
+
+#  maniajs-dedimania:
+#    login: ****
+#    dedimaniacode: &****
