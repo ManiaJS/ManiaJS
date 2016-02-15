@@ -42,12 +42,12 @@ export default class {
       if (! destination) {
         this.query = {
           query: 'ChatSendServerMessage',
-          params: [text]
+          params: [('»» ' + text)]
         }
       } else {
         this.query = {
           query: 'ChatSendServerMessageToLogin',
-          params: [text, destination]
+          params: [('» ' + text), destination]
         }
       }
     }
