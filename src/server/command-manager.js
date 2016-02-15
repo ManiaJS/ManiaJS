@@ -86,11 +86,6 @@ export default class extends EventEmitter {
     // Level
     this.commands[command] = level;
 
-    console.log(command);
-    console.log(level);
-    console.log(callback);
-    console.log(single);
-
     // Register callback.
     if (single) {
       super.once(command, (player, params) => {

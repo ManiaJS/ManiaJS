@@ -83,7 +83,10 @@ export default class {
       .then(() => { return this.databaseFacade.run(); })
       .then(() => { return this.gameFacade.run();     })
       .then(() => { return this.pluginFacade.run();   })
-      .then(() => { this.log.debug("Ready...");       })
+      .then(() => {
+        this.log.debug('Ready...');
+        this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller ready!').exec();
+      })
       .catch((err) => {
         console.error(err.stack);
       });

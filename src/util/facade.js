@@ -16,7 +16,6 @@ export default class extends Facade {
     super(app);
 
     this.times = times;
-    console.log(times);
   }
 
   /**
