@@ -3,7 +3,7 @@
  */
 'use strict';
 
-import { basedir, normalize } from 'path';
+import { normalize } from 'path';
 import * as glob from 'glob';
 
 import Sequelize from 'sequelize';
@@ -35,7 +35,7 @@ export default class Client {
     if (config.dialect === 'sqlite') {
       Object.assign(options, {
         dialect: 'sqlite',
-        storage: basedir(__dirname + "/../../" + config.sqlite.storage)
+        storage: normalize(__dirname + "/../../" + config.sqlite.storage)
       });
     }
 

@@ -6,4 +6,4 @@
  * @version 0.0.0
  */
 require('babel-register')({ignore:false}); // Require hook, babel
-require('./lib/maniajs');                  // Start ManiaJS
+require('./src/maniajs');                  // Start ManiaJS

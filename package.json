@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./maniajs.js",
+    "start": "npm run build && node ./maniajs.js",
+    "dev": "node ./maniajs-dev.js",
     "build": "babel src -d lib"
   },
   "engines": {
@@ -25,8 +26,8 @@
     "glob": "^7.0.0",
     "joi": "^7.3.0",
     "js-yaml": "^3.5.2",
-    "maniajs-plugin": "ManiaJS/maniajs-plugin",
-    "maniajs-plugin-sample": "ManiaJS/maniajs-sample",
+    "maniajs-localrecords": "ManiaJS/maniajs-localrecords",
+    "maniajs-plugin-sample": "0.*",
     "maniajs-welcome": "ManiaJS/maniajs-welcome",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",
