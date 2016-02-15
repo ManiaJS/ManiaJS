@@ -270,7 +270,7 @@ export default class {
       this.list[login] = player;
 
       // Maybe this player is the masteradmin? (see config).
-      if (this.app.config.hasOwnProperty('masteradmins')) {
+      if (this.app.config.hasOwnProperty('masteradmins') && this.app.config.masteradmins) {
         if (this.app.config.masteradmins.filter((adminLogin => adminLogin === login)).length > 0) {
           // Yes! Make the player admin!
           return this.setLevel(login, 3);

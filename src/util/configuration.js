@@ -25,6 +25,7 @@ var configSchema = {
         password: Joi.string().required()
       }
     },
+    masteradmins: Joi.array().items(Joi.string()),
     db: {
       dialect: Joi.array().items(Joi.string().valid('mysql', 'mariadb', 'sqlite')),
       database: Joi.string(),
