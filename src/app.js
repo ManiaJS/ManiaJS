@@ -8,6 +8,8 @@ import PluginFacade    from './plugin/facade';
 import GameFacade      from './game/facade';
 import UtilFacade      from './util/facade';
 
+import Package         from './../package.json';
+
 import { config, raw as rawConfig } from './util/configuration';
 
 
@@ -20,6 +22,7 @@ export default class {
 
   constructor (log) {
     this.log = log;
+    this.version = Package.version;
 
     this.config =         config;
     this.config.plugins = rawConfig.plugins; // Map plugin into config.

@@ -28,6 +28,21 @@ export default class extends EventEmitter {
     this.callback = null;
 
     this.server = app.config.server;
+
+    // Server properties
+    this.titleId = null;
+    this.version = null;
+    this.build = null;
+    this.apiVersion = null;
+
+    this.login = null;
+    this.name = null;
+    this.comment = null;
+    this.path = null;
+    this.options = {}; // Will be the result of GetServerOptions() call to the mp server.
+    this.ip = null;
+    this.ports = {};
+    this.playerId = null;
   }
 
   /**
@@ -120,6 +135,67 @@ export default class extends EventEmitter {
           return resolve(res);
         });
       });
+    }).then(() => {
+
+      // Get server information
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetVersion', [], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          this.version = res.Version;
+          this.build = res.Build;
+          this.apiVersion = res.ApiVersion;
+
+          return resolve();
+        });
+      });
+
+    }).then(() => {
+
+      // Get server player infos
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetSystemInfo', [], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          this.ip = res.PublishedIp;
+          this.ports = {
+            port: res.Port,
+            P2PPort: res.P2PPort
+          };
+          this.titleId = res.TitleId;
+          this.login = res.ServerLogin;
+          this.playerId = res.ServerPlayerId;
+
+          return resolve();
+        });
+      });
+
+    }).then(() => {
+
+      // Get detailed server player infos.
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetDetailedPlayerInfo', [this.login], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          this.path = res.Path;
+
+          return resolve();
+        });
+      });
+
+    }).then(() => {
+
+      // Get server options
+      return this.getServerOptions().then((options) => {
+        this.name = options.Name;
+        this.comment = options.Comment;
+        this.options = options;
+      });
     });
   }
 
@@ -148,4 +224,40 @@ export default class extends EventEmitter {
       return resolve();
     });
   }
+
+  /**
+   * Update information about the server.
+   *
+   * @return {Promise}
+   */
+  updateInfos() {
+    return new Promise((resolve, reject) => {
+      // TODO: Update server name etc.
+      return resolve();
+    });
+  }
+
+
+  /**
+   * Get Options of server.
+   *
+   * @returns {Promise}
+   */
+  getServerOptions() {
+    return new Promise((resolve, reject) => {
+      this.gbx.query('GetServerOptions', [], (err, res) => {
+        if (err) {
+          return reject(err);
+        }
+        // Update properties.
+        this.name = res.Name;
+        this.comment = res.Comment;
+        this.options = res;
+
+        // Resolve
+        return resolve(res);
+      });
+    });
+  }
+
 }
