@@ -34,7 +34,9 @@ export default class {
         // Loop and fetch players.
         async.eachSeries(players, (player, callback) => {
           if (player.PlayerId === 0) {
-            // Skip, its the server.
+            // Skip, its the server. But give to the server.
+            this.app.serverFacade.client.login = player.Login;
+
             return callback();
           }
 

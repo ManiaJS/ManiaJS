@@ -28,6 +28,13 @@ export default class extends EventEmitter {
     this.callback = null;
 
     this.server = app.config.server;
+
+    // Server properties
+    this.titleId = null;
+    this.version = null;
+    this.build = null;
+    this.apiVersion = null;
+    this.login = null;
   }
 
   /**
@@ -120,6 +127,24 @@ export default class extends EventEmitter {
           return resolve(res);
         });
       });
+    }).then(() => {
+
+      // Get server information
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetVersion', [], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          this.titleId = res.TitleId;
+          this.version = res.Version;
+          this.build = res.Build;
+          this.apiVersion = res.ApiVersion;
+
+          return resolve();
+        });
+      });
+
     });
   }
 
