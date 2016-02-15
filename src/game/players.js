@@ -36,7 +36,6 @@ export default class {
           if (player.PlayerId === 0) {
             return callback();
           }
-
           let isSpectator =       player.SpectatorStatus           % 10;
           let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
           let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
@@ -95,6 +94,116 @@ export default class {
     }).length;
   }
 
+  /**
+   * Is Login Player?
+   *
+   * @param {string} login
+   * @returns {boolean}
+   */
+  isPlayer(login) {
+    return this.isLevel(login, 0);
+  }
+
+  /**
+   * Is Login Operator?
+   *
+   * @param {string} login
+   * @returns {boolean}
+   */
+  isOperator(login) {
+    return this.isLevel(login, 1);
+  }
+
+  /**
+   * Is Login Admin?
+   *
+   * @param {string} login
+   * @returns {boolean}
+   */
+  isAdmin(login) {
+    return this.isLevel(login, 2);
+  }
+
+  /**
+   * Is Login MasterAdmin?
+   *
+   * @param {string} login
+   * @returns {boolean}
+   */
+  isMasterAdmin(login) {
+    return this.isLevel(login, 3);
+  }
+
+  /**
+   * Is Login Minimum Level?
+   *
+   * @param {string} login
+   * @param {number} level Mininum level, 0, 1, 2 or 3.
+   * @returns {boolean}
+   */
+  isMinimal(login, level) {
+    return this.isLevel(login, level, true);
+  }
+
+  /**
+   * Is Login Level.
+   *
+   * @private
+   * @param login
+   * @param level
+   * @param minimum
+   * @returns {boolean}
+   */
+  isLevel(login, level, minimum) {
+    minimum = minimum || false;
+    if (this.list.hasOwnProperty(login)) {
+      if (minimum) {
+        return (this.list[login].level >= level);
+      }
+      return (this.list[login].level === level);
+    }
+    return false;
+  }
+
+  /**
+   * Set Player Level.
+   *
+   * @param {string} login
+   * @param {number} level
+   * @returns {Promise}
+   */
+  setLevel(login, level) {
+    if (this.list.hasOwnProperty(login)) {
+      this.list[login].set('level', level);
+      return this.list[login].save();
+    }
+    return Promise.reject(new Error('Player not in list!'));
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * GAME FLOW FUNCTIONS
+   */
+
+
 
   /**
    * Call when player connect event is given.
@@ -132,40 +241,40 @@ export default class {
             return Player.create({
               login: login,
               nickname: nickname
-            }).then((player) => {
-              player.info = info;
-              this.list[login] = player;
-
-              return resolve();
-            }).catch((err) => {
-              return reject(err);
             });
           }
 
           if (player.nickname === nickname) {
-            player.info = info;
-            this.list[login] = player;
-            return resolve();
+            return resolve(player);
           }
 
           // Update
           player.set('nickname', nickname);
-          player.save()
-            .then((player) => {
-              player.info = info;
-              this.list[login] = player;
-              resolve();
-            })
-            .catch((err) => {
-              reject(err);
-            });
-
+          return player.save();
         }).catch((err) => {
-          reject(err);
+          return reject(err);
         });
       } else {
         // Update info only.
         this.list[login].info = info;
+        return resolve(false);
+      }
+    }).then((player) => {
+      if (! player) {
+        // No update!
+        return;
+      }
+
+      // Update needed, save to local list.
+      player.info = info;
+      this.list[login] = player;
+
+      // Maybe this player is the masteradmin? (see config).
+      if (this.app.config.hasOwnProperty('masteradmins')) {
+        if (this.app.config.masteradmins.filter((adminLogin => adminLogin === login)).length > 0) {
+          // Yes! Make the player admin!
+          return this.setLevel(login, 3);
+        }
       }
     });
   }

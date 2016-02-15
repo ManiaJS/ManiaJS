@@ -9,6 +9,10 @@ config:
     authentication:
       username: 'SuperAdmin'
       password: 'SuperAdmin'
+
+  masteradmins:
+  - login
+
   db:
     dialect: 'mysql' # Can be mysql, mariadb, sqlite, mssql, postgres.
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
