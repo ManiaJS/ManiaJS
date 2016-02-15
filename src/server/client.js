@@ -6,6 +6,7 @@ import Gbx from 'gbxremote';
 import { EventEmitter } from 'events';
 
 import CallbackManager from './callback-manager';
+import CommandManager from './command-manager';
 import Send from './send';
 
 /**
@@ -22,10 +23,15 @@ export default class extends EventEmitter {
   constructor(app) {
     super();
 
+    this.setMaxListeners(0);
+
     this.app = app;
     this.gbx = null;
     /** @type {CallbackManager} */
     this.callback = null;
+
+    /** @type {CommandManager} */
+    this.command = null;
 
     this.server = app.config.server;
 
@@ -208,18 +214,13 @@ export default class extends EventEmitter {
     this.app.log.debug('Registering callbacks...');
     return new Promise((resolve) => {
       this.callback = new CallbackManager(this.app, this);
+      this.command = new CommandManager(this.app, this);
 
       this.callback.loadSet('maniaplanet');
 
       if (1==1) { // TODO: Check if trackmania
         this.callback.loadSet('trackmania');
       }
-
-
-      // Test
-      this.on('player.chat', (data) => {
-        console.log(data);
-      });
 
       return resolve();
     });
