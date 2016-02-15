@@ -35,6 +35,11 @@ export default class extends EventEmitter {
     this.build = null;
     this.apiVersion = null;
     this.login = null;
+    this.name = null;
+    this.path = null;
+    this.ip = null;
+    this.ports = {};
+    this.playerId = null;
   }
 
   /**
@@ -135,11 +140,47 @@ export default class extends EventEmitter {
           if (err) {
             return reject(err);
           }
-
-          this.titleId = res.TitleId;
           this.version = res.Version;
           this.build = res.Build;
           this.apiVersion = res.ApiVersion;
+
+          return resolve();
+        });
+      });
+
+    }).then(() => {
+
+      // Get server player infos
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetSystemInfo', [], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          this.ip = res.PublishedIp;
+          this.ports = {
+            port: res.Port,
+            P2PPort: res.P2PPort
+          };
+          this.titleId = res.TitleId;
+          this.login = res.ServerLogin;
+          this.playerId = res.ServerPlayerId;
+
+          return resolve();
+        });
+      });
+
+    }).then(() => {
+
+      // Get detailed server player infos.
+      return new Promise( (resolve, reject) => {
+        this.gbx.query('GetDetailedPlayerInfo', [this.login], (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          this.name = res.NickName;
+          this.path = res.Path;
 
           return resolve();
         });
