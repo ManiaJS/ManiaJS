@@ -27,6 +27,7 @@
     "js-yaml": "^3.5.2",
     "maniajs-plugin": "ManiaJS/maniajs-plugin",
     "maniajs-plugin-sample": "ManiaJS/maniajs-sample",
+    "maniajs-localrecords": "ManiaJS/maniajs-localrecords",
     "maniajs-welcome": "ManiaJS/maniajs-welcome",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",
