@@ -8,7 +8,12 @@ export default function (sequelize, DataTypes) {
     },
     nickname: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
+    },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     tableName: 'core__player',
