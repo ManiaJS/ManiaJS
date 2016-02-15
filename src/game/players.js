@@ -241,40 +241,40 @@ export default class {
             return Player.create({
               login: login,
               nickname: nickname
-            }).then((player) => {
-              player.info = info;
-              this.list[login] = player;
-
-              return resolve();
-            }).catch((err) => {
-              return reject(err);
             });
           }
 
           if (player.nickname === nickname) {
-            player.info = info;
-            this.list[login] = player;
-            return resolve();
+            return resolve(player);
           }
 
           // Update
           player.set('nickname', nickname);
-          player.save()
-            .then((player) => {
-              player.info = info;
-              this.list[login] = player;
-              resolve();
-            })
-            .catch((err) => {
-              reject(err);
-            });
-
+          return player.save();
         }).catch((err) => {
-          reject(err);
+          return reject(err);
         });
       } else {
         // Update info only.
         this.list[login].info = info;
+        return resolve(false);
+      }
+    }).then((player) => {
+      if (! player) {
+        // No update!
+        return;
+      }
+
+      // Update needed, save to local list.
+      player.info = info;
+      this.list[login] = player;
+
+      // Maybe this player is the masteradmin? (see config).
+      if (this.app.config.hasOwnProperty('masteradmins')) {
+        if (this.app.config.masteradmins.filter((adminLogin => adminLogin === login)).length > 0) {
+          // Yes! Make the player admin!
+          return this.setLevel(login, 3);
+        }
       }
     });
   }
