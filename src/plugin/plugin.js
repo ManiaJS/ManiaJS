@@ -39,7 +39,8 @@ export default class {
 
     return new Promise((resolve, reject) => {
       // Get all plugin info's first
-      let pluginIds = Object.keys(this.app.config.plugins) || [];
+      let plugins = this.app.config.plugins && this.app.config.plugins !== null ? this.app.config.plugins : [];
+      let pluginIds = Object.keys(plugins);
 
       // Init plugins.
       pluginIds.forEach((pluginId) => {
