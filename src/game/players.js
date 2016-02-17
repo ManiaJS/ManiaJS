@@ -29,41 +29,43 @@ export default class {
 
   boot() {
     // Get all current players, controller just boot.
-    return this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0, 1]).then((players) => {
-      async.eachSeries(players, (player, callback) => {
-        let isSpectator =       player.SpectatorStatus           % 10;
-        let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
-        let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
-        let autoTarget =       (player.SpectatorStatus / 1000)   % 10;
-        let targetId =         (player.SpectatorStatus / 10000)      ;
-        let info = {
-          login: player.Login,
-          nickName: player.NickName,
-          playerId: player.PlayerId,
-          teamId: player.TeamId,
-          spectatorStatus: player.SpectatorStatus,
-          flags: player.Flags,
+    return new Promise((resolve, reject) => {
+      this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0, 1]).then((players) => {
+        async.eachSeries(players, (player, callback) => {
+          let isSpectator =       player.SpectatorStatus           % 10;
+          let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
+          let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
+          let autoTarget =       (player.SpectatorStatus / 1000)   % 10;
+          let targetId =         (player.SpectatorStatus / 10000)      ;
+          let info = {
+            login: player.Login,
+            nickName: player.NickName,
+            playerId: player.PlayerId,
+            teamId: player.TeamId,
+            spectatorStatus: player.SpectatorStatus,
+            flags: player.Flags,
 
-          isSpectator: isSpectator,
-          isTempSpectator: isTempSpectator,
-          isPureSpectator: isPureSpectator,
-          autoTarget: autoTarget,
-          targetId: targetId
-        };
+            isSpectator: isSpectator,
+            isTempSpectator: isTempSpectator,
+            isPureSpectator: isPureSpectator,
+            autoTarget: autoTarget,
+            targetId: targetId
+          };
 
-        // Fetch from database
-        this.update(player.Login, player.NickName, info)
-          .then(() => {
-            callback();
-          })
-          .catch((err) => {
-            callback(err);
-          });
-      }, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve();
+          // Fetch from database
+          this.update(player.Login, player.NickName, info)
+            .then(() => {
+              callback();
+            })
+            .catch((err) => {
+              callback(err);
+            });
+        }, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
+        });
       });
     });
   }
