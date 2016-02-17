@@ -22,54 +22,48 @@ export default class {
      * Key: login
      * Value: Player object
      *
-     * @type {{}}
+     * @type {object}
      */
     this.list = {};
   }
 
   boot() {
     // Get all current players, controller just boot.
-    return new Promise((resolve, reject) => {
-      this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0], (err, players) => {
-        // Loop and fetch players.
-        async.eachSeries(players, (player, callback) => {
-          if (player.PlayerId === 0) {
-            return callback();
-          }
-          let isSpectator =       player.SpectatorStatus           % 10;
-          let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
-          let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
-          let autoTarget =       (player.SpectatorStatus / 1000)   % 10;
-          let targetId =         (player.SpectatorStatus / 10000)      ;
-          let info = {
-            login: player.Login,
-            nickName: player.NickName,
-            playerId: player.PlayerId,
-            teamId: player.TeamId,
-            spectatorStatus: player.SpectatorStatus,
-            flags: player.Flags,
+    return this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0, 1]).then((players) => {
+      async.eachSeries(players, (player, callback) => {
+        let isSpectator =       player.SpectatorStatus           % 10;
+        let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
+        let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
+        let autoTarget =       (player.SpectatorStatus / 1000)   % 10;
+        let targetId =         (player.SpectatorStatus / 10000)      ;
+        let info = {
+          login: player.Login,
+          nickName: player.NickName,
+          playerId: player.PlayerId,
+          teamId: player.TeamId,
+          spectatorStatus: player.SpectatorStatus,
+          flags: player.Flags,
 
-            isSpectator: isSpectator,
-            isTempSpectator: isTempSpectator,
-            isPureSpectator: isPureSpectator,
-            autoTarget: autoTarget,
-            targetId: targetId
-          };
+          isSpectator: isSpectator,
+          isTempSpectator: isTempSpectator,
+          isPureSpectator: isPureSpectator,
+          autoTarget: autoTarget,
+          targetId: targetId
+        };
 
-          // Fetch from database
-          this.update(player.Login, player.NickName, info)
-            .then(() => {
-              callback();
-            })
-            .catch((err) => {
-              callback(err);
-            });
-        }, (err) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve();
-        });
+        // Fetch from database
+        this.update(player.Login, player.NickName, info)
+          .then(() => {
+            callback();
+          })
+          .catch((err) => {
+            callback(err);
+          });
+      }, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve();
       });
     });
   }
@@ -79,9 +73,16 @@ export default class {
    * @returns {int}
    */
   countPlayers() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && ! value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && ! one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**
@@ -89,9 +90,16 @@ export default class {
    * @returns {int}
    */
   countSpectators() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**
