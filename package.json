@@ -22,7 +22,7 @@
     "debug": "^2.2.0",
     "dependency-graph": "^0.4.1",
     "forever-monitor": "^1.7.0",
-    "gbxremote": "^0.1.4",
+    "gbxremote": "^0.2.0",
     "glob": "^7.0.0",
     "joi": "^7.3.0",
     "js-yaml": "^3.5.2",

@@ -59,15 +59,9 @@ export default class {
    */
   prepare() {
     return this.serverFacade.init()
-      .then(() => {
-        return this.databaseFacade.init();
-      })
-      .then(() => {
-        return this.pluginFacade.init();
-      })
-      .then(() => {
-        return this.gameFacade.init();
-      })
+      .then(() => { return this.databaseFacade.init(); })
+      .then(() => { return this.pluginFacade.init();   })
+      .then(() => { return this.gameFacade.init();     })
       .catch((err) => {
         this.log.fatal(err);
         process.exit(1);
@@ -88,7 +82,7 @@ export default class {
         this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller ready!').exec();
       })
       .catch((err) => {
-        console.error(err.stack);
+        this.log.error(err);
       });
   }
 }
