@@ -56,6 +56,8 @@ plugins:
     test: true
 
   maniajs-localrecords:
+    recordlimit: 100
+    displaylimit: 50
 
   maniajs-welcome:
 
