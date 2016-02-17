@@ -5,16 +5,24 @@
 
 import Facade from './../lib/base-facade';
 
+import UIManager from './ui-manager';
+import InterfaceBuilder from './interface';
+
 
 /**
  * UI Facade
  *
  * @class UIFacade
+ *
+ * @property {{}}           interfaces      Interfaces, indexed by player login.
+ * @property {UIManager|{}} manager         UI Manager
  */
 export default class extends Facade {
 
   constructor(app) {
     super(app);
+
+    this.manager = new UIManager(app);
   }
 
   /**
@@ -38,12 +46,19 @@ export default class extends Facade {
   /**
    * Get a builder instance.
    *
-   * @todo: Add support for plugin building.
-   * @todo: Add support for core building.
-   * @todo: Add support for custom building.
+   * @param {{}} context Give the plugin class, or app class (for core).
    */
-  build() {
+  build(context) {
+    // Determinate if running from plugin.
+    var plugin = false;
+    var baseDirectory = __dirname + '/../view/';
 
+    if (context.hasOwnProperty('directory')) {
+      plugin = context;
+      baseDirectory = context.directory + '/view/';
+    }
+
+    return new InterfaceBuilder(this.app, baseDirectory, plugin);
   }
 
 }
