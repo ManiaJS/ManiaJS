@@ -88,8 +88,8 @@ export default class {
   run() {
     return this.serverFacade.run()
       .then(() => { return this.databaseFacade.run(); })
-      .then(() => { return this.uiFacade.run();       })
       .then(() => { return this.gameFacade.run();     })
+      .then(() => { return this.uiFacade.run();       })
       .then(() => { return this.pluginFacade.run();   })
       .then(() => {
         this.log.debug('Ready...');

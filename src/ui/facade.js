@@ -39,9 +39,13 @@ export default class extends Facade {
    * @return {Promise}
    */
   run() {
+    // Starting, will start the loop for checking and updating UI.
+    this.manager.start();
+
+    // Add callback to disconnect action.
+    this.app.server.on('player.disconnect', (player) => this.manager.disconnect(player));
     return Promise.resolve();
   }
-
 
   /**
    * Get a builder instance.
@@ -58,7 +62,7 @@ export default class extends Facade {
       baseDirectory = context.directory + '/view/';
     }
 
-    return new InterfaceBuilder(this.app, baseDirectory, plugin);
+    return new InterfaceBuilder(this.app, this, baseDirectory, plugin);
   }
 
 }

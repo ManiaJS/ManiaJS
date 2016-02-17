@@ -16,6 +16,7 @@ import * as Handlebars from 'handlebars';
  * @property {{}|null} plugin Plugin Context, null if not running in plugin!
  * @property {string}  templatePath Template Base Path.
  *
+ * @property {[]|boolean} players Player Logins, false for global (all players).
  * @property {{}|null} template Handlebars Template Instance.
  * @property {{}} data Handlebars Data.
  */
@@ -24,18 +25,21 @@ export default class {
   /**
    * Construct the Interface Builder.
    * @param {App} app App Context.
-   * @param {UIFacade} ui UI Facade.
+   * @param {UIFacade} facade UI Facade.
    * @param {string} templatePath Template Base Path.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    */
-  constructor (app, ui, templatePath, plugin) {
+  constructor (app, facade, templatePath, plugin) {
     plugin = plugin || false;
 
+    this.facade = facade;
     this.app = app;
     this.plugin = plugin;
     this.base = path.normalize(templatePath);
 
+    this.players = false;
     this.template = null;
+    this.templateName = null;
     this.data = {};
   }
 
@@ -56,10 +60,11 @@ export default class {
     if (data) {
       this.data = data;
     }
+    this.templateName = templateName;
 
     return new Promise((resolve, reject) => {
       fsp.readFile(this.templatePath, 'utf8').then((source) => {
-        this.template = Handlebars.compile(source, {noEscape: true});
+        this.template = Handlebars.compile(source, { noEscape: true });
         return resolve(this);
       }).catch((err) => {
         return reject(err);
@@ -79,20 +84,35 @@ export default class {
   }
 
   /**
+   * Send Player Logins. Empty players or parameters for all players.
+   *
+   * @param {[]|boolean} [players] Give false or ignore for all players.
+   *
+   * @returns {InterfaceBuilder}
+   */
+  players (players) {
+    players = players || false;
+    players = Array.isArray(players) ? players : false;
+    this.players = players;
+    return this;
+  }
+
+  /**
    * Send the data to the client. (Or update when already send to the client)
    * This will trigger a recompile of all the parts for sending, will also trigger a update asap!
    *
    * @param {{}} [data] Provide (extra) data.
-   * @param {[]} [players] Player logins to send UI to, empty or false for all.
+   *
+   * @returns {InterfaceBuilder}
    */
-  update (players, data) {
-    players = players || false;
-    players = Array.isArray(players) ? players : [];
-
+  update (data) {
     if (data) {
       this.data = Object.assign(this.data, data);
     }
 
+    // Add to the manager, the manager will make sure the ui is being created or updated the right way!.
+    this.facade.manager.add(this);
 
+    return this;
   }
 }
