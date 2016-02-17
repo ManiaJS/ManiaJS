@@ -24,6 +24,7 @@
     "forever-monitor": "^1.7.0",
     "gbxremote": "^0.2.0",
     "glob": "^7.0.0",
+    "handlebars": "^4.0.5",
     "joi": "^8.0.1",
     "js-yaml": "^3.5.2",
     "maniajs-plugin": "0.*",
