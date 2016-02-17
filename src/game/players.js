@@ -22,7 +22,7 @@ export default class {
      * Key: login
      * Value: Player object
      *
-     * @type {{}}
+     * @type {object}
      */
     this.list = {};
   }
@@ -79,9 +79,16 @@ export default class {
    * @returns {int}
    */
   countPlayers() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && ! value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && ! one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**
@@ -89,9 +96,16 @@ export default class {
    * @returns {int}
    */
   countSpectators() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**
