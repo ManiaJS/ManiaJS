@@ -82,7 +82,7 @@ export default class {
    */
   executeUpdate () {
     return new Promise((resolve, reject) => {
-      var head = '<?xml version="1.0" encoding="utf-8" standalone="yes"><manialink version="2">';
+      var head = '<manialink version="2" id="sample">';
 
       var body = '<quad posn="117 72 0" sizen="41 29" bgcolor="FFFA" style="Bgs1" substyle="BgCardBuddy"/>';
       var bodyPlayers = {}; // Player indexed body.
@@ -119,6 +119,12 @@ export default class {
         // TODO
 
       }
+
+      this.app.server.send().custom('SendDisplayManialinkPage', [head + body + footer, 0, false]).exec().then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.error(err.stack);
+      });
 
 
     });
