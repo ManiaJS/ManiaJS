@@ -11,7 +11,6 @@ import * as hash from 'object-hash';
  * @property {App} app
  *
  * @property {Map} interfaces  Player Specifics Interfaces.
- * @property {boolean} update  Will send UI updates to clients.
  */
 export default class {
 
@@ -19,8 +18,6 @@ export default class {
     this.app = app;
 
     this.interfaces = new Map();
-
-    this.update = false;
 
     // Update Interval
     this.interval = null;
@@ -30,7 +27,7 @@ export default class {
    * Execute when server is started. (run mode).
    */
   start () {
-    this.interval = setInterval(() => {
+    /*this.interval = setInterval(() => {
       if (this.update) {
         this.update = false;
         this.executeUpdate();
@@ -38,6 +35,7 @@ export default class {
     }, 2000);
 
     this.executeUpdate();
+    */
   }
 
   /**
@@ -45,41 +43,84 @@ export default class {
    * @param {{}} player
    */
   disconnect (player) {
-    if (this.interfaces.hasOwnProperty(player.login)) {
+    /*if (this.interfaces.hasOwnProperty(player.login)) {
       delete this.interfaces[player.login];
-    }
+    }*/
   }
+
 
   /**
-   * Add UI to manager.
+   * Update Interface.
    *
-   * @param {InterfaceBuilder|{}} ui UI Builder instance.
+   * @param {InterfaceBuilder} ui
    */
-  add (ui) {
-    // Get hash of specific content. (but not the data, as that could be changed).
-    let objectHash = hash(ui, {
-      base: ui.base,
-      players: ui.players,
-      template: ui.templateName
-    });
-
-    // In Array check
-    if (this.interfaces.has(objectHash)) {
-      // Already have the interface. Replace it, it will be updated!
-      this.interfaces.set(objectHash, ui);
-      this.update = true;
-
-      return true;
+  update (ui) {
+    if (! this.interfaces.has(ui.id)) {
+      this.interfaces.set(ui.id, ui);
     }
 
-    // Add to the array.
-    this.interfaces.set(objectHash, ui);
-    this.update = true;
+    // Update the UI ID!
+    this.sendInterface(ui);
   }
+
+
+  sendInterface (ui) {
+    return new Promise((resolve, reject) => {
+      var data    = {}; // Holds all global data.
+      var players = []; // Holds login.
+
+      var send    = '';
+
+
+      // Global Data
+      data = Object.assign(data, ui.globalData);
+
+      // Player specific, or global?
+      if (Object.keys(ui.playerData).length > 0) {
+        // Per player data, only send to the players.
+        players = Object.keys(ui.playerData);
+      }
+
+      // Foreach or global?
+      if (players.length > 0) {
+        // Player specific.
+        players.forEach((login) => {
+          data =  Object.assign(data, ui.playerData[login]);
+
+          send =  '<manialink version="2" id="'+ui.id+'">';
+          send += ui.template(data);
+          send += '</manialink>';
+
+          this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, 0, false]).exec()
+            .then (()    => {
+              console.log("11111 AJAJAJAJAJAJJAJAJAJ");
+            })
+            .catch((err) => {
+              console.error(err.stack);
+            });
+        });
+      } else {
+        // Global
+        send =  '<manialink version="2" id="'+ui.id+'">';
+        send += ui.template(data);
+        send += '</manialink>';
+
+        this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec()
+          .then (()    => {
+            console.log("22222 AJAJAJAJAJAJJAJAJAJ");
+          })
+          .catch((err) => {
+            console.error(err.stack);
+          });
+      }
+    });
+  }
+
 
   /**
    * Execute Update, will force reload of the UI to the players.
    */
+  /*
   executeUpdate () {
     return new Promise((resolve, reject) => {
       var head = '<manialink version="2" id="sample">';
@@ -129,5 +170,6 @@ export default class {
 
     });
   }
+  */
 
 }

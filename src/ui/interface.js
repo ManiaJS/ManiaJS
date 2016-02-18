@@ -32,12 +32,18 @@ export default class {
   constructor (app, facade, viewFile, plugin) {
     plugin = plugin || false;
 
+    // ManiaLink ID.
+    this.id = (plugin ? plugin.name : 'core') + '__' + Math.floor((Math.random() * 10000) + 1);
+
     this.facade = facade;
     this.app = app;
     this.plugin = plugin;
     this.file = viewFile;
 
     this.template = null;
+
+    this.globalData = {};
+    this.playerData = {};
 
     // Add the interface to the compile stack.
     facade.stack.push(this);
@@ -61,17 +67,28 @@ export default class {
    * @returns {InterfaceBuilder}
    */
   global (data) {
-    this.data = Object.assign(this.data, data);
+    this.globalData = data;
     return this;
   }
 
+  /**
+   * Set Data for the template, for a specific player.
+   * @param {string} login Player Login.
+   * @param {{}} data Data. Indexed by Player Logins.
+   *
+   * @returns {InterfaceBuilder}
+   */
   player (login, data) {
-
+    this.playerData[login] = data;
+    return this;
   }
 
 
+  /**
+   * Update Interface. Will send update to the client(s).
+   */
   update () {
-
+    this.facade.manager.update(this);
   }
 
 }
