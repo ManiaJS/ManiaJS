@@ -3,6 +3,9 @@
  */
 'use strict';
 
+import * as path from 'path';
+import * as async from 'async';
+
 import Facade from './../lib/base-facade';
 
 import UIManager from './ui-manager';
@@ -23,6 +26,8 @@ export default class extends Facade {
     super(app);
 
     this.manager = new UIManager(app);
+
+    this.stack = [];
   }
 
   /**
@@ -44,15 +49,43 @@ export default class extends Facade {
 
     // Add callback to disconnect action.
     this.app.server.on('player.disconnect', (player) => this.manager.disconnect(player));
+
     return Promise.resolve();
+  }
+
+  /**
+   * Compile templates.
+   * @returns {Promise}
+   */
+  compile() {
+    // Compile the templates
+    this.app.log.debug('Compiling UI Templates...');
+
+    return new Promise((resolve, reject) => {
+      try {
+        async.each(this.stack, (ui, callback) => {
+          ui.compile()
+            .then(() => callback())
+            .catch((err) => callback(err));
+        }, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
+        });
+      } catch (err) {
+        return reject(err);
+      }
+    });
   }
 
   /**
    * Get a builder instance.
    *
    * @param {{}} context Give the plugin class, or app class (for core).
+   * @param {string} viewName View File Name.
    */
-  build(context) {
+  build(context, viewName) {
     // Determinate if running from plugin.
     var plugin = false;
     var baseDirectory = __dirname + '/../view/';
@@ -62,7 +95,11 @@ export default class extends Facade {
       baseDirectory = context.directory + '/view/';
     }
 
-    return new InterfaceBuilder(this.app, this, baseDirectory, plugin);
+    if (! viewName.endsWith('.hbs')) {
+      viewName += '.hbs';
+    }
+
+    return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin);
   }
 
 }

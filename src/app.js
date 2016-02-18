@@ -91,6 +91,7 @@ export default class {
       .then(() => { return this.gameFacade.run();     })
       .then(() => { return this.uiFacade.run();       })
       .then(() => { return this.pluginFacade.run();   })
+      .then(() => { return this.uiFacade.compile();   })
       .then(() => {
         this.log.debug('Ready...');
         this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller ready!').exec();

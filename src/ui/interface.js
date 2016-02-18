@@ -26,49 +26,31 @@ export default class {
    * Construct the Interface Builder.
    * @param {App} app App Context.
    * @param {UIFacade} facade UI Facade.
-   * @param {string} templatePath Template Base Path.
+   * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    */
-  constructor (app, facade, templatePath, plugin) {
+  constructor (app, facade, viewFile, plugin) {
     plugin = plugin || false;
 
     this.facade = facade;
     this.app = app;
     this.plugin = plugin;
-    this.base = path.normalize(templatePath);
+    this.file = viewFile;
 
-    this.players = false;
     this.template = null;
-    this.templateName = null;
-    this.data = {};
+
+    // Add the interface to the compile stack.
+    facade.stack.push(this);
   }
 
   /**
-   * Load in the template file.
-   *
-   * @param templateName
-   * @param {{}} [data] Optional data to pass (could be inserted later too)
+   * Compile the template view file.
    *
    * @returns {Promise}
    */
-  load (templateName, data) {
-    data = data || false;
-
-    if (! templateName.endsWith('.hbs')) {
-      templateName += '.hbs';
-    }
-    if (data) {
-      this.data = data;
-    }
-    this.templateName = templateName;
-
-    return new Promise((resolve, reject) => {
-      fsp.readFile(this.templatePath, 'utf8').then((source) => {
-        this.template = Handlebars.compile(source, { noEscape: true });
-        return resolve(this);
-      }).catch((err) => {
-        return reject(err);
-      });
+  compile () {
+    return fsp.readFile(this.file, 'utf-8').then((source) => {
+      this.template = Handlebars.compile (source);
     });
   }
 
@@ -78,41 +60,18 @@ export default class {
    *
    * @returns {InterfaceBuilder}
    */
-  data (data) {
+  global (data) {
     this.data = Object.assign(this.data, data);
     return this;
   }
 
-  /**
-   * Send Player Logins. Empty players or parameters for all players.
-   *
-   * @param {[]|boolean} [players] Give false or ignore for all players.
-   *
-   * @returns {InterfaceBuilder}
-   */
-  players (players) {
-    players = players || false;
-    players = Array.isArray(players) ? players : false;
-    this.players = players;
-    return this;
+  player (login, data) {
+
   }
 
-  /**
-   * Send the data to the client. (Or update when already send to the client)
-   * This will trigger a recompile of all the parts for sending, will also trigger a update asap!
-   *
-   * @param {{}} [data] Provide (extra) data.
-   *
-   * @returns {InterfaceBuilder}
-   */
-  update (data) {
-    if (data) {
-      this.data = Object.assign(this.data, data);
-    }
 
-    // Add to the manager, the manager will make sure the ui is being created or updated the right way!.
-    this.facade.manager.add(this);
+  update () {
 
-    return this;
   }
+
 }
