@@ -58,7 +58,8 @@ process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
 let app = new App(log);
 
 app.prepare()
-  .then(()=>app.run());
+  .then(()=>app.run())
+  .catch((err)=>log.fatal(err));
 
 
 /** Make sure we will resume executing process */
