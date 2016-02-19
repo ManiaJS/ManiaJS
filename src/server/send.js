@@ -79,17 +79,7 @@ export default class {
     if (! this.query.hasOwnProperty('query')) {
       return false;
     }
-    let self = this;
-
-    // Execute and return result (raw).
-    return new Promise((resolve, reject) => {
-      self.client.gbx.query(self.query.query, self.query.params, (err, res) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(res);
-      });
-    });
+    return this.client.gbx.query(this.query.query, this.query.params);
   }
 }
 

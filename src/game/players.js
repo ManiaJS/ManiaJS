@@ -22,7 +22,7 @@ export default class {
      * Key: login
      * Value: Player object
      *
-     * @type {{}}
+     * @type {object}
      */
     this.list = {};
   }
@@ -30,12 +30,8 @@ export default class {
   boot() {
     // Get all current players, controller just boot.
     return new Promise((resolve, reject) => {
-      this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0], (err, players) => {
-        // Loop and fetch players.
+      this.app.serverFacade.client.gbx.query('GetPlayerList', [-1, 0, 1]).then((players) => {
         async.eachSeries(players, (player, callback) => {
-          if (player.PlayerId === 0) {
-            return callback();
-          }
           let isSpectator =       player.SpectatorStatus           % 10;
           let isTempSpectator =  (player.SpectatorStatus / 10)     % 10;
           let isPureSpectator =  (player.SpectatorStatus / 100)    % 10;
@@ -79,9 +75,16 @@ export default class {
    * @returns {int}
    */
   countPlayers() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && ! value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && ! one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**
@@ -89,9 +92,16 @@ export default class {
    * @returns {int}
    */
   countSpectators() {
-    return this.list.filter((value) => {
-      return value.hasOwnProperty('info') && value.info.isSpectator;
-    }).length;
+    var num = 0;
+    if (! this.list) return num;
+
+    for (let login in this.list) {
+      let one = this.list[login];
+      if (one.info && one.info.isSpectator) {
+        num++;
+      }
+    }
+    return num;
   }
 
   /**

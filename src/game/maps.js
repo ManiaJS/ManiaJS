@@ -38,11 +38,7 @@ export default class {
 
     // Get all maps on server, sync with database.
     return new Promise((resolve, reject) => {
-      this.app.serverFacade.client.gbx.query('GetMapList', [-1, 0], (err, res) => {
-        if (err) {
-          return reject(err);
-        }
-
+      this.app.serverFacade.client.gbx.query('GetMapList', [-1, 0]).then((res) => {
         // Clear list first.
         this.list = {};
 
@@ -90,12 +86,13 @@ export default class {
           }
 
           // The sync with db is done, now check the current map and set it in the this.current
-          this.app.serverFacade.client.gbx.query('GetCurrentMapInfo', [], (err, res) => {
-            if (! err && res) {
+          this.app.serverFacade.client.gbx.query('GetCurrentMapInfo', []).then((res) => {
+            if (res) {
               this.current = this.list[res.UId];
             }
-
             return resolve();
+          }).catch((err) => {
+            return reject(err);
           });
         });
       });
