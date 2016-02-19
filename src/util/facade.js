@@ -5,9 +5,9 @@ import Facade from './../lib/base-facade';
 import * as times from './times';
 
 /**
- * Server Client Facade
+ * Util Facade
  *
- * @class ServerFacade
+ * @class UtilFacade
  *
  */
 export default class extends Facade {
@@ -19,7 +19,7 @@ export default class extends Facade {
   }
 
   /**
-   * Init Server Client.
+   * Init Util.
    * @returns {Promise}
    */
   init() {
