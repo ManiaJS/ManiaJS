@@ -55,15 +55,6 @@ export default class {
     return this;
   }
 
-  // TODO: make this proper!
-  skip() {
-    this.query = {
-      query: 'NextMap'
-    };
-    return this;
-  }
-
-
   /**
    * Custom Query (maniaplanet query).
    * @param {string} query query string.
