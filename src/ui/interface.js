@@ -33,7 +33,7 @@ export default class {
     plugin = plugin || false;
 
     // ManiaLink ID.
-    this.id = (plugin ? plugin.name : 'core') + '__' + Math.floor((Math.random() * 10000) + 1);
+    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile;
 
     this.facade = facade;
     this.app = app;
