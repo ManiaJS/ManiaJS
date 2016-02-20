@@ -29,7 +29,7 @@ export default class {
    * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    */
-  constructor (app, facade, viewFile, plugin) {
+  constructor (app, facade, viewFile, plugin, version = null) {
     plugin = plugin || false;
 
     // ManiaLink ID.
@@ -39,6 +39,7 @@ export default class {
     this.app = app;
     this.plugin = plugin;
     this.file = viewFile;
+    this.version = version;
 
     this.template = null;
 
@@ -88,7 +89,7 @@ export default class {
    * Update Interface. Will send update to the client(s).
    */
   update () {
-    this.facade.manager.update(this);
+    this.facade.manager.update(this, this.version);
   }
 
 }

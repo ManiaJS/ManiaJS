@@ -85,7 +85,7 @@ export default class extends Facade {
    * @param {{}} context Give the plugin class, or app class (for core).
    * @param {string} viewName View File Name.
    */
-  build(context, viewName) {
+  build(context, viewName, version = null) {
     // Determinate if running from plugin.
     var plugin = false;
     var baseDirectory = __dirname + '/../view/';
@@ -99,7 +99,7 @@ export default class extends Facade {
       viewName += '.hbs';
     }
 
-    return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin);
+    return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin, version);
   }
 
 }

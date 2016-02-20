@@ -111,6 +111,9 @@ export default class extends EventEmitter {
       // Send boot msg
       this.send().chat("$o$f90Mania$z$o$f90JS$z$fff: Booting Controller...").exec();
 
+      // Hide all current ManiaLinks
+      this.gbx.query('SendHideManialinkPage', []);
+
       return this.gbx.query('GetVersion', []);
     }).then((res) => {
       // Get System Info
