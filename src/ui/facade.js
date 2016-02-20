@@ -47,36 +47,7 @@ export default class extends Facade {
     // Starting, will start the loop for checking and updating UI.
     this.manager.start();
 
-    // Add callback to disconnect action.
-    this.app.server.on('player.disconnect', (player) => this.manager.disconnect(player));
-
     return Promise.resolve();
-  }
-
-  /**
-   * Compile templates.
-   * @returns {Promise}
-   */
-  compile() {
-    // Compile the templates
-    this.app.log.debug('Compiling UI Templates...');
-
-    return new Promise((resolve, reject) => {
-      try {
-        async.each(this.stack, (ui, callback) => {
-          ui.compile()
-            .then(() => callback())
-            .catch((err) => callback(err));
-        }, (err) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve();
-        });
-      } catch (err) {
-        return reject(err);
-      }
-    });
   }
 
   /**
@@ -84,8 +55,11 @@ export default class extends Facade {
    *
    * @param {{}} context Give the plugin class, or app class (for core).
    * @param {string} viewName View File Name.
+   * @param {number} [version] Optional manialink version (defaults to 2)
    */
-  build(context, viewName, version = null) {
+  build(context, viewName, version) {
+    version = version || 2;
+
     // Determinate if running from plugin.
     var plugin = false;
     var baseDirectory = __dirname + '/../view/';

@@ -2,13 +2,20 @@
   "name": "maniajs",
   "version": "0.0.0",
   "private": true,
+  "description": "ManiaPlanet (Dedicated) Server Controller.",
+  "keywords": ["maniajs", "maniaplanet", "trackmania", "shootmania", "controller"],
+  "bugs": {
+    "url": "https://github.com/ManiaJS/ManiaJS/issues"
+  },
+  "license": "ISC",
+  "repository": "ManiaJS/ManiaJS",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "scripts": {
     "start": "npm run build && node ./maniajs.js",
     "dev": "node ./maniajs-dev.js",
     "build": "babel src -d lib"
-  },
-  "engines": {
-    "node": ">= 5.0.0"
   },
   "dependencies": {
     "async": "^1.5.0",
@@ -44,6 +51,6 @@
     "tedious": "^1.13.2"
   },
   "devDependencies": {
-    "eslint": "^2.0.0"
+    "eslint": "^2.2.0"
   }
 }
