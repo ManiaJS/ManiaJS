@@ -37,6 +37,7 @@
     "js-yaml": "^3.5.2",
     "maniajs-plugin": "0.*",
     "maniajs-plugin-sample": "0.*",
+    "maniajs-help": "0.*",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",
     "object-hash": "^1.1.2",
