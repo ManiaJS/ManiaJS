@@ -97,4 +97,24 @@ export default class {
     this.facade.manager.update(this);
   }
 
+  /**
+   * On Answer.
+   * @param {string} action Action Name.
+   * @param {callback} callback Callback.
+   * @params {object} callback.data
+   */
+  on (action, callback) {
+    this.facade.manager.on(action, callback);
+  }
+
+  /**
+   * Once Answer.
+   * @param {string} action Action Name.
+   * @param {callback} callback Callback.
+   * @params {object} callback.data
+   */
+  once (action, callback) {
+    this.facade.manager.once(action, callback);
+  }
+
 }
