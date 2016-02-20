@@ -260,6 +260,10 @@ export default class {
           return Player.create({
             login: login,
             nickname: nickname
+          }).then((player) => {
+            return resolve(player);
+          }).catch((err) => {
+            return reject(err);
           });
         }
 
@@ -334,10 +338,10 @@ export default class {
 
     // Remove later.
     setTimeout(() => {
-      if (this.list.hasOwnProperty(login)) {
+      if (this.list.hasOwnProperty(login) && ! this.online.hasOwnProperty(login)) {
         delete this.list[login];
       }
-    }, 2500);
+    }, 5000);
 
     return Promise.resolve();
   }
