@@ -97,7 +97,7 @@ export default class extends EventEmitter {
         // Player specific.
 
         async.eachSeries(players, (login, callback) => {
-          let sendData = Object.assign(data, ui.playerData[login]);
+          let sendData = Object.assign({}, data, ui.playerData[login]);
 
           send =  '<manialink ';
           if(ui.version == 2)
