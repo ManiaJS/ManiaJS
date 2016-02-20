@@ -87,8 +87,7 @@ export default class {
     try {
       this.determinateOrder();
     } catch (err) {
-      console.error(err);
-      return;
+      return Promise.reject(err);
     }
 
     this.app.log.debug("Starting all plugins... Calling init...");
