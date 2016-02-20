@@ -3,6 +3,8 @@
  */
 import * as hash from 'object-hash';
 
+import { EventEmitter } from 'events';
+
 /**
  * UI Manager
  *
@@ -12,9 +14,12 @@ import * as hash from 'object-hash';
  *
  * @property {Map} interfaces  Player Specifics Interfaces.
  */
-export default class {
+export default class extends EventEmitter {
 
   constructor (app) {
+    super();
+    this.setMaxListeners(0);
+
     this.app = app;
 
     this.interfaces = new Map();
@@ -107,5 +112,20 @@ export default class {
           });
       }
     });
+  }
+
+  /**
+   * ManiaLink Answer Event.
+   *
+   * @param {object} params
+   * @param {number} params.playerid
+   * @param {string} params.login
+   * @param {string} params.answer
+   * @param {[]}     params.entries
+   */
+  answer (params) {
+    // Emit event on manager.
+    this.emit(params.answer, params);
+    return Promise.resolve();
   }
 }
