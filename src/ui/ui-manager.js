@@ -53,8 +53,14 @@ export default class extends EventEmitter {
       this.interfaces.set(ui.id, ui);
     }
 
+    let sendLogins = logins.slice(0);
+    let sendForce  = force ? true : false;
+
+    ui.forceUpdate = false;
+    ui.playersChanged = [];
+
     // Update the UI ID!
-    return this.sendInterface(ui, force, logins);
+    return this.sendInterface(ui, sendForce, sendLogins);
   }
 
 
@@ -74,7 +80,7 @@ export default class extends EventEmitter {
       var send    = '';
 
       // Global Data
-      data = Object.assign(data, ui.globalData);
+      data = ui.globalData;
 
       // Player specific, or global?
       if (Object.keys(ui.playerData).length > 0) {
@@ -90,8 +96,8 @@ export default class extends EventEmitter {
       if (players.length > 0) {
         // Player specific.
 
-        async.each(players, (login, callback) => {
-          let sendData =  Object.assign(data, ui.playerData[login]);
+        async.eachSeries(players, (login, callback) => {
+          let sendData = Object.assign(data, ui.playerData[login]);
 
           send =  '<manialink ';
           if(ui.version == 2)
