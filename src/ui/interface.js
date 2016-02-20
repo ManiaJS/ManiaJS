@@ -35,7 +35,7 @@ export default class {
     version = version || 2;
 
     // ManiaLink ID.
-    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile;
+    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/'));
 
     this.facade = facade;
     this.app = app;
@@ -102,15 +102,7 @@ export default class {
    * Update Interface. Will send update to the client(s).
    */
   update () {
-    this.facade.manager.update(this, this.forceUpdate, this.playersChanged)
-      .then(() => {
-        // Cleanup update stats.
-        this.forceUpdate = false;
-        this.playersChanged = [];
-      })
-      .catch((err) => {
-        this.app.log.warn(err);
-      });
+    return this.facade.manager.update(this, this.forceUpdate, this.playersChanged);
   }
 
   /**
