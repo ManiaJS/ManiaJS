@@ -37,7 +37,15 @@ export default class extends EventEmitter {
 
         if (this.commands.hasOwnProperty(command) &&
             this.app.players.list.hasOwnProperty(data.login)) {
-          this.emit(command, this.app.players.list[data.login], params, data);
+          let options = this.commands[command];
+
+          if (this.app.players.list[data.login].level >= options.level) {
+            this.emit(command, this.app.players.list[data.login], params, data);
+          } else {
+            this.app.server.send().chat('Error, you are not allowed to use this command!', {destination: data.login}).exec();
+          }
+        } else {
+          this.app.server.send().chat('Error, command doesn\'t exist!', {destination: data.login}).exec();
         }
       }
     });
@@ -109,21 +117,11 @@ export default class extends EventEmitter {
     // Register callback.
     if (single) {
       super.once(command, (player, params) => {
-        if (player && this.commands.hasOwnProperty(command)) {
-          if (player.level >= this.commands[command].level) {
-            // Call
-            callback(player, params);
-          }
-        }
+        callback(player, params);
       });
     } else {
       super.on(command, (player, params) => {
-        if (player && this.commands.hasOwnProperty(command)) {
-          if (player.level >= this.commands[command].level) {
-            // Call
-            callback(player, params);
-          }
-        }
+        callback(player, params);
       });
     }
   }
