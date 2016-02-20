@@ -47,11 +47,11 @@ export default class extends EventEmitter {
    * Register callback for command.
    *
    * @param {string} command.
-   * @param {number} [level] player minimum level.
+   * @param {object} options Options, such as level, hide in help and comment.
    * @param {CommandManager~CommandCallback} callback
    */
-  on(command, level, callback) {
-    this.register(command, level, callback, false);
+  on(command, options, callback) {
+    this.register(command, options, callback, false);
   }
 
   /**
@@ -69,28 +69,48 @@ export default class extends EventEmitter {
    * Register callback for command.
    *
    * @param {string} command.
-   * @param {number} [level] player minimum level.
+   *
+   * @param {object|string|number} options Options, such as level, hide in help and comment. Give string for comment, number for level or object for mixed.
+   * @param {number} options.level Level of command, (minimum level).
+   * @param {boolean} options.hide Hide in help display (default false)
+   * @param {string} options.text Description and syntax of command.
+   * @param {boolean} options.strict Command can only have one listener, default false!.
+   *
    * @param {CommandManager~CommandCallback} callback
    * @param {boolean} [single] Single time?
    */
-  register(command, level, callback, single) {
-    callback = callback || level;
-    if (typeof level !== 'number' || level < 0 || level > 3) {
-      level = 0;
+  register(command, options, callback, single) {
+    // Parse optional and combined parameters.
+    callback = callback || function() {};
+    if (typeof options === 'number') {
+      options = {level: options, hide: false, text: '', strict: false};
+    }
+    if (typeof options === 'string') {
+      options = {level: 0, hide: false, text: options, strict: false};
+    }
+    if (! options.hide) options.hide = false;
+    if (! options.text) options.text = '';
+    if (! options.level) options.level = 0;
+    if (! options.strict) options.strict = false;
+
+    if (options.level > 3 || options.level < 0) {
+      options.level = 0;
     }
     single = single || false;
 
-    if (this.commands.hasOwnProperty(command)) {
-      throw new Error('The command \''+command+'\' is already registered for a command!');
+    // Strict mode on for commands?
+    if (this.commands.hasOwnProperty(command)) { // && (this.commands[command].strict || options.strict)) {
+      throw new Error('The command \''+command+'\' is already registered for a command! One of the commands has strict mode on!');
     }
-    // Level
-    this.commands[command] = level;
+
+    // Set options, register to commands array.
+    this.commands[command] = options;
 
     // Register callback.
     if (single) {
       super.once(command, (player, params) => {
         if (player && this.commands.hasOwnProperty(command)) {
-          if (player.level >= this.commands[command]) {
+          if (player.level >= this.commands[command].level) {
             // Call
             callback(player, params);
           }
@@ -99,7 +119,7 @@ export default class extends EventEmitter {
     } else {
       super.on(command, (player, params) => {
         if (player && this.commands.hasOwnProperty(command)) {
-          if (player.level >= this.commands[command]) {
+          if (player.level >= this.commands[command].level) {
             // Call
             callback(player, params);
           }
@@ -113,7 +133,6 @@ export default class extends EventEmitter {
    *
    * @param {Player} player Player object.
    * @param {object} param Parameter array.
-   * @param {object} raw Raw data of command response.
    */
 }
 
