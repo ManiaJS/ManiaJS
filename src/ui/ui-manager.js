@@ -77,13 +77,13 @@ export default class extends EventEmitter {
       if (players.length > 0) {
         // Player specific.
         players.forEach((login) => {
-          data =  Object.assign(data, ui.playerData[login]);
+          let sendData =  Object.assign(data, ui.playerData[login]);
 
           send =  '<manialink ';
           if(ui.version == 2)
             send += ' version="2"';
           send += 'id="'+ui.id+'">';
-          send += ui.template(data);
+          send += ui.template(sendData);
           send += '</manialink>';
 
           this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, 0, false]).exec()
