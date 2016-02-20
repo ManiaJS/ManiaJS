@@ -89,6 +89,7 @@ export default class extends EventEmitter {
 
       // On Error
       this.gbx.on('error', (err) => {
+        console.error(err.name);
         this.app.log.fatal(err.stack);
         return reject(err);
       });
