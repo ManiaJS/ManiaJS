@@ -96,6 +96,23 @@ export default function (manager) {
     }
   });
 
+
+  // manialink answer
+  manager.register({
+    callback: 'ManiaPlanet.PlayerManialinkPageAnswer',
+    event: 'player.manialinkanswer',
+    parameters: {
+      playerid: 0,
+      login: 1,
+      answer: 2,
+      entries: 3
+    },
+    flow: (app, params) => {
+      // First call the ui manager.
+      return app.uiFacade.manager.answer(params);
+    }
+  });
+
   // TODO: ManiaPlanet.PlayerManialinkPageAnswer
 
 

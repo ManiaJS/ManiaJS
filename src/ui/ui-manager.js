@@ -3,6 +3,8 @@
  */
 import * as hash from 'object-hash';
 
+import { EventEmitter } from 'events';
+
 /**
  * UI Manager
  *
@@ -12,9 +14,12 @@ import * as hash from 'object-hash';
  *
  * @property {Map} interfaces  Player Specifics Interfaces.
  */
-export default class {
+export default class extends EventEmitter {
 
   constructor (app) {
+    super();
+    this.setMaxListeners(0);
+
     this.app = app;
 
     this.interfaces = new Map();
@@ -27,25 +32,7 @@ export default class {
    * Execute when server is started. (run mode).
    */
   start () {
-    /*this.interval = setInterval(() => {
-      if (this.update) {
-        this.update = false;
-        this.executeUpdate();
-      }
-    }, 2000);
 
-    this.executeUpdate();
-    */
-  }
-
-  /**
-   * Player Disconnect Event.
-   * @param {{}} player
-   */
-  disconnect (player) {
-    /*if (this.interfaces.hasOwnProperty(player.login)) {
-      delete this.interfaces[player.login];
-    }*/
   }
 
 
@@ -54,20 +41,22 @@ export default class {
    *
    * @param {InterfaceBuilder} ui
    */
-  update (ui, version = null) {
+  update (ui) {
     if (! this.interfaces.has(ui.id)) {
       this.interfaces.set(ui.id, ui);
     }
 
-    if(!version)
-      version = 2;
-
     // Update the UI ID!
-    this.sendInterface(ui, version);
+    this.sendInterface(ui);
   }
 
 
-  sendInterface (ui, version) {
+  /**
+   * Will send UI, parse the (players)data.
+   * @param {InterfaceBuilder} ui
+   * @returns {Promise}
+   */
+  sendInterface (ui) {
     return new Promise((resolve, reject) => {
       var data    = {}; // Holds all global data.
       var players = []; // Holds login.
@@ -91,7 +80,7 @@ export default class {
           data =  Object.assign(data, ui.playerData[login]);
 
           send =  '<manialink ';
-          if(version == 2)
+          if(ui.version == 2)
             send += ' version="2"';
           send += 'id="'+ui.id+'">';
           send += ui.template(data);
@@ -99,16 +88,16 @@ export default class {
 
           this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, 0, false]).exec()
             .then (()    => {
-              console.log("11111 AJAJAJAJAJAJJAJAJAJ - version: " + version);
+              return resolve();
             })
             .catch((err) => {
-              console.error(err.stack);
+              return reject(err);
             });
         });
       } else {
         // Global
         send =  '<manialink ';
-        if(version == 2)
+        if(ui.version == 2)
           send += ' version="2"';
         send += 'id="'+ui.id+'">';
         send += ui.template(data);
@@ -116,69 +105,27 @@ export default class {
 
         this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec()
           .then (()    => {
-            console.log("22222 AJAJAJAJAJAJJAJAJAJ - version: " + version);
+            return resolve();
           })
           .catch((err) => {
-            console.error(err.stack);
+            return reject(err);
           });
       }
     });
   }
-
 
   /**
-   * Execute Update, will force reload of the UI to the players.
+   * ManiaLink Answer Event.
+   *
+   * @param {object} params
+   * @param {number} params.playerid
+   * @param {string} params.login
+   * @param {string} params.answer
+   * @param {[]}     params.entries
    */
-  /*
-  executeUpdate () {
-    return new Promise((resolve, reject) => {
-      var head = '<manialink version="2" id="sample">';
-
-      var body = '';
-      var bodyPlayers = {}; // Player indexed body.
-
-      var footer = '</manialink>';
-
-      // Concat all
-      var all = '';
-
-      var logins = [];
-      for (let login in this.app.players.list) {
-        if (this.app.players.list.hasOwnProperty(login) && this.app.players.list[login].info ) {
-          logins.push(login);
-        }
-      }
-
-      for (let [hash, ui] of this.interfaces) {
-
-        // Globals
-        if (! ui.players || ui.players.length === 0) {
-          body += ui.render();
-        } else {
-          // Player specific.
-          ui.players.forEach((login) => {
-            if (! bodyPlayers.hasOwnProperty(login)) {
-              bodyPlayers[login] = '';
-            }
-
-            bodyPlayers[login] += ui.render(login);
-          });
-        }
-
-        // Send to client(s)
-        // TODO
-
-      }
-
-      this.app.server.send().custom('SendDisplayManialinkPage', [head + body + footer, 0, false]).exec().then((res) => {
-        // console.log(res);
-      }).catch((err) => {
-        console.error(err.stack);
-      });
-
-
-    });
+  answer (params) {
+    // Emit event on manager.
+    this.emit(params.answer, params);
+    return Promise.resolve();
   }
-  */
-
 }
