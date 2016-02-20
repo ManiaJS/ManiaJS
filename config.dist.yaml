@@ -52,8 +52,7 @@ config:
       storage: './database.sqlite' # Path, relative to root of ManiaJS.
 
 plugins:
-  maniajs-plugin-sample:
-    test: true
+  maniajs-help:
 
   maniajs-localrecords:
     recordlimit: 100
