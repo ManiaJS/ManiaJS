@@ -24,8 +24,8 @@ export default function (manager) {
       login: 0,
       spectator: 1
     },
-    flow: (app, params) => {
-      return app.gameFacade.players.connect(params.login);
+    pass: (params) => {
+      return false; // We don't have the player info yet, wait until info change event is fetching player info from db.
     }
   });
 
@@ -36,6 +36,9 @@ export default function (manager) {
     parameters: {
       login: 0,
       reason: 1
+    },
+    flow: (app, params) => {
+      return app.gameFacade.players.disconnect(params.login);
     }
   });
 
@@ -83,7 +86,10 @@ export default function (manager) {
       };
     },
     flow: (app, params) => {
-      return app.gameFacade.players.update(params.login, params.nickName, params);
+      if (! app.gameFacade.players.list.hasOwnProperty(params.login) || app.gameFacade.players.list[params.login].disconnected) {
+        return app.gameFacade.players.connect(params.login, params.nickName, params, true);
+      }
+      return Promise.resolve();
     }
   });
 
@@ -112,9 +118,6 @@ export default function (manager) {
       return app.uiFacade.manager.answer(params);
     }
   });
-
-  // TODO: ManiaPlanet.PlayerManialinkPageAnswer
-
 
   /**
    * SERVER EVENTS
