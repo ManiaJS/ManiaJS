@@ -13,8 +13,12 @@ export function stringTime (input) {
   let sec = Math.floor((input - min * 60 * 1000) / 1000);
   let msec = (input + "").substr((input + "").length - 3);
 
-  if (msec) {
-    return sprintf('%02d:%02d.%03d', min, sec, msec);
+  if(msec) {
+    if(min > 9) {
+      return sprintf('%02d:%02d.%03d', min, sec, msec);
+    } else {
+      return sprintf('%01d:%02d.%03d', min, sec, msec);
+    }
   }
   return sprintf('%02d:%02d', min, sec);
 }
