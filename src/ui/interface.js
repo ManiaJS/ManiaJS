@@ -48,6 +48,10 @@ export default class {
     this.globalData = {};
     this.playerData = {};
 
+    // Holds force and changed data for players. Cache.
+    this.forceUpdate = true; // True will force to send to all players (global or per player).
+    this.playersChanged = [];
+
     // Directly compile (sync).
     this.compile();
   }
@@ -74,6 +78,8 @@ export default class {
    */
   global (data) {
     this.globalData = data;
+
+    this.forceUpdate = true;
     return this;
   }
 
@@ -86,6 +92,8 @@ export default class {
    */
   player (login, data) {
     this.playerData[login] = data;
+
+    this.playersChanged.push(login);
     return this;
   }
 
@@ -94,7 +102,15 @@ export default class {
    * Update Interface. Will send update to the client(s).
    */
   update () {
-    this.facade.manager.update(this);
+    this.facade.manager.update(this, this.forceUpdate, this.playersChanged)
+      .then(() => {
+        // Cleanup update stats.
+        this.forceUpdate = false;
+        this.playersChanged = [];
+      })
+      .catch((err) => {
+        this.app.log.warn(err);
+      });
   }
 
   /**

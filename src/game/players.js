@@ -25,6 +25,9 @@ export default class {
      * @type {object}
      */
     this.list = {};
+
+    // Holds connecting locks.
+    this.online = {};
   }
 
   boot() {
@@ -53,7 +56,7 @@ export default class {
           };
 
           // Fetch from database
-          this.update(player.Login, player.NickName, info)
+          this.connect(player.Login, player.NickName, info)
             .then(() => {
               callback();
             })
@@ -178,14 +181,19 @@ export default class {
   /**
    * Set Player Level.
    *
-   * @param {string} login
+   * @param {string|Instance} login
    * @param {number} level
    * @returns {Promise}
    */
   setLevel(login, level) {
-    if (this.list.hasOwnProperty(login)) {
-      this.list[login].set('level', level);
-      return this.list[login].save();
+    if (typeof login !== 'string') {
+      login.set('level', level);
+      return login.save();
+    } else {
+      if (this.list.hasOwnProperty(login)) {
+        this.list[login].set('level', level);
+        return this.list[login].save();
+      }
     }
     return Promise.reject(new Error('Player not in list!'));
   }
@@ -216,77 +224,104 @@ export default class {
 
 
   /**
-   * Call when player connect event is given.
-   *
-   * @param login
-   * @returns {Promise.<T>}
-   */
-  connect(login) {
-    return Promise.resolve();
-  }
-
-  /**
-   * Call when info changed.
+   * Call on info change (on connection, first time only)
    *
    * @param login
    * @param nickname
    * @param info
+   * @param {boolean} [emit] Emit connect? default false.
    * @returns {Promise}
    */
-  update(login, nickname, info) {
+  connect(login, nickname, info, emit) {
     info = info || {};
+    emit = emit || false;
 
-    let Player = this.app.models.Player;
+    if (this.online.hasOwnProperty(login) && this.online[login]) {
+      return Promise.resolve();
+    }
+
+    if (this.list.hasOwnProperty(login) && this.list[login].disconnected) {
+      delete this.list[login];
+    }
+
+    this.online[login] = false;
 
     return new Promise((resolve, reject) => {
-      if (! this.list.hasOwnProperty(login)) {
-        // Fetch or create from db.
-        Player.findOne({
-          where: {
-            login: login
-          }
-        }).then((player) => {
-          if (! player) {
-            // Create
-            return Player.create({
-              login: login,
-              nickname: nickname
-            });
-          }
+      let Player = this.app.models.Player;
 
-          if (player.nickname === nickname) {
+      // Fetch or create from db.
+      Player.findOne({
+        where: {
+          login: login
+        }
+      }).then((player) => {
+        if (!player) {
+          // Create
+          return Player.create({
+            login: login,
+            nickname: nickname
+          }).then((player) => {
             return resolve(player);
-          }
+          }).catch((err) => {
+            return reject(err);
+          });
+        }
 
-          // Update
-          player.set('nickname', nickname);
-          return player.save();
-        }).catch((err) => {
-          return reject(err);
-        });
-      } else {
-        // Update info only.
-        this.list[login].info = info;
-        return resolve(false);
-      }
+        if (player.nickname === nickname) {
+          return resolve(player);
+        }
+
+        // Update
+        player.set('nickname', nickname);
+        return player.save()
+          .then((player) => {
+            return resolve(player);
+          })
+          .catch((err) => {
+            return reject(err);
+          });
+      }).catch((err) => {
+        return reject(err);
+      });
     }).then((player) => {
-      if (! player) {
+      if (!player) {
         // No update!
-        return;
+        return Promise.resolve(player);
       }
-
-      // Update needed, save to local list.
-      player.info = info;
-      this.list[login] = player;
 
       // Maybe this player is the masteradmin? (see config).
       if (this.app.config.hasOwnProperty('masteradmins') && this.app.config.masteradmins) {
         if (this.app.config.masteradmins.filter((adminLogin => adminLogin === login)).length > 0) {
           // Yes! Make the player admin!
-          return this.setLevel(login, 3);
+          return this.setLevel(player, 3);
         }
       }
+      return Promise.resolve(player);
+    }).then((player) => {
+      // If already, then stop!.
+      if (this.list.hasOwnProperty(login)) {
+        return Promise.resolve(player);
+      }
+
+      // Save to local list. Remove lock.
+      player.info = info;
+      this.list[login] = player;
+
+      if (! this.online[login]) {
+        this.online[login] = true;
+
+        // Now call the player.connect event
+        if (emit) {
+          this.app.serverFacade.client.emit('player.connect', this.list[login].info);
+        }
+
+        return Promise.resolve(player);
+      }
+      return Promise.resolve(player);
+    }).catch((err) => {
+      this.app.log.error(err);
     });
+
   }
 
   /**
@@ -294,11 +329,20 @@ export default class {
    * @param login
    */
   disconnect(login) {
-    // Remove from this.list (after 5 seconds);
+    if (this.list.hasOwnProperty(login)) {
+      this.list[login].disconnected = true;
+    }
+    if (this.online.hasOwnProperty(login)) {
+      delete this.online[login];
+    }
+
+    // Remove later.
     setTimeout(() => {
-      if (this.list.hasOwnProperty(login)) {
+      if (this.list.hasOwnProperty(login) && ! this.online.hasOwnProperty(login)) {
         delete this.list[login];
       }
     }, 5000);
+
+    return Promise.resolve();
   }
 }
