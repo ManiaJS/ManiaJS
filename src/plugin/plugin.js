@@ -57,8 +57,8 @@ export default class {
           // Save plugin details to plugin array.
           this.plugins[pluginId] = new PluginClass();
 
-          // Inject App.
-          this.plugins[pluginId].inject(this.app, config);
+          // Inject App, options and child logger.
+          this.plugins[pluginId].inject(this.app, config, this.app.log.child({plugin: pluginId}));
 
           // Register node
           this.graph.addNode(pluginId);
