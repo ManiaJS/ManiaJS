@@ -54,17 +54,20 @@ export default class {
    *
    * @param {InterfaceBuilder} ui
    */
-  update (ui) {
+  update (ui, version = null) {
     if (! this.interfaces.has(ui.id)) {
       this.interfaces.set(ui.id, ui);
     }
 
+    if(!version)
+      version = 2;
+
     // Update the UI ID!
-    this.sendInterface(ui);
+    this.sendInterface(ui, version);
   }
 
 
-  sendInterface (ui) {
+  sendInterface (ui, version) {
     return new Promise((resolve, reject) => {
       var data    = {}; // Holds all global data.
       var players = []; // Holds login.
@@ -87,13 +90,16 @@ export default class {
         players.forEach((login) => {
           data =  Object.assign(data, ui.playerData[login]);
 
-          send =  '<manialink version="2" id="'+ui.id+'">';
+          send =  '<manialink ';
+          if(version == 2)
+            send += ' version="2"';
+          send += 'id="'+ui.id+'">';
           send += ui.template(data);
           send += '</manialink>';
 
           this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, 0, false]).exec()
             .then (()    => {
-              console.log("11111 AJAJAJAJAJAJJAJAJAJ");
+              console.log("11111 AJAJAJAJAJAJJAJAJAJ - version: " + version);
             })
             .catch((err) => {
               console.error(err.stack);
@@ -101,13 +107,16 @@ export default class {
         });
       } else {
         // Global
-        send =  '<manialink version="2" id="'+ui.id+'">';
+        send =  '<manialink ';
+        if(version == 2)
+          send += ' version="2"';
+        send += 'id="'+ui.id+'">';
         send += ui.template(data);
         send += '</manialink>';
 
         this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec()
           .then (()    => {
-            console.log("22222 AJAJAJAJAJAJJAJAJAJ");
+            console.log("22222 AJAJAJAJAJAJJAJAJAJ - version: " + version);
           })
           .catch((err) => {
             console.error(err.stack);
