@@ -3,7 +3,7 @@
  */
 'use strict';
 
-import * as fsp from 'fs-promise';
+import * as fs from 'fs';
 import * as path from 'path';
 
 import * as Handlebars from 'handlebars';
@@ -28,9 +28,11 @@ export default class {
    * @param {UIFacade} facade UI Facade.
    * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
+   * @param {number} [version] ManiaLink Version, defaults to 2.
    */
-  constructor (app, facade, viewFile, plugin, version = null) {
+  constructor (app, facade, viewFile, plugin, version) {
     plugin = plugin || false;
+    version = version || 2;
 
     // ManiaLink ID.
     this.id = (plugin ? plugin.name : 'core') + '__' + viewFile;
@@ -46,8 +48,8 @@ export default class {
     this.globalData = {};
     this.playerData = {};
 
-    // Add the interface to the compile stack.
-    facade.stack.push(this);
+    // Directly compile (sync).
+    this.compile();
   }
 
   /**
@@ -56,9 +58,12 @@ export default class {
    * @returns {Promise}
    */
   compile () {
-    return fsp.readFile(this.file, 'utf-8').then((source) => {
+    try {
+      let source = fs.readFileSync(this.file, 'utf-8');
       this.template = Handlebars.compile (source);
-    });
+    } catch (err) {
+      this.app.log.error('Error with loading/compiling view (' + this.file + ').: ', err);
+    }
   }
 
   /**
@@ -89,7 +94,7 @@ export default class {
    * Update Interface. Will send update to the client(s).
    */
   update () {
-    this.facade.manager.update(this, this.version);
+    this.facade.manager.update(this);
   }
 
 }
