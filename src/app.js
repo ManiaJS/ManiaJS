@@ -92,8 +92,8 @@ export default class {
       .then(() => { return this.uiFacade.run();       })
       .then(() => { return this.pluginFacade.run();   })
       .then(() => {
-        this.log.debug('Ready...');
-        this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller ready!').exec();
+        this.log.info('Controller Ready!');
+        this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller ready! $n(' + this.version + ')').exec();
       })
       .catch((err) => {
         this.log.error(err);
