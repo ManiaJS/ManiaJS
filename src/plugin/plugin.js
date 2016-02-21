@@ -58,7 +58,7 @@ export default class {
           this.plugins[pluginId] = new PluginClass();
 
           // Is Plugin suited for the Game (trackmania/shootmania)
-          if (this.plugins[pluginId].hasOwnProperty('game') && this.plugins[pluginId].game.hasOwnProperty('game')) {
+          if (this.plugins[pluginId].hasOwnProperty('game') && this.plugins[pluginId].game.hasOwnProperty('games')) {
             if (this.plugins[pluginId].game.games.indexOf(this.app.serverFacade.client.gameName) > -1
             ||  this.plugins[pluginId].game.games.length === 0) {
               // All Right! Let's continue.

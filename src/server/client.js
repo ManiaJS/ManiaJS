@@ -98,9 +98,14 @@ export default class extends EventEmitter {
 
       // On Error
       this.gbx.on('error', (err) => {
-        console.error(err.name);
         this.app.log.fatal(err.stack);
-        return reject(err);
+
+        if (err.message === 'read ECONNRESET') {
+          this.app.log.fatal('Connection with ManiaPlanet server lost!');
+          process.exit(1);
+        } else {
+          return reject(err);
+        }
       });
 
     }).then(() => {
@@ -157,6 +162,36 @@ export default class extends EventEmitter {
       return this.getGameInfos();
     }).then((info) => {
       this.game = info;
+    }).then(() => {
+      // If scripted? Then enable scripted callbacks
+      if (this.isScripted()) {
+
+        this.app.log.debug('Enabling Scripted Callbacks...');
+
+        return new Promise((resolve, reject) => {
+          this.gbx.query('GetModeScriptSettings', []).then((settings) => {
+            if (! settings) {
+              return reject(new Error('No ScriptSettings received!'));
+            }
+
+            // Add callback listener.
+            if (! settings.hasOwnProperty('S_UseScriptCallbacks')) {
+              return resolve(); // Ignore and continue.
+            }
+
+            settings['S_UseScriptCallbacks'] = true;
+
+            console.log(settings);
+
+            // Set and resolve, BUG: will throw error, type error.
+            this.gbx.query('SetModeScriptSettings', [settings])
+              .then(() => resolve())
+              .catch((err) => reject(err));
+          });
+        });
+      }
+
+      return Promise.resolve();
     });
   }
 
@@ -173,7 +208,7 @@ export default class extends EventEmitter {
 
       this.callback.loadSet('maniaplanet');
 
-      if (1==1) { // TODO: Check if trackmania
+      if (this.app.config.server.game === 'trackmania') {
         this.callback.loadSet('trackmania');
       }
 
