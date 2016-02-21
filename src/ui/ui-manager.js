@@ -163,7 +163,11 @@ export default class extends EventEmitter {
    */
   answer (params) {
     // Emit event on manager.
-    this.emit(params.answer, params);
+    if (params.answer.indexOf('core_button_') === 0) {
+      this.emit(params.answer.substr(12), params); // Only get the last bit if it's a core button.
+    } else {
+      this.emit(params.answer, params);
+    }
     return Promise.resolve();
   }
 }

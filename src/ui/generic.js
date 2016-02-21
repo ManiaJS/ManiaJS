@@ -32,7 +32,69 @@ export default class {
     if (typeof players === 'string') {
       players = [players];
     }
-    button = button || 'OK';
+    let buttonText = {
+      ok: button || 'OK'
+    };
+    return this._createAlert('alert', title, message, players, size, buttonText, iconstyle, iconsubstyle);
+  }
+
+  /**
+   * Prepare and make Confirm interface. To display call .display() on the result.
+   * To get answer, subscribe on the interface with .once('yes', function()); or 'no'
+   *
+   * @param {string} title Title Text
+   * @param {string} message Message Text
+   * @param {string[]|string} players Player Logins to display to, empty for all players, single string for only one login
+   * @param {string} [size] Size, could be 'sm', 'md' or 'lg'. (small to big). Default 'md'.
+   * @param {string} [buttonYes] Button text, default 'Yes'
+   * @param {string} [buttonNo] Button text, default 'No'
+   * @param {string} [iconstyle] Icon Style, default 'Icons128x128_1'
+   * @param {string} [iconsubstyle] Icon Sub Style, default 'Options'
+   *
+   * @returns {InterfaceBuilder} Interface Object, call .display() to display to the login(s).
+   */
+  confirm(title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle) {
+    if (typeof players === 'string') {
+      players = [players];
+    }
+    let buttonText = {
+      yes: buttonYes || 'Yes',
+      no:  buttonNo  || 'No'
+    };
+    return this._createAlert('confirm', title, message, players, size, buttonText, iconstyle, iconsubstyle);
+  }
+
+  /**
+   * Private helper. Create alert (alert/confirm)
+   *
+   * @private
+   * @param {string} type Could be alert or confirm.
+   * @param {string} title Title.
+   * @param {string} message Message.
+   * @param {string[]} players Player Logins.
+   * @param {string} [size] Size, 'sm'/'md'/'lg'. md is default.
+   * @param {object} [buttonText] Button text.
+   * @param {string} [buttonText.yes]
+   * @param {string} [buttonText.no]
+   * @param {string} [buttonText.ok]
+   * @param {string} [iconstyle]
+   * @param {string} [iconsubstyle]
+   *
+   * @returns {InterfaceBuilder}
+   */
+  _createAlert(type, title, message, players, size, buttonText, iconstyle, iconsubstyle) {
+    if (typeof players === 'string') {
+      players = [players];
+    }
+    buttonText.yes = buttonText.yes || 'Yes';
+    buttonText.no = buttonText.no   || 'No';
+    buttonText.ok = buttonText.ok   || 'OK';
+
+    let actions = {
+      yes: 'core_button_yes',
+      no: 'core_button_no',
+      ok: 'core_button_ok'
+    };
     iconstyle = iconstyle || 'Icons128x128_1';
     iconsubstyle = iconsubstyle || 'Editor';
     size = size || 'md';
@@ -60,27 +122,23 @@ export default class {
     sizes.buttonsLabelsTop = sizes.buttonsTop - 2;
 
     // Prepare by making the interface.
-    let ui = this.app.uiFacade.build(this.app, 'alert', 2);
+    let ui = this.app.uiFacade.build(this.app, type, 2);
 
     ui.global({
       title: title,
       iconstyle: iconstyle,
       iconsubstyle: iconsubstyle,
       text: message,
-      action: 'core_alert_normal',
-      buttontext: button,
-
-      // Size
-      sizes: sizes,
+      actions: actions,
+      buttonText: buttonText,
+      sizes: sizes
     });
-
     ui.timeout = 0;
     ui.hideClick = true;
 
     players.forEach((login) => {
       ui.player(login);
     });
-
     return ui;
   }
 }

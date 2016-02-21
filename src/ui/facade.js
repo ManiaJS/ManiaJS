@@ -94,4 +94,23 @@ export default class extends Facade {
   alert(title, message, players, size, button, iconstyle, iconsubstyle) {
     return this.generic.alert(title, message, players, size, button, iconstyle, iconsubstyle);
   }
+
+  /**
+   * Prepare and make Confirm interface. To display call .display() on the result.
+   * To get answer, subscribe on the interface with .once('core_button_yes', function()); or core_button_no
+   *
+   * @param {string} title Title Text
+   * @param {string} message Message Text
+   * @param {string[]|string} players Player Logins to display to, empty for all players, single string for only one login
+   * @param {string} [size] Size, could be 'sm', 'md' or 'lg'. (small to big). Default 'md'.
+   * @param {string} [buttonYes] Button text, default 'Yes'
+   * @param {string} [buttonNo] Button text, default 'No'
+   * @param {string} [iconstyle] Icon Style, default 'Icons128x128_1'
+   * @param {string} [iconsubstyle] Icon Sub Style, default 'Options'
+   *
+   * @returns {InterfaceBuilder} Interface Object, call .display() to display to the login(s).
+   */
+  confirm(title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle) {
+    return this.generic.confirm(title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle);
+  }
 }
