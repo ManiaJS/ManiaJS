@@ -57,6 +57,20 @@ export default class {
           // Save plugin details to plugin array.
           this.plugins[pluginId] = new PluginClass();
 
+          // Is Plugin suited for the Game (trackmania/shootmania)
+          if (this.plugins[pluginId].hasOwnProperty('game') && this.plugins[pluginId].game.hasOwnProperty('game')) {
+            if (this.plugins[pluginId].game.games.indexOf(this.app.serverFacade.client.gameName) > -1
+            ||  this.plugins[pluginId].game.games.length === 0) {
+              // All Right! Let's continue.
+            } else {
+              // Don't load! Unload from local properties, throw warning.
+              delete this.plugins[pluginId];
+              this.app.log.warn('Plugin \'' + pluginId + '\' is not suited for the current game! Plugin unloaded!');
+
+              return; // Stop current loop.
+            }
+          }
+
           // Inject App, options and child logger.
           this.plugins[pluginId].inject(this.app, config, this.app.log.child({plugin: pluginId}));
 
@@ -70,6 +84,28 @@ export default class {
       // Set plugins to app plugins.
       this.app.plugins = this.plugins;
 
+      return resolve();
+    });
+  }
+
+  /**
+   * Call on MapBegin, will check against current game mode.
+   * Will also disable plugins when not compatible with game mode.
+   */
+  begin() {
+    return new Promise((resolve, reject) => {
+      Object.keys(this.plugins).forEach((pluginId) => {
+        let plugin = this.plugins[pluginId];
+
+        if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes') && plugin.game.modes.length > 0) {
+          if (plugin.game.modes.indexOf(this.app.serverFacade.client.currentMode()) > -1) {
+            // All OK!
+          } else {
+            // Stop!
+            // TODO: Stop plugin.
+          }
+        }
+      });
       return resolve();
     });
   }

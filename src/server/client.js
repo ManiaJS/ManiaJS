@@ -14,6 +14,12 @@ import Send from './send';
  * @class ServerClient
  *
  * @function {Send} send
+ *
+ * @property {object} game
+ * @property {object} game.CurrentGameInfos
+ * @property {number} game.CurrentGameInfos.GameMode
+ * @property {object] game.NextGameInfos
+ * @property {number} game.NextGameInfos.GameMode
  */
 export default class extends EventEmitter {
 
@@ -47,10 +53,15 @@ export default class extends EventEmitter {
     this.name = null;
     this.comment = null;
     this.path = null;
-    this.options = {}; // Will be the result of GetServerOptions() call to the mp server.
     this.ip = null;
     this.ports = {};
     this.playerId = null;
+
+    // Current Game Name, 'trackmania' or 'shootmania'.
+    this.gameName = app.config.server.game || 'trackmania';
+
+    this.options = {}; // Will be the result of GetServerOptions() call to the mp server.
+    this.game = {}; // Will be the result of GetGameInfo() call.
   }
 
   /**
@@ -68,8 +79,6 @@ export default class extends EventEmitter {
    * @returns {Promise}
    */
   connect() {
-    let self = this;
-
     this.app.log.debug("Connecting to ManiaPlanet Server...");
 
     return new Promise( (resolve, reject) => {
@@ -143,6 +152,11 @@ export default class extends EventEmitter {
       this.name = options.Name;
       this.comment = options.Comment;
       this.options = options;
+    }).then(() => {
+      // Get game info
+      return this.getGameInfos();
+    }).then((info) => {
+      this.game = info;
     });
   }
 
@@ -173,10 +187,29 @@ export default class extends EventEmitter {
    * @return {Promise}
    */
   updateInfos() {
-    return new Promise((resolve, reject) => {
-      // TODO: Update server name etc.
-      return resolve();
-    });
+    // Update
+    return this.getServerOptions()
+      .then(() => this.getGameInfos());
+  }
+
+  /**
+   * Is Current mode scripted?
+   *
+   * @returns {boolean}
+   */
+  isScripted() {
+    return this.game.CurrentGameInfos.GameMode === 0 || false;
+  }
+
+  /**
+   * Get Current Mode Integer, try to convert script name to game mode integer.
+   * @returns {number}
+   */
+  currentMode() {
+    if (this.isScripted()) {
+      // TODO: Script => legacy integers.
+    }
+    return this.game.CurrentGameInfos.GameMode;
   }
 
 
@@ -193,6 +226,20 @@ export default class extends EventEmitter {
         this.comment = res.Comment;
         this.options = res;
 
+        return resolve(res);
+      }).catch((err) => reject(err));
+    });
+  }
+
+  /**
+   * Get GetGameInfos call info. Will also update current server.game infos.
+   *
+   * @returns {Promise}
+   */
+  getGameInfos() {
+    return new Promise((resolve, reject) => {
+      this.gbx.query('GetGameInfos', []).then((res) => {
+        this.game = res;
         return resolve(res);
       }).catch((err) => reject(err));
     });
