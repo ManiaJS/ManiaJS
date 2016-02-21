@@ -35,7 +35,7 @@ export default class {
     version = version || 2;
 
     // ManiaLink ID.
-    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/'));
+    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/')+1);
 
     this.facade = facade;
     this.app = app;
@@ -44,6 +44,9 @@ export default class {
     this.version = version;
 
     this.template = null;
+
+    this.timeout = 0;
+    this.hideClick = false;
 
     this.globalData = {};
     this.playerData = {};
@@ -64,7 +67,7 @@ export default class {
   compile () {
     try {
       let source = fs.readFileSync(this.file, 'utf-8');
-      this.template = Handlebars.compile (source);
+      this.template = Handlebars.compile (source, { noEscape: true });
     } catch (err) {
       this.app.log.error('Error with loading/compiling view (' + this.file + ').: ', err);
     }
@@ -86,23 +89,72 @@ export default class {
   /**
    * Set Data for the template, for a specific player.
    * @param {string} login Player Login.
-   * @param {{}} data Data. Indexed by Player Logins.
+   * @param {{}} [data] Data. Indexed by Player Logins.
    *
    * @returns {InterfaceBuilder}
    */
   player (login, data) {
+    data = data || {};
+
     this.playerData[login] = data;
 
     this.playersChanged.push(login);
     return this;
   }
 
+  /**
+   * Update/Display interface.
+   *
+   * @see update
+   * @returns {*}
+   */
+  display () {
+    return this.update();
+  }
 
   /**
    * Update Interface. Will send update to the client(s).
    */
   update () {
     return this.facade.manager.update(this, this.forceUpdate, this.playersChanged);
+  }
+
+  /**
+   * Hide the current ManiaLink.
+   * @param {string[]} [logins] Optional logins to hide the interface. Ignore or false for all players.
+   * @returns {Promise}
+   */
+  hide (logins) {
+    logins = logins || false;
+    return this.facade.manager.destroy(this.id, logins);
+  }
+
+  /**
+   * Destroy data and hide manialink. This will clear the data arrays! Please use this when you want to cleanup!
+   * @param {string[]} [logins] Optional logins, when provided we will not clear global data!.
+   * @param {boolean} [noHide] Optional, don't send empty manialink to hide, default false.
+   * @returns {Promise}
+   */
+  destroy (logins, noHide) {
+    logins = logins || false;
+    noHide = noHide || false;
+
+    // Cleanup.
+    if (! logins) {
+      this.playerData = [];
+      this.globalData = [];
+    } else {
+      logins.forEach((login) => {
+        delete this.playerData[login];
+      });
+    }
+
+    // Destroy at client.
+    if (noHide) {
+      return Promise.resolve();
+    }
+
+    return this.facade.manager.destroy(this.id, logins);
   }
 
   /**
