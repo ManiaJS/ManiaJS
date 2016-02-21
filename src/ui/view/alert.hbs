@@ -1,0 +1,15 @@
+<frame >
+  <quad posn="0 0 0" sizen="{{ sizes.boxWidth }} {{ sizes.boxHeight }}" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="NavButtonBlink"/>
+
+  <quad posn="{{ sizes.iconLeft }} {{ sizes.iconTop }} 0" sizen="10 10" bgcolor="FFFA" style="{{ iconstyle }}" substyle="{{ iconsubstyle }}"/>
+  <label posn="0 {{ sizes.titleTop }} 0" sizen="{{ sizes.boxWidth }} 7" text="{{ title }}" textsize="5" textcolor="FFFFFFA" halign="center"/>
+
+  <quad posn="{{ sizes.barLeft }} {{ sizes.barTop }} 0" sizen="{{ sizes.boxWidth }} 1" bgcolor="FFFA" style="Bgs1" substyle="ProgressBarSmall"/>
+
+
+  <label posn="{{ sizes.messageLeft }} {{ sizes.messageTop }} 0" sizen="{{ sizes.messageWidth }} {{ sizes.messageHeight }}" autonewline="1" text="{{ text }}"/>
+
+
+  <quad posn="0 {{ sizes.buttonsTop }} 0" sizen="44 9" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCard" action="{{ action }}"/>
+  <label posn="0 {{ sizes.buttonsLabelsTop }} 0" sizen="38 5" text="{{ buttontext }}" halign="center"/>
+</frame>

@@ -10,6 +10,7 @@ import Facade from './../lib/base-facade';
 
 import UIManager from './ui-manager';
 import InterfaceBuilder from './interface';
+import GenericInterface from './generic';
 
 
 /**
@@ -26,6 +27,7 @@ export default class extends Facade {
     super(app);
 
     this.manager = new UIManager(app);
+    this.generic = new GenericInterface(app);
 
     this.stack = [];
   }
@@ -62,7 +64,7 @@ export default class extends Facade {
 
     // Determinate if running from plugin.
     var plugin = false;
-    var baseDirectory = __dirname + '/../view/';
+    var baseDirectory = __dirname + '/view/';
 
     if (context.hasOwnProperty('directory')) {
       plugin = context;
@@ -76,4 +78,20 @@ export default class extends Facade {
     return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin, version);
   }
 
+  /**
+   * Prepare and make Alert interface. To display call .display() on the result.
+   *
+   * @param {string} title Title Text
+   * @param {string} message Message Text
+   * @param {string[]|string} players Player Logins to display to, empty for all players, single string for only one login
+   * @param {string} [size] Size, could be 'sm', 'md' or 'lg'. (small to big). Default 'md'.
+   * @param {string} [button] Button text, default 'OK'
+   * @param {string} [iconstyle] Icon Style, default 'Icons128x128_1'
+   * @param {string} [iconsubstyle] Icon Sub Style, default 'Editor'
+   *
+   * @returns {InterfaceBuilder} Interface Object, call .display() to display to the login(s).
+   */
+  alert(title, message, players, size, button, iconstyle, iconsubstyle) {
+    return this.generic.alert(title, message, players, size, button, iconstyle, iconsubstyle);
+  }
 }
