@@ -45,6 +45,9 @@ export default class {
 
     this.template = null;
 
+    this.timeout = 0;
+    this.hideClick = false;
+
     this.globalData = {};
     this.playerData = {};
 
@@ -86,17 +89,28 @@ export default class {
   /**
    * Set Data for the template, for a specific player.
    * @param {string} login Player Login.
-   * @param {{}} data Data. Indexed by Player Logins.
+   * @param {{}} [data] Data. Indexed by Player Logins.
    *
    * @returns {InterfaceBuilder}
    */
   player (login, data) {
+    data = data || {};
+
     this.playerData[login] = data;
 
     this.playersChanged.push(login);
     return this;
   }
 
+  /**
+   * Update/Display interface.
+   *
+   * @see update
+   * @returns {*}
+   */
+  display () {
+    return this.update();
+  }
 
   /**
    * Update Interface. Will send update to the client(s).

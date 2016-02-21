@@ -15,7 +15,7 @@
   "scripts": {
     "start": "npm run build && node ./maniajs.js",
     "dev": "node ./maniajs-dev.js",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib --copy-files"
   },
   "dependencies": {
     "async": "^1.5.0",

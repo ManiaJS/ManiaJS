@@ -106,7 +106,7 @@ export default class extends EventEmitter {
           send += ui.template(sendData);
           send += '</manialink>';
 
-          this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, 0, false]).exec()
+          this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, ui.timeout, ui.hideClick]).exec()
             .then (()    => {
               sendData = null;
               return callback();
@@ -135,7 +135,7 @@ export default class extends EventEmitter {
         send += ui.template(data);
         send += '</manialink>';
 
-        this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec()
+        this.app.server.send().custom('SendDisplayManialinkPage', [send, ui.timeout, ui.hideClick]).exec()
           .then (()    => {
             send = null;
             data = null;
