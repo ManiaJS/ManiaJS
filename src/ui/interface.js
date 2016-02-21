@@ -35,7 +35,7 @@ export default class {
     version = version || 2;
 
     // ManiaLink ID.
-    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/'));
+    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/')+1);
 
     this.facade = facade;
     this.app = app;
@@ -67,7 +67,7 @@ export default class {
   compile () {
     try {
       let source = fs.readFileSync(this.file, 'utf-8');
-      this.template = Handlebars.compile (source);
+      this.template = Handlebars.compile (source, { noEscape: true });
     } catch (err) {
       this.app.log.error('Error with loading/compiling view (' + this.file + ').: ', err);
     }

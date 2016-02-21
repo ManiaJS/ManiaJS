@@ -48,7 +48,6 @@ export default class extends EventEmitter {
     // Try to cleanup player's data in UI's.
     this.interfaces.forEach((ui) => {
       if (ui.playerData.hasOwnProperty(player.login)) {
-        console.error('Cleanup player UIs!');
         ui.destroy([player.login], true);
       }
     });
@@ -179,9 +178,9 @@ export default class extends EventEmitter {
     let send = '<manialink id="' + id + '"></manialink>';
 
     if (logins) {
-      return this.app.server.send().custom('SendDisplayManialinkPageToLogin', [logins.join(','), send, 0, false]);
+      return this.app.server.send().custom('SendDisplayManialinkPageToLogin', [logins.join(','), send, 0, false]).exec();
     }
-    return this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]);
+    return this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec();
   }
 
   /**

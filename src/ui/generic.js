@@ -3,6 +3,8 @@
  */
 'use strict';
 
+import ListView from './generic/listview';
+
 /**
  * Generic Interface Helper.
  *
@@ -13,6 +15,31 @@ export default class {
   constructor (app, facade) {
     this.app = app;
     this.facade = facade;
+  }
+
+  /**
+   * Prepare List Interface for given column metadata, and given data. To Display, do .display().
+   *
+   * => Click on column > subscribe on events you provided with the event in columns.
+   * => Returning parameter will be the record on that position.
+   *
+   * When close is called the view will be vanished automatically! But you still need to cleanup your variables!
+   * When next/prev is called, the data will be automatically sliced and used. (the events will still be called).
+   *
+   * @param {string} title Title of list.
+   * @param {string} player Player Login (single login!).
+   * @param {[{name: {string}, field: {string}, width: {number}, [level]: {number}, [event]: {string}}]} columns Columns to define.
+   * @param {[{}]} data Array with objects. Give a custom manialink with the 'custom' key. This will be injected into the row!
+   *
+   * @returns {ListView|boolean} ListView on success, false on failure!
+   */
+  list (title, player, columns, data) {
+    player = this.app.gameFacade.players.list[player] || false;
+    if (! player) return false;
+
+    let view = new ListView(this.app, title, player, columns, data);
+        view.parse();
+    return view;
   }
 
   /**

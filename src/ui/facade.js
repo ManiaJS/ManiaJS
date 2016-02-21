@@ -59,7 +59,7 @@ export default class extends Facade {
    * @param {string} viewName View File Name.
    * @param {number} [version] Optional manialink version (defaults to 2)
    */
-  build(context, viewName, version) {
+  build (context, viewName, version) {
     version = version || 2;
 
     // Determinate if running from plugin.
@@ -78,6 +78,27 @@ export default class extends Facade {
     return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin, version);
   }
 
+
+  /**
+   * Prepare List Interface for given column metadata, and given data. To Display, do .display().
+   *
+   * => Click on column > subscribe on events you provided with the event in columns.
+   * => Returning parameter will be the record on that position.
+   *
+   * When close is called the view will be vanished automatically! But you still need to cleanup your variables!
+   * When next/prev is called, the data will be automatically sliced and used. (the events will still be called).
+   *
+   * @param {string} title Title of list.
+   * @param {string} player Player Login (single login!).
+   * @param {[{name: {string}, field: {string}, width: {number}, [level]: {number}, [event]: {string}}]} columns Columns to define.
+   * @param {[{}]} data Array with objects. Give a custom manialink with the 'custom' key. This will be injected into the row!
+   *
+   * @returns {InterfaceBuilder|boolean} Interface on success, false on failure!
+   */
+  list (title, player, columns, data) {
+    return this.generic.list(title, player, columns, data);
+  }
+
   /**
    * Prepare and make Alert interface. To display call .display() on the result.
    *
@@ -91,7 +112,7 @@ export default class extends Facade {
    *
    * @returns {InterfaceBuilder} Interface Object, call .display() to display to the login(s).
    */
-  alert(title, message, players, size, button, iconstyle, iconsubstyle) {
+  alert (title, message, players, size, button, iconstyle, iconsubstyle) {
     return this.generic.alert(title, message, players, size, button, iconstyle, iconsubstyle);
   }
 
@@ -110,7 +131,7 @@ export default class extends Facade {
    *
    * @returns {InterfaceBuilder} Interface Object, call .display() to display to the login(s).
    */
-  confirm(title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle) {
+  confirm (title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle) {
     return this.generic.confirm(title, message, players, size, buttonYes, buttonNo, iconstyle, iconsubstyle);
   }
 }
