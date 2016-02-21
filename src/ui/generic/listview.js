@@ -296,17 +296,12 @@ export default class extends EventEmitter {
     }
 
     // Parse
-    let ex = /[\w+]\|(\d)/g;
-    let match = ex.exec(params.answer);
+    let idx = parseInt(params.answer.substr(params.answer.indexOf('|') + 1));
+    if (! isNaN(idx) && this.data.length > idx) {
+      let row = this.data[idx];
 
-    if (match && match.length > 1) {
-      let idx = parseInt(match[1]);
-
-      if (! isNaN(idx) && this.data.length > idx) {
-        let row = this.data[idx];
-        // Emit
-        this.emit(event, {idx: idx, entry: row});
-      }
+      // Emit
+      this.emit(event, {idx: idx, entry: row});
     }
   }
 
