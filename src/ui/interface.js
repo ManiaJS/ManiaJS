@@ -120,6 +120,44 @@ export default class {
   }
 
   /**
+   * Hide the current ManiaLink.
+   * @param {string[]} [logins] Optional logins to hide the interface. Ignore or false for all players.
+   * @returns {Promise}
+   */
+  hide (logins) {
+    logins = logins || false;
+    return this.facade.manager.destroy(this.id, logins);
+  }
+
+  /**
+   * Destroy data and hide manialink. This will clear the data arrays! Please use this when you want to cleanup!
+   * @param {string[]} [logins] Optional logins, when provided we will not clear global data!.
+   * @param {boolean} [noHide] Optional, don't send empty manialink to hide, default false.
+   * @returns {Promise}
+   */
+  destroy (logins, noHide) {
+    logins = logins || false;
+    noHide = noHide || false;
+
+    // Cleanup.
+    if (! logins) {
+      this.playerData = [];
+      this.globalData = [];
+    } else {
+      logins.forEach((login) => {
+        delete this.playerData[login];
+      });
+    }
+
+    // Destroy at client.
+    if (noHide) {
+      return Promise.resolve();
+    }
+
+    return this.facade.manager.destroy(this.id, logins);
+  }
+
+  /**
    * On Answer.
    * @param {string} action Action Name.
    * @param {callback} callback Callback.

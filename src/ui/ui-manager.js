@@ -35,7 +35,23 @@ export default class extends EventEmitter {
    * Execute when server is started. (run mode).
    */
   start () {
+    // Callbacks
+    this.app.server.on('player.disconnect', (player) => this.playerDisconnect(player));
+  }
 
+  /**
+   * Called on player disconnect.
+   *
+   * @param player
+   */
+  playerDisconnect(player) {
+    // Try to cleanup player's data in UI's.
+    this.interfaces.forEach((ui) => {
+      if (ui.playerData.hasOwnProperty(player.login)) {
+        console.error('Cleanup player UIs!');
+        ui.destroy([player.login], true);
+      }
+    });
   }
 
 
@@ -153,6 +169,22 @@ export default class extends EventEmitter {
   }
 
   /**
+   * Destroy ManiaLink ID for logins or global.
+   *
+   * @param {string} id ManiaLink ID.
+   * @param {string[]|boolean} [logins] Array with logins, or false for all.
+   */
+  destroy (id, logins) {
+    logins = logins || false;
+    let send = '<manialink id="' + id + '"></manialink>';
+
+    if (logins) {
+      return this.app.server.send().custom('SendDisplayManialinkPageToLogin', [logins.join(','), send, 0, false]);
+    }
+    return this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]);
+  }
+
+  /**
    * ManiaLink Answer Event.
    *
    * @param {object} params
@@ -165,7 +197,11 @@ export default class extends EventEmitter {
     // Emit event on manager.
     if (params.answer.indexOf('core_button_') === 0) {
       this.emit(params.answer.substr(12), params); // Only get the last bit if it's a core button.
+    } else if (params.answer.indexOf('|') !== -1) {
+      // Is ListView action!
+      this.emit(params.answer.substr(0, params.answer.indexOf('|')), params);
     } else {
+      // Normal UI event.
       this.emit(params.answer, params);
     }
     return Promise.resolve();
