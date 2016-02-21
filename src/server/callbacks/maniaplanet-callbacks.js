@@ -169,7 +169,10 @@ export default function (manager) {
       return raw[0];
     },
     flow: (app, params) => {
-      return app.gameFacade.maps.begin(params.UId);
+      // Update Infos and map list.
+      return app.serverFacade.client.updateInfos()
+        .then(() => app.gameFacade.maps.begin(params.UId))
+        .then(() => app.pluginFacade.manager.begin());
     }
   });
 

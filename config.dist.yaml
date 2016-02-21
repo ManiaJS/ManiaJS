@@ -1,9 +1,11 @@
-# CONFIGURATION FILE FOR MANIAJS
+# Configuration for ManiaJS and Plugins.
+# DO NOT CHANGE WHEN THE CONTROLLER IS RUNNING! CLOSE CONTROLLER AND REFRESH THE FILE!
 
 config:
   debug: true
 
   server:
+    game: 'trackmania' # Could be 'trackmania' or 'shootmania'
     address: '127.0.0.1'
     port: 5000
     authentication:
