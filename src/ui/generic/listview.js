@@ -37,7 +37,7 @@ export default class extends EventEmitter {
     this.columns = columns;
     this.data = data;
 
-    this.ui = this.app.uiFacade.build(this.app, 'list', 2);
+    this.ui = this.app.uiFacade.build(this.app, 'list', 2, true);
 
     this.range = {
       start: 0,
@@ -205,38 +205,49 @@ export default class extends EventEmitter {
     });
 
     // View Handlers.
-    this.ui.on('close',     (params) => this.handleClose(params));
+    this.ui.on('close',     (params) => this.handleClose(params.login));
 
-    this.ui.on('first',     (params) => this.handleFirst(params));
-    this.ui.on('prev_10',   (params) => this.handlePrev(10));
-    this.ui.on('prev',      (params) => this.handlePrev(1));
-    this.ui.on('next',      (params) => this.handleNext(1));
-    this.ui.on('next_10',   (params) => this.handleNext(10));
-    this.ui.on('last',      (params) => this.handleLast(params));
+    this.ui.on('first',     (params) => this.handleFirst(params.login));
+    this.ui.on('prev_10',   (params) => this.handlePrev(params.login, 10));
+    this.ui.on('prev',      (params) => this.handlePrev(params.login, 1));
+    this.ui.on('next',      (params) => this.handleNext(params.login, 1));
+    this.ui.on('next_10',   (params) => this.handleNext(params.login, 10));
+    this.ui.on('last',      (params) => this.handleLast(params.login));
   }
 
   /**
    * Handle Close Button.
    */
-  handleClose () {
-    this.close();
+  handleClose (login) {
+    if (this.player.login === login) {
+      this.close();
+    }
   }
 
-  handleLast () {
+  handleLast (login) {
+    if (this.player.login !== login) {
+      return;
+    }
     this.page = this.pages;
     this.range.start = (15 * this.pages) - 15;
     this.range.stop  = (15 * this.pages);
     this._pageUpdate();
   }
 
-  handleFirst () {
+  handleFirst (login) {
+    if (this.player.login !== login) {
+      return;
+    }
     this.page = 0;
     this.range.start = 0;
     this.range.stop  = 15;
     this._pageUpdate();
   }
 
-  handleNext (skip) {
+  handleNext (login, skip) {
+    if (this.player.login !== login) {
+      return;
+    }
     if ((this.page + skip) > this.pages) {
       return false;
     }
@@ -247,7 +258,10 @@ export default class extends EventEmitter {
     this._pageUpdate();
   }
 
-  handlePrev (skip) {
+  handlePrev (login, skip) {
+    if (this.player.login !== login) {
+      return;
+    }
     if ((this.page - skip) < 0) {
       return false;
     }

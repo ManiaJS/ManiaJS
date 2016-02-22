@@ -31,11 +31,11 @@
 
           {{#each this.data}}
             {{#if this.custom}}
-                {{this.custom}}
+                {{{this.custom}}}
             {{else if this.button}}
-                <quad posn="{{ this.left }} 0 0" sizen="6 6" style="{{ this.style }}" substyle="{{ this.substyle }}" bgcolor="FFF0" {{ this.event }} />
+                <quad posn="{{ this.left }} 0 0" sizen="6 6" style="{{ this.style }}" substyle="{{ this.substyle }}" bgcolor="FFF0" {{{ this.event }}} />
             {{else}}
-                <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 4" textsize="1.9" text="{{ this.text }}" {{ this.action }} />
+                <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 4" textsize="1.9" text="{{ this.text }}" {{{ this.action }}} />
             {{/if}}
           {{/each}}
         </frame>
