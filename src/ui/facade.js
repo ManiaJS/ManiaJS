@@ -58,9 +58,11 @@ export default class extends Facade {
    * @param {{}} context Give the plugin class, or app class (for core).
    * @param {string} viewName View File Name.
    * @param {number} [version] Optional manialink version (defaults to 2)
+   * @param {boolean} [unique] Optional, generate unique suffix for manialink ID (default true).
    */
-  build (context, viewName, version) {
+  build (context, viewName, version, unique) {
     version = version || 2;
+    unique  = unique !== false;
 
     // Determinate if running from plugin.
     var plugin = false;
@@ -75,7 +77,7 @@ export default class extends Facade {
       viewName += '.hbs';
     }
 
-    return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin, version);
+    return new InterfaceBuilder(this.app, this, path.normalize(baseDirectory + viewName), plugin, version, unique);
   }
 
 

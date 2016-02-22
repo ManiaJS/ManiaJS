@@ -29,13 +29,18 @@ export default class {
    * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    * @param {number} [version] ManiaLink Version, defaults to 2.
+   * @param {boolean} [unique] Unique ID Suffix, defaults true.
    */
-  constructor (app, facade, viewFile, plugin, version) {
+  constructor (app, facade, viewFile, plugin, version, unique) {
     plugin = plugin || false;
     version = version || 2;
+    unique  = unique !== false;
 
     // ManiaLink ID.
     this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/')+1);
+    if (unique) {
+      this.id += '|' + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    }
 
     this.facade = facade;
     this.app = app;
@@ -67,7 +72,7 @@ export default class {
   compile () {
     try {
       let source = fs.readFileSync(this.file, 'utf-8');
-      this.template = Handlebars.compile (source, { noEscape: true });
+      this.template = Handlebars.compile (source);
     } catch (err) {
       this.app.log.error('Error with loading/compiling view (' + this.file + ').: ', err);
     }
