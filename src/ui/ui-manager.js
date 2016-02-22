@@ -117,7 +117,7 @@ export default class extends EventEmitter {
           send =  '<manialink ';
           if(ui.version == 2)
             send += ' version="2"';
-          send += 'id="'+ui.id+'">';
+          send += 'id="' + ui.id + '">';
           send += ui.template(sendData);
           send += '</manialink>';
 
@@ -172,15 +172,25 @@ export default class extends EventEmitter {
    *
    * @param {string} id ManiaLink ID.
    * @param {string[]|boolean} [logins] Array with logins, or false for all.
+   * @param {boolean} [hide] Hide at client, default false.
    */
-  destroy (id, logins) {
+  destroy (id, logins, hide) {
     logins = logins || false;
+    hide = hide || false;
+
     let send = '<manialink id="' + id + '"></manialink>';
 
-    if (logins) {
-      return this.app.server.send().custom('SendDisplayManialinkPageToLogin', [logins.join(','), send, 0, false]).exec();
+    // Remove from map.
+    if (this.interfaces.has(id)) {
+      this.interfaces.delete(id);
     }
-    return this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec();
+
+    if (hide) {
+      if (logins) {
+        return this.app.server.send().custom('SendDisplayManialinkPageToLogin', [logins.join(','), send, 0, false]).exec();
+      }
+      return this.app.server.send().custom('SendDisplayManialinkPage', [send, 0, false]).exec();
+    }
   }
 
   /**
