@@ -149,7 +149,7 @@ export default class {
     sizes.buttonsLabelsTop = sizes.buttonsTop - 2;
 
     // Prepare by making the interface.
-    let ui = this.app.uiFacade.build(this.app, type, 2, true);
+    let ui = this.app.uiFacade.build(this.app, type, 2, '|' + players.join('|'));
 
     ui.global({
       title: title,

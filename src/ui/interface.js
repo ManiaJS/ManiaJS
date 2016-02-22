@@ -29,17 +29,17 @@ export default class {
    * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    * @param {number} [version] ManiaLink Version, defaults to 2.
-   * @param {boolean} [unique] Unique ID Suffix, defaults true.
+   * @param {string} [idSuffix] Unique ID Suffix. Optional, But give when interface is for one player only!
    */
-  constructor (app, facade, viewFile, plugin, version, unique) {
+  constructor (app, facade, viewFile, plugin, version, idSuffix) {
     plugin = plugin || false;
     version = version || 2;
-    unique  = unique !== false;
+    idSuffix = idSuffix || '';
 
     // ManiaLink ID.
     this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/')+1);
-    if (unique) {
-      this.id += '|' + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    if (idSuffix) {
+      this.id += idSuffix;
     }
 
     this.facade = facade;
@@ -52,6 +52,8 @@ export default class {
 
     this.timeout = 0;
     this.hideClick = false;
+
+    this.listeners = [];
 
     this.globalData = {};
     this.playerData = {};
@@ -154,12 +156,20 @@ export default class {
       });
     }
 
-    // Destroy at client.
-    if (noHide) {
-      return Promise.resolve();
-    }
+    // Remove listeners
+    this.removeAllListeners();
 
-    return this.facade.manager.destroy(this.id, logins);
+    // Destroy at manager (and hide).
+    return this.facade.manager.destroy(this.id, logins, noHide === false);
+  }
+
+  /**
+   * Remove all listeners from manager.
+   */
+  removeAllListeners() {
+    this.listeners.forEach((listener) => {
+      this.facade.manager.removeListener(listener.action, listener.callback);
+    });
   }
 
   /**
@@ -169,6 +179,8 @@ export default class {
    * @params {object} callback.data
    */
   on (action, callback) {
+    this.listeners.push({action: action, callback: callback});
+
     this.facade.manager.on(action, callback);
   }
 
@@ -179,6 +191,8 @@ export default class {
    * @params {object} callback.data
    */
   once (action, callback) {
+    this.listeners.push({action: action, callback: callback});
+
     this.facade.manager.once(action, callback);
   }
 

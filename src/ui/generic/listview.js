@@ -37,7 +37,7 @@ export default class extends EventEmitter {
     this.columns = columns;
     this.data = data;
 
-    this.ui = this.app.uiFacade.build(this.app, 'list', 2, true);
+    this.ui = this.app.uiFacade.build(this.app, 'list', 2, '|' + this.player.login);
 
     this.range = {
       start: 0,
@@ -221,6 +221,7 @@ export default class extends EventEmitter {
   handleClose (login) {
     if (this.player.login === login) {
       this.close();
+      this.emit('close', login);
     }
   }
 
@@ -232,6 +233,8 @@ export default class extends EventEmitter {
     this.range.start = (15 * this.pages) - 15;
     this.range.stop  = (15 * this.pages);
     this._pageUpdate();
+
+    this.emit('last', login);
   }
 
   handleFirst (login) {
@@ -242,6 +245,8 @@ export default class extends EventEmitter {
     this.range.start = 0;
     this.range.stop  = 15;
     this._pageUpdate();
+
+    this.emit('first', login);
   }
 
   handleNext (login, skip) {
@@ -256,6 +261,8 @@ export default class extends EventEmitter {
     this.page += skip;
 
     this._pageUpdate();
+
+    this.emit('next', login);
   }
 
   handlePrev (login, skip) {
@@ -270,6 +277,8 @@ export default class extends EventEmitter {
     this.page -= skip;
 
     this._pageUpdate();
+
+    this.emit('prev', login);
   }
 
   /**
@@ -306,6 +315,9 @@ export default class extends EventEmitter {
    */
   handle (event, params) {
     if (params.answer.indexOf('|') === -1) {
+      return false;
+    }
+    if (params.login !== this.player.login) {
       return false;
     }
 
