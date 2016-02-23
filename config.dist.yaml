@@ -3,6 +3,7 @@
 config:
   debug: true
 
+  # ManiaPlanet Dedicated Server
   server:
     address: '127.0.0.1'
     port: 5000
@@ -10,9 +11,11 @@ config:
       username: 'SuperAdmin'
       password: 'SuperAdmin'
 
+  # The users (logins) bellow will have masteradmin rights on start, when having those rights you could give others rights with the commands.
   masteradmins:
   - login
 
+  # Database Settings
   db:
     dialect: 'mysql' # Can be mysql, mariadb, sqlite, mssql, postgres.
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
@@ -51,6 +54,7 @@ config:
     sqlite:
       storage: './database.sqlite' # Path, relative to root of ManiaJS.
 
+# Plugin Configuration
 plugins:
   maniajs-help:
 
