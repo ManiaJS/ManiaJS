@@ -29,13 +29,18 @@ export default class {
    * @param {string} viewFile View File.
    * @param {{}} [plugin] Plugin Context, optional, only when calling from plugin.
    * @param {number} [version] ManiaLink Version, defaults to 2.
+   * @param {string} [idSuffix] Unique ID Suffix. Optional, But give when interface is for one player only!
    */
-  constructor (app, facade, viewFile, plugin, version) {
+  constructor (app, facade, viewFile, plugin, version, idSuffix) {
     plugin = plugin || false;
     version = version || 2;
+    idSuffix = idSuffix || '';
 
     // ManiaLink ID.
-    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/'));
+    this.id = (plugin ? plugin.name : 'core') + '__' + viewFile.substr(viewFile.lastIndexOf('/')+1);
+    if (idSuffix) {
+      this.id += idSuffix;
+    }
 
     this.facade = facade;
     this.app = app;
@@ -44,6 +49,11 @@ export default class {
     this.version = version;
 
     this.template = null;
+
+    this.timeout = 0;
+    this.hideClick = false;
+
+    this.listeners = [];
 
     this.globalData = {};
     this.playerData = {};
@@ -86,17 +96,28 @@ export default class {
   /**
    * Set Data for the template, for a specific player.
    * @param {string} login Player Login.
-   * @param {{}} data Data. Indexed by Player Logins.
+   * @param {{}} [data] Data. Indexed by Player Logins.
    *
    * @returns {InterfaceBuilder}
    */
   player (login, data) {
+    data = data || {};
+
     this.playerData[login] = data;
 
     this.playersChanged.push(login);
     return this;
   }
 
+  /**
+   * Update/Display interface.
+   *
+   * @see update
+   * @returns {*}
+   */
+  display () {
+    return this.update();
+  }
 
   /**
    * Update Interface. Will send update to the client(s).
@@ -106,12 +127,60 @@ export default class {
   }
 
   /**
+   * Hide the current ManiaLink.
+   * @param {string[]} [logins] Optional logins to hide the interface. Ignore or false for all players.
+   * @returns {Promise}
+   */
+  hide (logins) {
+    logins = logins || false;
+    return this.facade.manager.destroy(this.id, logins);
+  }
+
+  /**
+   * Destroy data and hide manialink. This will clear the data arrays! Please use this when you want to cleanup!
+   * @param {string[]} [logins] Optional logins, when provided we will not clear global data!.
+   * @param {boolean} [noHide] Optional, don't send empty manialink to hide, default false.
+   * @returns {Promise}
+   */
+  destroy (logins, noHide) {
+    logins = logins || false;
+    noHide = noHide || false;
+
+    // Cleanup.
+    if (! logins) {
+      this.playerData = [];
+      this.globalData = [];
+    } else {
+      logins.forEach((login) => {
+        delete this.playerData[login];
+      });
+    }
+
+    // Remove listeners
+    this.removeAllListeners();
+
+    // Destroy at manager (and hide).
+    return this.facade.manager.destroy(this.id, logins, noHide === false);
+  }
+
+  /**
+   * Remove all listeners from manager.
+   */
+  removeAllListeners() {
+    this.listeners.forEach((listener) => {
+      this.facade.manager.removeListener(listener.action, listener.callback);
+    });
+  }
+
+  /**
    * On Answer.
    * @param {string} action Action Name.
    * @param {callback} callback Callback.
    * @params {object} callback.data
    */
   on (action, callback) {
+    this.listeners.push({action: action, callback: callback});
+
     this.facade.manager.on(action, callback);
   }
 
@@ -122,6 +191,8 @@ export default class {
    * @params {object} callback.data
    */
   once (action, callback) {
+    this.listeners.push({action: action, callback: callback});
+
     this.facade.manager.once(action, callback);
   }
 

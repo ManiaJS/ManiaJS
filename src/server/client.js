@@ -14,6 +14,12 @@ import Send from './send';
  * @class ServerClient
  *
  * @function {Send} send
+ *
+ * @property {object} game
+ * @property {object} game.CurrentGameInfos
+ * @property {number} game.CurrentGameInfos.GameMode
+ * @property {object] game.NextGameInfos
+ * @property {number} game.NextGameInfos.GameMode
  */
 export default class extends EventEmitter {
 
@@ -47,10 +53,15 @@ export default class extends EventEmitter {
     this.name = null;
     this.comment = null;
     this.path = null;
-    this.options = {}; // Will be the result of GetServerOptions() call to the mp server.
     this.ip = null;
     this.ports = {};
     this.playerId = null;
+
+    // Current Game Name, 'trackmania' or 'shootmania'.
+    this.gameName = app.config.server.game || 'trackmania';
+
+    this.options = {}; // Will be the result of GetServerOptions() call to the mp server.
+    this.game = {}; // Will be the result of GetGameInfo() call.
   }
 
   /**
@@ -68,8 +79,6 @@ export default class extends EventEmitter {
    * @returns {Promise}
    */
   connect() {
-    let self = this;
-
     this.app.log.debug("Connecting to ManiaPlanet Server...");
 
     return new Promise( (resolve, reject) => {
@@ -89,9 +98,14 @@ export default class extends EventEmitter {
 
       // On Error
       this.gbx.on('error', (err) => {
-        console.error(err.name);
         this.app.log.fatal(err.stack);
-        return reject(err);
+
+        if (err.message === 'read ECONNRESET') {
+          this.app.log.fatal('Connection with ManiaPlanet server lost!');
+          process.exit(1);
+        } else {
+          return reject(err);
+        }
       });
 
     }).then(() => {
@@ -143,6 +157,41 @@ export default class extends EventEmitter {
       this.name = options.Name;
       this.comment = options.Comment;
       this.options = options;
+    }).then(() => {
+      // Get game info
+      return this.getGameInfos();
+    }).then((info) => {
+      this.game = info;
+    }).then(() => {
+      // If scripted? Then enable scripted callbacks
+      if (this.isScripted()) {
+
+        this.app.log.debug('Enabling Scripted Callbacks...');
+
+        return new Promise((resolve, reject) => {
+          this.gbx.query('GetModeScriptSettings', []).then((settings) => {
+            if (! settings) {
+              return reject(new Error('No ScriptSettings received!'));
+            }
+
+            // Add callback listener.
+            if (! settings.hasOwnProperty('S_UseScriptCallbacks')) {
+              return resolve(); // Ignore and continue.
+            }
+
+            settings['S_UseScriptCallbacks'] = true;
+
+            console.log(settings);
+
+            // Set and resolve, BUG: will throw error, type error.
+            this.gbx.query('SetModeScriptSettings', [settings])
+              .then(() => resolve())
+              .catch((err) => reject(err));
+          });
+        });
+      }
+
+      return Promise.resolve();
     });
   }
 
@@ -159,7 +208,7 @@ export default class extends EventEmitter {
 
       this.callback.loadSet('maniaplanet');
 
-      if (1==1) { // TODO: Check if trackmania
+      if (this.app.config.server.game === 'trackmania') {
         this.callback.loadSet('trackmania');
       }
 
@@ -173,10 +222,29 @@ export default class extends EventEmitter {
    * @return {Promise}
    */
   updateInfos() {
-    return new Promise((resolve, reject) => {
-      // TODO: Update server name etc.
-      return resolve();
-    });
+    // Update
+    return this.getServerOptions()
+      .then(() => this.getGameInfos());
+  }
+
+  /**
+   * Is Current mode scripted?
+   *
+   * @returns {boolean}
+   */
+  isScripted() {
+    return this.game.CurrentGameInfos.GameMode === 0 || false;
+  }
+
+  /**
+   * Get Current Mode Integer, try to convert script name to game mode integer.
+   * @returns {number}
+   */
+  currentMode() {
+    if (this.isScripted()) {
+      // TODO: Script => legacy integers.
+    }
+    return this.game.CurrentGameInfos.GameMode;
   }
 
 
@@ -193,6 +261,20 @@ export default class extends EventEmitter {
         this.comment = res.Comment;
         this.options = res;
 
+        return resolve(res);
+      }).catch((err) => reject(err));
+    });
+  }
+
+  /**
+   * Get GetGameInfos call info. Will also update current server.game infos.
+   *
+   * @returns {Promise}
+   */
+  getGameInfos() {
+    return new Promise((resolve, reject) => {
+      this.gbx.query('GetGameInfos', []).then((res) => {
+        this.game = res;
         return resolve(res);
       }).catch((err) => reject(err));
     });
