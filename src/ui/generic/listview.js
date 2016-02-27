@@ -204,7 +204,7 @@ export default class extends EventEmitter {
         stop: this.range.stop
       },
 
-      next: this.page < this.pages,
+      next: (this.page + 1) < this.pages,
       prev: this.page > 0
     });
 
@@ -244,11 +244,6 @@ export default class extends EventEmitter {
     this.body.sort((a, b) => {
       return col.sort(a.data[column].text, b.data[column].text);
     });
-/*
-    this.body.forEach((b, i) => {
-      console.log(i, b.data[0].text);
-    });
-*/
     this.handleFirst(login);
   }
 
@@ -266,7 +261,7 @@ export default class extends EventEmitter {
     if (this.player.login !== login) {
       return;
     }
-    this.page = this.pages;
+    this.page = this.pages - 1;
     this.range.start = (15 * this.pages) - 15;
     this.range.stop  = (15 * this.pages);
     this._pageUpdate();
@@ -338,7 +333,7 @@ export default class extends EventEmitter {
         stop: this.range.stop
       },
 
-      next: this.page < this.pages,
+      next: (this.page + 1) < this.pages,
       prev: this.page > 0
     }).update();
   }
