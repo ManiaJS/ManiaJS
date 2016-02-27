@@ -45,7 +45,6 @@ export default class extends EventEmitter {
             this.app.server.send().chat('Error, you are not allowed to use this command!', {destination: data.login}).exec();
           }
         } else {
-          console.log(this.commands);
           this.app.server.send().chat('Error, command doesn\'t exist!', {destination: data.login}).exec();
         }
       }
