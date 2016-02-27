@@ -244,11 +244,6 @@ export default class extends EventEmitter {
     this.body.sort((a, b) => {
       return col.sort(a.data[column].text, b.data[column].text);
     });
-/*
-    this.body.forEach((b, i) => {
-      console.log(i, b.data[0].text);
-    });
-*/
     this.handleFirst(login);
   }
 

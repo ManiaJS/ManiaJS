@@ -120,7 +120,6 @@ export default class extends EventEmitter {
           send += 'id="' + ui.id + '">';
           send += ui.template(sendData);
           send += '</manialink>';
-          console.log(send);
 
           this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, ui.timeout, ui.hideClick]).exec()
             .then (()    => {
