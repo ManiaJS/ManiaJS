@@ -13,7 +13,7 @@
       <quad posn="0 0 0" sizen="210 8" bgcolor="0008"/>
 
       {{#each header}}
-        <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 6" text="{{ this.name }}" textsize="3" />
+        <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 6" text="{{ this.name }}" textsize="3" style="{{ this.colStyle }}" {{{ this.sortEvent }}} />
       {{/each}}
 
     </frame>
@@ -35,7 +35,7 @@
             {{else if this.button}}
                 <quad posn="{{ this.left }} 0 0" sizen="6 6" style="{{ this.style }}" substyle="{{ this.substyle }}" bgcolor="FFF0" {{{ this.event }}} />
             {{else}}
-                <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 4" textsize="1.9" text="{{ this.text }}" {{{ this.action }}} />
+                <label posn="{{ this.left }} -2 0" sizen="{{ this.width }} 3" textsize="1.9" style="{{ this.style }}" text="{{ this.text }}" {{{ this.event }}} />
             {{/if}}
           {{/each}}
         </frame>
