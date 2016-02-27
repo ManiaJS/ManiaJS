@@ -71,7 +71,19 @@ export default class extends EventEmitter {
       if (raw.hasOwnProperty('event')) {
         this.events.push(raw.event);
       }
+      if (raw.hasOwnProperty('sort') && typeof raw.sort === 'function') {
+        raw.sortEvent = 'action="_sort|' + this.header.length + '"';
+        if (this.events.indexOf('_sort') === -1) {
+          this.events.push('_sort');
+        }
+      } else {
+        raw.sort = null;
+        raw.sortEvent = '';
+      }
+
       this.totalWidth += raw.width;
+
+      raw.colStyle = (raw.sort ? 'TextRaceChat' : '');
 
       raw.left = (left + 2);
       left += raw.width;
@@ -131,6 +143,7 @@ export default class extends EventEmitter {
           col.substyle = rawCol.substyle || 'LvlRed';
         } else {
           col.text = text;
+          col.style = rawCol.style || '';
           col.custom = false;
           col.button = false;
         }
@@ -207,12 +220,36 @@ export default class extends EventEmitter {
     // View Handlers.
     this.ui.on('close',     (params) => this.handleClose(params.login));
 
+    this.on   ('_sort',     (params) => this.handleSort(params.login, params.idx));
+
     this.ui.on('first',     (params) => this.handleFirst(params.login));
     this.ui.on('prev_10',   (params) => this.handlePrev(params.login, 10));
     this.ui.on('prev',      (params) => this.handlePrev(params.login, 1));
     this.ui.on('next',      (params) => this.handleNext(params.login, 1));
     this.ui.on('next_10',   (params) => this.handleNext(params.login, 10));
     this.ui.on('last',      (params) => this.handleLast(params.login));
+  }
+
+  /**
+   * Handle Sorting Action
+   * @todo:
+   */
+  handleSort (login, column) {
+    if (this.header.length <= column) {
+      return;
+    }
+
+    let col = this.header[column];
+
+    this.body.sort((a, b) => {
+      return col.sort(a.data[column].text, b.data[column].text);
+    });
+/*
+    this.body.forEach((b, i) => {
+      console.log(i, b.data[0].text);
+    });
+*/
+    this.handleFirst(login);
   }
 
   /**
@@ -323,11 +360,12 @@ export default class extends EventEmitter {
 
     // Parse
     let idx = parseInt(params.answer.substr(params.answer.indexOf('|') + 1));
-    if (! isNaN(idx) && this.data.length > idx) {
-      let row = this.data[idx];
+
+    if (! isNaN(idx)) {
+      let row = this.data[idx] || false;
 
       // Emit
-      this.emit(event, {idx: idx, entry: row});
+      this.emit(event, {login: params.login, idx: idx, entry: row});
     }
   }
 
