@@ -5,6 +5,17 @@
 import { EventEmitter } from 'events';
 
 /**
+ * @typedef {object} CommandManager~CommandOptions
+ * @property {number} [level] Optional Minimum level for command, defaults to 0 (all players).
+ * @property {boolean} [hide] Hide in /help and /admin help? Default false.
+ * @property {string} [text] Text for /help and /admin help. Recommended to fill in!
+ * @property {boolean} [strict] Can only have one command with the command key? Default true. Must be false on both commands!
+ * @property {boolean} [admin] Admin Prefix? (/admin). Default false.
+ * @property {string} [command] Command Itself (internal name).
+ */
+
+
+/**
  * CommandManager - Holds events for '/' commands.
  * @class CommandManager
  *
@@ -26,37 +37,91 @@ export default class extends EventEmitter {
     this.client = client;
 
     this.commands = {};
+    this.adminCommands = {};
 
     // Register chat event
     this.client.on('player.chat', (data) => {
-      if(data.command) {
-        let parts = data.text.substr(1).split(' ');
-
-        let command = parts[0];
-        let params  = parts.slice(1);
-
-        if (this.commands.hasOwnProperty(command) &&
-            this.app.players.list.hasOwnProperty(data.login)) {
-          let options = this.commands[command];
-
-          if (this.app.players.list[data.login].level >= options.level) {
-            this.emit(command, this.app.players.list[data.login], params, data);
-          } else {
-            this.app.server.send().chat('Error, you are not allowed to use this command!', {destination: data.login}).exec();
-          }
-        } else {
-          console.log(this.commands);
-          this.app.server.send().chat('Error, command doesn\'t exist!', {destination: data.login}).exec();
-        }
-      }
+      this._onChat(data);
     });
   }
+
+  /**
+   * Handle Player Command (chat) event.
+   *
+   * @param {{login: string, command: boolean, text: string}} data
+   *
+   * @private
+   */
+  _onChat (data) {
+    if(data.command) {
+      let parts = data.text.substr(1).split(' ');
+
+      let command = parts[0];
+      let params = parts.slice(1);
+
+      if (!this.app.players.list.hasOwnProperty(data.login)) {
+        return;
+      }
+
+      // Admin command?
+      if (command === 'admin' && params.length >= 1) {
+        if (this.commands.hasOwnProperty('admin__' + params[0])) {
+          return this._handleAdmin(this.app.players.list[data.login], this.commands['admin__' + params[0]], params.slice(1), data);
+        }
+      }
+
+      // Non-admin command (could still have level btw).
+      if (this.commands.hasOwnProperty(command)) {
+        return this._handle(this.app.players.list[data.login], this.commands[command], params, data);
+      }
+
+      // If not yet returned, show error.
+      this.app.server.send().chat('Error, command doesn\'t exist!', {destination: data.login}).exec();
+    }
+  }
+
+  /**
+   * Handle Command.
+   *
+   * @param {Player} player
+   * @param {CommandManager~CommandOptions} command
+   * @param {string[]} params
+   * @param {object} data Raw Data.
+   * @private
+   */
+  _handle (player, command, params, data) {
+    if (player.level >= command.level) {
+      return this.emit(command.command, this.app.players.list[data.login], params, data);
+    }
+    this.app.server.send().chat('Error, you are not allowed to use this command!', {destination: data.login}).exec();
+  }
+
+  /**
+   * Handle Admin Command.
+   *
+   * @param {Player} player
+   * @param {CommandManager~CommandOptions} command
+   * @param {string[]} params
+   * @param {object} data Raw Data.
+   * @private
+   */
+  _handleAdmin (player, command, params, data) {
+    if (player.level >= command.level) {
+      return this.emit(command.command, this.app.players.list[data.login], params, data);
+    }
+    this.app.server.send().chat('Error, you are not allowed to use this command!', {destination: data.login}).exec();
+  }
+
+
+
+
+  // Public Methods.
 
   /**
    * Register callback for command.
    *
    * @param {string} command.
-   * @param {object} options Options, such as level, hide in help and comment.
+   * @param {CommandManager~CommandOptions} options Options, such as level, hide in help and comment.
    * @param {CommandManager~CommandCallback} callback
    */
   on(command, options, callback) {
@@ -79,12 +144,7 @@ export default class extends EventEmitter {
    *
    * @param {string} command.
    *
-   * @param {object|string|number} options Options, such as level, hide in help and comment. Give string for comment, number for level or object for mixed.
-   * @param {number} options.level Level of command, (minimum level).
-   * @param {boolean} options.hide Hide in help display (default false)
-   * @param {string} options.text Description and syntax of command.
-   * @param {boolean} options.strict Command can only have one listener, default false!.
-   *
+   * @param {CommandManager~CommandOptions|string|number} options Options, such as level, hide in help and comment. Give string for comment, number for level or object for mixed.
    * @param {CommandManager~CommandCallback} callback
    * @param {boolean} [single] Single time?
    */
@@ -101,6 +161,17 @@ export default class extends EventEmitter {
     if (! options.text) options.text = '';
     if (! options.level) options.level = 0;
     if (! options.strict) options.strict = false;
+
+    // /admin ...
+    options.admin = options.admin || false;
+    if (options.admin) { // Prefix the admin__.
+      command = 'admin ' + command;
+    }
+
+    // Replace whitespaces for __
+    command = command.replace(/\s/g, '__');
+
+    options.command = command; // Save command in options itself too.
 
     if (options.level > 3 || options.level < 0) {
       options.level = 0;
