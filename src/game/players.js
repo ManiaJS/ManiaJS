@@ -198,9 +198,16 @@ export default class {
     return Promise.reject(new Error('Player not in list!'));
   }
 
-
-
-
+  /**
+   * Get Details (Promise!).
+   *
+   * @param {Player|string} player Player db object or login!
+   * @returns {Promise<{}>}
+   */
+  details (player) {
+    let login = player.login || player;
+    return this.app.server.send().custom('GetDetailedPlayerInfo', [login]).exec();
+  }
 
 
 
