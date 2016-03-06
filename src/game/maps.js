@@ -21,14 +21,14 @@ export default class {
      * Key:   uid
      * Value: object
      *
-     * @type {{}}
+     * @type {{string: Map}}
      */
     this.list = {};
 
     /**
      * Current Map.
      *
-     * @type {null}
+     * @type {Map}
      */
     this.current = null;
   }
