@@ -8,8 +8,9 @@ import PluginManager from './plugin';
  * Plugin Facade
  *
  * @class PluginFacade
+ * @type {PluginFacade}
  */
-export default class extends Facade {
+export default class PluginFacade extends Facade {
 
   constructor(app) {
     super(app);

@@ -12,6 +12,7 @@ import * as Handlebars from 'handlebars';
  * Interface Builder Class
  *
  * @class InterfaceBuilder
+ * @type {InterfaceBuilder}
  *
  * @property {{}|null} plugin Plugin Context, null if not running in plugin!
  * @property {string}  templatePath Template Base Path.
@@ -20,7 +21,7 @@ import * as Handlebars from 'handlebars';
  * @property {{}|null} template Handlebars Template Instance.
  * @property {{}} data Handlebars Data.
  */
-export default class {
+export default class InterfaceBuilder {
 
   /**
    * Construct the Interface Builder.

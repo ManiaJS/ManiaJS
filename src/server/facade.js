@@ -8,9 +8,9 @@ import Client from './client';
  * Server Client Facade
  *
  * @class ServerFacade
- *
+ * @type {ServerFacade}
  */
-export default class extends Facade {
+export default class ServerFacade extends Facade {
 
   constructor(app) {
     super(app);

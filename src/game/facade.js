@@ -10,8 +10,9 @@ import Maps from './maps';
  * Game Facade
  *
  * @class GameFacade
+ * @type {GameFacade}
  */
-export default class extends Facade {
+export default class GameFacade extends Facade {
 
   constructor(app) {
     super(app);

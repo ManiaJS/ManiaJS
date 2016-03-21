@@ -18,12 +18,13 @@ import { EventEmitter } from 'events';
 /**
  * CommandManager - Holds events for '/' commands.
  * @class CommandManager
+ * @type {CommandManager}
  *
  * @property {object} commands
  * @property {App} app
  * @property {ServerClient} client
  */
-export default class extends EventEmitter {
+export default class CommandManager extends EventEmitter {
 
   /**
    * @param {App} app

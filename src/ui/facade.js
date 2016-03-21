@@ -17,11 +17,12 @@ import GenericInterface from './generic';
  * UI Facade
  *
  * @class UIFacade
+ * @type {UIFacade}
  *
  * @property {{}}           interfaces      Interfaces, indexed by player login.
  * @property {UIManager|{}} manager         UI Manager
  */
-export default class extends Facade {
+export default class UIFacade extends Facade {
 
   constructor(app) {
     super(app);

@@ -8,7 +8,12 @@ import * as glob from 'glob';
 
 import Sequelize from 'sequelize';
 
-export default class Client {
+/**
+ * Database Client Class.
+ * @class DatabaseClass
+ * @type {DatabaseClass}
+ */
+export default class DatabaseClient {
 
   constructor(app, config) {
     // Init props

@@ -3,7 +3,6 @@
  */
 'use strict';
 
-import * as hash from 'object-hash';
 import * as async from 'async';
 
 import { EventEmitter } from 'events';
@@ -12,12 +11,13 @@ import { EventEmitter } from 'events';
  * UI Manager
  *
  * @class UIManager
+ * @type {UIManager}
  *
  * @property {App} app
  *
  * @property {Map} interfaces  Player Specifics Interfaces.
  */
-export default class extends EventEmitter {
+export default class UIManager extends EventEmitter {
 
   constructor (app) {
     super();

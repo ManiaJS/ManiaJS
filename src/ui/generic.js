@@ -9,8 +9,9 @@ import ListView from './generic/listview';
  * Generic Interface Helper.
  *
  * @class GenericInterface
+ * @type {GenericInterface}
  */
-export default class {
+export default class GenericInterface {
 
   constructor (app, facade) {
     this.app = app;

@@ -12,6 +12,7 @@ import Send from './send';
 /**
  * Server Client.
  * @class ServerClient
+ * @type {ServerClient}
  *
  * @function {Send} send
  *
@@ -20,8 +21,10 @@ import Send from './send';
  * @property {number} game.CurrentGameInfos.GameMode
  * @property {object] game.NextGameInfos
  * @property {number} game.NextGameInfos.GameMode
+ *
+ * @property {{data:string,maps:string,skins:string}} paths Server Paths.
  */
-export default class extends EventEmitter {
+export default class ServerClient extends EventEmitter {
 
   /**
    * Prepare the client. parse configuration and pass it to the gbx client.
@@ -56,6 +59,8 @@ export default class extends EventEmitter {
     this.ip = null;
     this.ports = {};
     this.playerId = null;
+
+    this.paths = {};
 
     // Current Game Name, 'trackmania' or 'shootmania'.
     this.gameName = app.config.server.game || 'trackmania';

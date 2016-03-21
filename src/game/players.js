@@ -10,8 +10,9 @@ import * as async from 'async';
  * Players game flow class.
  *
  * @class Players
+ * @type {Players}
  */
-export default class {
+export default class Players {
   constructor(app) {
     this.app = app;
 
