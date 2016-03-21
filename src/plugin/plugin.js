@@ -10,8 +10,9 @@ import { DepGraph } from 'dependency-graph';
 /**
  * Plugin class.
  * @class PluginManager
+ * @type {PluginManager}
  */
-export default class {
+export default class PluginManager {
 
   /**
    * Construct plugin manager.

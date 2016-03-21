@@ -10,6 +10,7 @@ import { EventEmitter } from 'events';
  * List View
  *
  * @class ListView
+ * @type {ListView}
  *
  * @property {App} app
  * @property {string} title Title of list.
@@ -17,7 +18,7 @@ import { EventEmitter } from 'events';
  * @property {[{name: {string}, field: {string}, width: {number}, [level]: {number}, [event]: {string}}]} columns Columns to define.
  * @property {[{}]} data Array with objects. Give a custom manialink with the 'custom' key. This will be injected into the row!
  */
-export default class extends EventEmitter {
+export default class ListView extends EventEmitter {
   /**
    * Construct List View
    * @param {App} app

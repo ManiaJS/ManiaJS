@@ -1,13 +1,15 @@
 'use strict';
 
 /**
- * base facade
+ * Base Facade
  * @class BaseFacade
+ * @type {BaseFacade}
+ * @abstract
  *
  * @property {App} app
  * @function {Promise} init
  */
-export default class {
+export default class BaseFacade {
 
   /**
    * Construct Facade

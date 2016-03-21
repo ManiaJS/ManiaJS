@@ -13,8 +13,9 @@ import TrackManiaCalls from './callbacks/trackmania-callbacks';
 /**
  * CallbackManager
  * @class CallbackManager
+ * @type {CallbackManager}
  */
-export default class {
+export default class CallbackManager {
 
   /**
    * @param {App} app

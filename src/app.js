@@ -18,6 +18,7 @@ import { config, raw as rawConfig } from './util/configuration';
  * App Interface Class.
  *
  * @class App
+ * @type {App}
  *
  * @property {{}}                 config
  * @property {{}}                 log
@@ -29,7 +30,7 @@ import { config, raw as rawConfig } from './util/configuration';
  * @property {UtilFacade}         util
  * @property {UIFacade}           ui
  */
-export default class {
+export default class App {
 
   constructor (log) {
     this.log = log;

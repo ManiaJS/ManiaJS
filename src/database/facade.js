@@ -8,8 +8,9 @@ import Client from './client';
  * Database Facade
  *
  * @class DatabaseFacade
+ * @type {DatabaseFacade}
  */
-export default class extends Facade {
+export default class DatabaseFacade extends Facade {
 
   constructor(app) {
     super(app);

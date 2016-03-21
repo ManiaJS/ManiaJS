@@ -3,7 +3,7 @@
  *
  * Read out all the configs. register exit handlers. start logging.
  *
- * Then finally start maniajs facades.
+ * Then finally start ManiaJS.
  */
 'use strict';
 

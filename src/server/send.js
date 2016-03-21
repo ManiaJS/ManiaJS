@@ -6,8 +6,9 @@
 /**
  * Send
  * @class Send
+ * @type {Send}
  */
-export default class {
+export default class Send {
 
   /**
    * Construct sending query instance.
