@@ -24,16 +24,12 @@ export default class ServerFacade extends Facade {
    * @returns {Promise}
    */
   init() {
-    let self = this;
-
     this.client = new Client(this.app);
 
     // Inject into App (client of mp, server for plugins).
     this.app.server = this.client;
 
-    return this.client.connect().catch((err) => {
-      self.app.log.error(err);
-    });
+    return this.client.connect();
   }
 
   /**

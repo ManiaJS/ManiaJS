@@ -4,6 +4,7 @@
  */
 import Gbx from 'gbxremote';
 import { EventEmitter } from 'events';
+import * as fs from 'fs';
 
 import CallbackManager from './callback-manager';
 import CommandManager from './command-manager';
@@ -167,7 +168,20 @@ export default class ServerClient extends EventEmitter {
       return this.getGameInfos();
     }).then((info) => {
       this.game = info;
-    }).then(() => {
+
+      // Get Directories.
+      return this.getServerDirectories();
+    }).then((dirs) => {
+      console.log(dirs);
+      this.paths = dirs;
+
+      // Test writing and reading in the data directory
+      if (! fs.existsSync(this.paths.data)) {
+        return Promise.reject(new Error('ManiaJS could not find the ManiaPlanet data dir! Is ManiaJS running on the same machine?'));
+      }
+      try {fs.accessSync(this.paths.data)}
+      catch (err) {return Promise.reject(err);}
+
       // If scripted? Then enable scripted callbacks
       if (this.isScripted()) {
 
@@ -282,6 +296,24 @@ export default class ServerClient extends EventEmitter {
         this.game = res;
         return resolve(res);
       }).catch((err) => reject(err));
+    });
+  }
+
+  /**
+   * Get Server Directories.
+   * @returns Promise promise with object: data, maps, skins.
+   */
+  getServerDirectories () {
+    return new Promise((resolve, reject) => {
+      this.gbx.query('system.multicall', [[
+        {methodName: 'GameDataDirectory', params: []},
+        {methodName: 'GetMapsDirectory', params: []},
+        {methodName: 'GetSkinsDirectory', params: []}
+      ]]).then((results) => {
+        return resolve({data: results[0][0], maps: results[1][0], skins: results[2][0]});
+      }).catch((err) => {
+        return reject(err);
+      });
     });
   }
 
