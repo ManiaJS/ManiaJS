@@ -172,7 +172,6 @@ export default class ServerClient extends EventEmitter {
       // Get Directories.
       return this.getServerDirectories();
     }).then((dirs) => {
-      console.log(dirs);
       this.paths = dirs;
 
       // Test writing and reading in the data directory
@@ -200,6 +199,7 @@ export default class ServerClient extends EventEmitter {
 
             settings['S_UseScriptCallbacks'] = true;
 
+            // TODO: Floats.
             console.log(settings);
 
             // Set and resolve, BUG: will throw error, type error.
