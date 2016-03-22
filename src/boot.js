@@ -42,7 +42,7 @@ function exitHandler(options) {
   if (options.error)
     log.error('Uncaught Exception: ', options.error.stack);
   if (options.exit) {
-    //process.exit();
+    process.exit();
   }
 }
 process.on('exit',              (   ) => exitHandler({cleanup: true}));
