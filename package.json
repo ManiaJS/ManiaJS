@@ -1,9 +1,14 @@
 {
   "name": "maniajs",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "ManiaPlanet (Dedicated) Server Controller.",
-  "keywords": ["maniajs", "maniaplanet", "trackmania", "shootmania", "controller"],
+  "keywords": [
+    "maniajs",
+    "maniaplanet",
+    "trackmania",
+    "shootmania",
+    "controller"
+  ],
   "bugs": {
     "url": "https://github.com/ManiaJS/ManiaJS/issues"
   },
