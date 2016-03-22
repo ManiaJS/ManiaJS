@@ -54,7 +54,5 @@ app.prepare()
   .then(()=>app.run())
   .catch((err)=>log.fatal(err));
 
-setTimeout(()=>process.exit(), 3500);
-
 /** Make sure we will resume executing process */
 process.stdin.resume();
