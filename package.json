@@ -13,15 +13,12 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "start": "npm run build && node ./maniajs.js",
-    "dev": "node ./maniajs-dev.js",
+    "start": "node ./maniajs.js",
+    "dev": "npm run build && node ./maniajs.js",
     "build": "babel src -d lib --copy-files"
   },
   "dependencies": {
-    "async": "^1.5.0",
-    "babel-cli": "^6.5.1",
-    "babel-preset-es2015": "^6.5.0",
-    "babel-register": "^6.5.1",
+    "async": "^1.5.2",
     "bunyan": "^1.6.0",
     "bunyan-prettystream": "^0.1.3",
     "colors": "^1.1.2",
@@ -52,6 +49,8 @@
     "tedious": "^1.13.2"
   },
   "devDependencies": {
-    "eslint": "^2.2.0"
+    "eslint": "^2.2.0",
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0"
   }
 }
