@@ -44,6 +44,12 @@ export default class DatabaseFacade extends Facade {
     });
   }
 
+  /**
+   * Exit Handling.
+   */
+  stop() {
+  }
+
 
   /**
    * Define Models of ManiaJS and Plugins!

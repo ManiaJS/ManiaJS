@@ -105,10 +105,16 @@ export default class App {
    * Exit Handler.
    * @returns {Promise}
    */
-  exit(error) {
+  exit() {
     return new Promise((resolve, reject) => {
-      this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller shutting down!').exec()
-        .then(()=>{resolve();}).catch((err)=>{reject(err);});
+      this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller shutting down!').exec();
+
+      this.pluginFacade.stop();
+      this.uiFacade.stop();
+      this.gameFacade.stop();
+      this.serverFacade.stop();
+      this.databaseFacade.stop();
+      this.utilFacade.stop();
     });
   }
 }

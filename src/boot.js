@@ -37,15 +37,13 @@ let app = new App(log);
 function exitHandler(options) {
   if (options.cleanup) {
     log.info('ManiaJS is going to shutdown...');
-    if (app && typeof app.exit === 'function') {
-      app.exit().then(()=>{process.exit();}).catch((err)=>{console.error(err); process.exit(1);});
-    }
-    // TODO: Close db, server and plugins.
+    app.exit();
   }
   if (options.error)
     log.error('Uncaught Exception: ', options.error.stack);
-  if (options.exit)
-    process.exit();
+  if (options.exit) {
+    //process.exit();
+  }
 }
 process.on('exit',              (   ) => exitHandler({cleanup: true}));
 process.on('SIGINT',            (   ) => exitHandler({exit   : true}));
@@ -56,6 +54,7 @@ app.prepare()
   .then(()=>app.run())
   .catch((err)=>log.fatal(err));
 
+setTimeout(()=>process.exit(), 3500);
 
 /** Make sure we will resume executing process */
 process.stdin.resume();

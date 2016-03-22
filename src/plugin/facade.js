@@ -33,4 +33,10 @@ export default class PluginFacade extends Facade {
   run() {
     return this.manager.startPlugins();
   }
+
+  /**
+   * Exit Handling.
+   */
+  stop() {
+  }
 }

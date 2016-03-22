@@ -54,6 +54,12 @@ export default class UIFacade extends Facade {
   }
 
   /**
+   * Exit Handling.
+   */
+  stop() {
+  }
+
+  /**
    * Get a builder instance.
    *
    * @param {{}} context Give the plugin class, or app class (for core).

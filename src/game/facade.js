@@ -39,4 +39,10 @@ export default class GameFacade extends Facade {
         return this.maps.boot();
       });
   }
+
+  /**
+   * Exit Handling.
+   */
+  stop() {
+  }
 }

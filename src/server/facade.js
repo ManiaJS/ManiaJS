@@ -40,4 +40,10 @@ export default class ServerFacade extends Facade {
   run() {
     return this.client.register();
   }
+
+  /**
+   * Exit Handling.
+   */
+  stop() {
+  }
 }
