@@ -43,5 +43,5 @@ database.sqlite
 ### Develop
 /plugins
 
-### Babel Output (dev)
+### Babel Output
 /lib/

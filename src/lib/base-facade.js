@@ -28,6 +28,18 @@ export default class BaseFacade {
   init() {}
 
   /**
+   * Run Facade (promise!)
+   *
+   * @return {Promise}
+   */
+  run() {}
+
+  /**
+   * Stop Facade (SYNC!).
+   */
+  stop() {}
+
+  /**
    * Is Facade?
    * @returns {boolean}
    */

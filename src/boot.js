@@ -30,37 +30,31 @@ var log = Bunyan.createLogger({
 });
 log.info('Starting ManiaJS...');
 
-
-/** Add exit handlers */
-function exitHandler(options, err) {
-  if (options.cleanup) {
-    log.info('ManiaJS is going to shutdown...');
-    // TODO: Close db, server and plugins.
-  }
-  if (err) {
-    log.error('Uncaught Exception', err.stack);
-  }
-  if (options.exit) {
-    log.info('Will now close...');
-
-    process.exit();
-  }
-}
-
-// Start handlers for exitting.
-process.on('exit',              exitHandler.bind(null, {cleanup: true}));
-process.on('SIGINT',            exitHandler.bind(null, {exit: true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
-
-
-
 /** Start ManiaJS */
 let app = new App(log);
 
+/** Set Error and exit handlers */
+function exitHandler(options) {
+  if (options.cleanup) {
+    log.info('ManiaJS is going to shutdown...');
+    app.exit();
+  }
+  if (options.error)
+    log.error('Uncaught Exception: ', options.error.stack);
+  if (options.exit) {
+    //process.exit();
+  }
+}
+process.on('exit',              (   ) => exitHandler({cleanup: true}));
+process.on('SIGINT',            (   ) => exitHandler({exit   : true}));
+process.on('uncaughtException', (err) => exitHandler({error  : err}));
+
+/** Start ManiaJS */
 app.prepare()
   .then(()=>app.run())
   .catch((err)=>log.fatal(err));
 
+setTimeout(()=>process.exit(), 3500);
 
 /** Make sure we will resume executing process */
 process.stdin.resume();

@@ -56,7 +56,7 @@ export default class App {
      * Will be used for providing plugins features. Keep stable please.
      */
     this.server        = null;
-    this.plugins       = null;
+    this.plugins       = {  };
     this.models        = {  };
     this.players       = this.gameFacade.players;
     this.maps          = this.gameFacade.maps;
@@ -99,5 +99,22 @@ export default class App {
       .catch((err) => {
         this.log.error(err);
       });
+  }
+
+  /**
+   * Exit Handler.
+   * @returns {Promise}
+   */
+  exit() {
+    return new Promise((resolve, reject) => {
+      this.server.send().chat('$o$f90Mania$z$o$f90JS$z$fff: Controller shutting down!').exec();
+
+      this.pluginFacade.stop();
+      this.uiFacade.stop();
+      this.gameFacade.stop();
+      this.serverFacade.stop();
+      this.databaseFacade.stop();
+      this.utilFacade.stop();
+    });
   }
 }

@@ -34,4 +34,10 @@ export default class extends Facade {
   run() {
     return Promise.resolve();
   }
+
+  /**
+   * Exit Handling.
+   */
+  stop() {
+  }
 }
