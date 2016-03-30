@@ -54,8 +54,16 @@ var configSchema = {
   plugins: Joi.array()
 };
 
-export let raw = yaml.safeLoad(fs.readFileSync(directory.rootPath() + 'config.yaml', 'utf8'));
-export var config = raw.config;
+export var raw;
+export var config;
+
+export function load(file) {
+  file = file || directory.rootPath() + 'config.yaml';
+  raw = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+  config = raw.config;
+  console.log(raw);
+  console.log(module.exports);
+}
 
 export function validate() {
   var res = Joi.validate(this._config, configSchema);

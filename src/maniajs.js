@@ -6,7 +6,6 @@
 'use strict';
 
 import {Command} from 'commander';
-import * as process from 'process';
 
 // Import package.json information. This is used for getting version info.
 import * as packageInfo from './../package.json';
@@ -14,20 +13,24 @@ import * as packageInfo from './../package.json';
 // Configuration
 import * as configuration from './util/configuration';
 
+import boot from './boot';
+
 /** Init with CMD options */
-new Command()
+let program = new Command()
   .version(packageInfo.version)
   .option('-v, --verbose', 'More information in logs')
+  .option('-c, --config [location]', 'Run with config file location given')
   .parse(process.argv);
 
 /** Load config */
 try {
+  configuration.load((typeof program.config === 'string' ? program.config : null));
   configuration.validate();
 } catch (err) {
-  console.error("Error reading configuration (config.yaml):");
+  console.error("Error reading configuration (config.yaml), you could try to provide custom configuration path with -c/--config [path]:");
   console.error(err);
   process.exit(1);
 }
 
 /** Boot Controller */
-import './boot';
+boot();
