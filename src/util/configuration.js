@@ -56,13 +56,13 @@ var configSchema = {
 
 export var raw;
 export var config;
+export var location;
 
 export function load(file) {
   file = file || directory.rootPath() + 'config.yaml';
   raw = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
   config = raw.config;
-  console.log(raw);
-  console.log(module.exports);
+  location = file;
 }
 
 export function validate() {

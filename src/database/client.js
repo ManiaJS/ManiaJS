@@ -3,8 +3,10 @@
  */
 'use strict';
 
-import { normalize } from 'path';
+import * as path from 'path';
 import * as glob from 'glob';
+
+import {location} from './../util/configuration';
 
 import Sequelize from 'sequelize';
 
@@ -40,7 +42,12 @@ export default class DatabaseClient {
     if (config.dialect === 'sqlite') {
       Object.assign(options, {
         dialect: 'sqlite',
-        storage: normalize(__dirname + "/../../" + config.sqlite.storage)
+        storage: (
+          config.sqlite.storage.startsWith('./') ?
+            path.normalize(location + '/' + config.sqlite.storage)
+            :
+            path.resolve(config.sqlite.storage)
+        )
       });
     }
 
@@ -92,7 +99,7 @@ export default class DatabaseClient {
    * Load all core models.
    */
   loadCoreModels() {
-    let list = glob.sync(normalize(__dirname + '/../models/') + '*.js');
+    let list = glob.sync(path.normalize(__dirname + '/../models/') + '*.js');
 
     if (list.length > 0) {
       list.forEach((file) => {
