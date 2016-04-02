@@ -24,7 +24,15 @@ let program = new Command()
 
 /** Load config */
 try {
-  configuration.load((typeof program.config === 'string' ? program.config : null));
+  var configPath = null;
+  if (typeof program.config === 'string') {
+    configPath = program.config;
+  } else if (process.env.hasOwnProperty('MJS_CONFIG_PATH')) {
+    configPath = process.env.MJS_CONFIG_PATH;
+  } else {
+    configPath = null;
+  }
+  configuration.load(configPath);
   configuration.validate();
 } catch (err) {
   console.error("Error reading configuration (config.yaml), you could try to provide custom configuration path with -c/--config [path]:");
