@@ -1,6 +1,6 @@
 {
   "name": "maniajs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ManiaPlanet (Dedicated) Server Controller.",
   "keywords": [
     "maniajs",
@@ -63,7 +63,7 @@
   "contributors": [
     {
       "name": "Tom Valk",
-      "email": "tomvalk@lt-box.info",
+      "email": "tomvalk@lt-box.info"
     },
     {
       "name": "Max Klaversma"
