@@ -58,15 +58,15 @@ config:
 
 # Plugin Configuration
 plugins:
-  maniajs-help:
+  '@maniajs/plugin-help':
 
-  maniajs-localrecords:
+  '@maniajs/plugin-localrecords':
     recordlimit: 100
     displaylimit: 50
 
-  maniajs-welcome:
+  '@maniajs/plugin-welcome':
 
-#  maniajs-dedimania:
+#  '@maniajs/plugin-dedimania':
 #    login: ****
-#    dedimaniacode: &****
+#    dedimaniacode: ****
 #    displaylimit: 50
