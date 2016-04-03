@@ -39,9 +39,7 @@
     "handlebars": "^4.0.5",
     "joi": "^8.0.1",
     "js-yaml": "^3.5.2",
-    "maniajs-plugin": "0.*",
-    "maniajs-plugin-sample": "0.*",
-    "maniajs-help": "0.*",
+    "@maniajs/plugin": "0.*",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",
     "object-hash": "^1.1.2",
@@ -66,7 +64,8 @@
       "email": "tomvalk@lt-box.info"
     },
     {
-      "name": "Max Klaversma"
+      "name": "Max Klaversma",
+      "email": "maxklaversma@gmail.com"
     }
   ]
 }
