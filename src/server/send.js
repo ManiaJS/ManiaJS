@@ -4,6 +4,13 @@
  */
 
 /**
+ * Global Send Queue. When using delayed sending.
+ * @type {Array}
+ * @todo Implement global queue, and runner.
+ */
+export var globalQueue = [];
+
+/**
  * Send
  * @class Send
  * @type {Send}
@@ -20,8 +27,8 @@ export default class Send {
     this.app = app;
     this.client = client;
 
-    // Contains the sending queue. (raw).
-    this.query = {};
+    // Contains the sending queues. (raw).
+    this.queue = [];
   }
 
   /**
@@ -39,19 +46,22 @@ export default class Send {
     let source = options.source || 'global';
     let destination = options.destination || false;
 
+    var query = {};
     if (source === 'global') {
       if (! destination) {
-        this.query = {
+        query = {
           query: 'ChatSendServerMessage',
           params: [('»» ' + text)]
         }
       } else {
-        this.query = {
+        query = {
           query: 'ChatSendServerMessageToLogin',
           params: [('» ' + text), destination]
         }
       }
+      this.queue.push(query);
     }
+    // TODO: Manipulate 'source'.
 
     return this;
   }
@@ -64,10 +74,10 @@ export default class Send {
    */
   custom(query, params) {
     params = params || [];
-    this.query = {
+    this.queue.push({
       query: query,
       params: params
-    };
+    });
     return this;
   }
 
@@ -77,10 +87,24 @@ export default class Send {
    * @return {Promise|boolean}
    */
   exec() {
-    if (! this.query.hasOwnProperty('query')) {
+    if (! this.queue.length) {
       return false;
     }
-    return this.client.gbx.query(this.query.query, this.query.params);
+    if (this.queue.length === 1) {
+      return this.client.gbx.query(this.queue[0].query, this.queue[0].params);
+    } else {
+      // TODO: Calculate size of queue. Limit is 2MB (XML!!)
+      // TODO: Add support for multicall (todo in gbxremote!).
+      let params = [];
+      this.queue.forEach((query) => {
+        params.push({methodName: query.query, params: query.params});
+      });
+      let inspect = require('util').inspect;
+      console.log(inspect(params, {colors: true}));
+
+      return Promise.reject('No support for multicalls yet!');
+      //return this.client.gbx.query('system.multicall', params);
+    }
   }
 }
 
