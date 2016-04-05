@@ -3,12 +3,13 @@
 import Facade from './../lib/base-facade';
 
 import * as times from './times';
+import * as gbx from './gbx';
 
 /**
  * Util Facade
  *
  * @class UtilFacade
- *
+ * @type {UtilFacade}
  */
 export default class extends Facade {
 
@@ -16,6 +17,7 @@ export default class extends Facade {
     super(app);
 
     this.times = times;
+    this.gbx = gbx;
   }
 
   /**
