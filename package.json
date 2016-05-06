@@ -43,7 +43,7 @@
     "js-yaml": "^3.5.2",
     "moment": "^2.13.0",
     "mysql": "^2.10.2",
-    "sequelize": "^3.19.2",
+    "sequelize": "^3.23.0",
     "sprintf-js": "^1.0.3"
   },
   "optionalDependencies": {
