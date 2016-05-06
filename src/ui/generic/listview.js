@@ -152,6 +152,9 @@ export default class ListView extends EventEmitter {
         // Event
         if (rawCol.hasOwnProperty('event') && rawCol.event) {
           col.event = 'action="' + rawCol.event + '|' + rowIdx + '"';
+          if (col.style === '') {
+            col.style = 'TextCardSmallScores2';
+          }
         } else {
           col.event = '';
         }
