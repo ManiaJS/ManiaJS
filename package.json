@@ -39,9 +39,9 @@
     "gbxremote": "^0.2.0",
     "glob": "^7.0.0",
     "handlebars": "^4.0.5",
-    "joi": "^8.0.1",
+    "joi": "^8.0.5",
     "js-yaml": "^3.5.2",
-    "moment": "^2.11.2",
+    "moment": "^2.13.0",
     "mysql": "^2.10.2",
     "sequelize": "^3.19.2",
     "sprintf-js": "^1.0.3"
