@@ -120,7 +120,7 @@ export default class ListView extends EventEmitter {
 
       this.header.forEach((rawCol, colIdx) => {
         if (rawCol.field && ! rawRow.hasOwnProperty(rawCol.field)) {
-          this.app.log.warn('List View: Data has no field as defined in column!');
+          this.app.log.info('List View: Data has no field as defined in column! Will be skipped!');
           return;
         }
         let col = {};
