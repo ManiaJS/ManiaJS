@@ -33,7 +33,7 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "debug": "^2.2.0",
-    "dependency-graph": "^0.4.1",
+    "dependency-graph": "^0.5.0",
     "forever-monitor": "^1.7.0",
     "fs-promise": "^0.5.0",
     "gbxremote": "^0.2.0",
