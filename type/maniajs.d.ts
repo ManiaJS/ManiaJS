@@ -612,6 +612,11 @@ declare module '@maniajs/plugin' {
         public version: string;
         public directory: string;
 
+        /**
+         * Plugin Config.
+         */
+        public config: any;
+
         public dependencies: string[];
         public game: GameRequirements;
 

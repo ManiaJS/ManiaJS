@@ -56,5 +56,5 @@ database.sqlite
 ### Develop
 /plugins
 
-### Babel Output
+### Babel/Typescript Output
 /lib/
