@@ -1,0 +1,11 @@
+{
+  "name": "@maniajs/plugin",
+  "main": "plugin.d.ts",
+  "dependencies": {},
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160524002506",
+    "sequelize": "registry:dt/sequelize#3.4.1+20160423143634",
+    "validator": "registry:dt/validator#4.5.1+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726"
+  }
+}

@@ -19,7 +19,7 @@ config:
 
   # Database Settings
   db:
-    dialect: 'mysql' # Can be mysql, mariadb, sqlite, mssql, postgres.
+    dialect: 'mysql' # Can be mysql, sqlite, mssql, postgres.
     # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
     # When not having build tools, you will get warnings when starting for the first time or run the installation script.
     # You can ignore this, but can't use the dialects then!
@@ -40,10 +40,6 @@ config:
     mysql:
       host: '127.0.0.1'
       port: 3306
-
-    mariadb:
-      host: '127.0.0.1'
-      port: 3307
 
     mssql:
       host: '127.0.0.1'

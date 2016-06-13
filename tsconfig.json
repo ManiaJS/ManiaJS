@@ -1,0 +1,63 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "commonjs",
+        "moduleResolution": "classic",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "removeComments": false,
+        "noImplicitAny": false,
+        "outDir": "./lib"
+    },
+    "exclude": [
+        "node_modules",
+        "./typings/*/**.d.ts"
+    ],
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./src/*.ts",
+        "./test/**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "resolveGlobs": true,
+        "forkChecker": true
+    },
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": false
+    },
+    "files": [
+        "src/App.ts",
+        "src/Boot.ts",
+        "src/Database/Client.ts",
+        "src/Database/index.ts",
+        "src/Game/index.ts",
+        "src/Game/Maps.ts",
+        "src/Game/Players.ts",
+        "src/Models/Map.ts",
+        "src/Models/Player.ts",
+        "src/plugin/index.ts",
+        "src/plugin/PluginManager.ts",
+        "src/Server/CallbackManager.ts",
+        "src/Server/callbacks/ManiaplanetCallbacks.ts",
+        "src/Server/callbacks/TrackmaniaCallbacks.ts",
+        "src/Server/Client.ts",
+        "src/Server/CommandManager.ts",
+        "src/Server/index.ts",
+        "src/Server/Send.ts",
+        "src/ui/Generic/ListView.ts",
+        "src/ui/GenericInterface.ts",
+        "src/ui/index.ts",
+        "src/ui/Interface.ts",
+        "src/ui/UIManager.ts",
+        "src/util/configuration.ts",
+        "src/util/directory.ts",
+        "src/util/Facade.ts",
+        "src/util/index.ts",
+        "src/util/Logger.ts",
+        "src/util/Times.ts"
+    ]
+}
