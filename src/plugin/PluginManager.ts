@@ -20,7 +20,7 @@ export class PluginManager {
   private app: App;
   private graph: any;
 
-  private plugins: {[s: string]: any}; // TODO: Interface project, the definition of plugin itself.
+  private plugins: {[s: string]: any};
   private order: Array<string>; // Order of plugin UID's.
 
   private facade: BaseFacade;
@@ -63,7 +63,6 @@ export class PluginManager {
         let config = this.app.config.plugins[pluginId];
 
         // Load plugin (require).
-        // TODO: ModulePlugin type.
         var PluginClass: any = require(pluginId).default;
 
         // Save plugin details to plugin array.
@@ -104,7 +103,7 @@ export class PluginManager {
    */
   public async begin() {
     for (let pluginId of Object.keys(this.plugins)) {
-      let plugin:any = this.plugins[pluginId]; // TODO: Interface type convert.
+      let plugin:any = this.plugins[pluginId];
 
       if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes') && plugin.game.modes.length > 0) {
         if (plugin.game.modes.indexOf(this.app.serverFacade.client.currentMode()) > -1) {
@@ -143,7 +142,7 @@ export class PluginManager {
     let ids = Object.keys(this.plugins);
 
     for (let id of Object.keys(this.plugins)) {
-      let plugin: any = this.plugins[id]; // TODO: Type after interface.
+      let plugin: any = this.plugins[id];
       if (plugin.hasOwnProperty('dependencies')) {
         let dependencies = plugin.dependencies;
         if (dependencies.length > 0) {
@@ -208,7 +207,6 @@ export class PluginManager {
       }
     }
   }
-
 
   /**
    * Emit event on all plugins!
