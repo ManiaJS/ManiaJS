@@ -100,7 +100,7 @@ export class Client extends EventEmitter {
     // Debug all callbacks.
     if (this.app.config.config.hasOwnProperty('debug') && this.app.config.config.debug) {
       this.gbx.on('callback', (method, params) => {
-        this.app.log.debug("GBX: Callback '" + method + "':", params);
+        this.app.log.debug(`ServerClient: Callback '${method}':`, params);
       });
     }
 
@@ -174,6 +174,10 @@ export class Client extends EventEmitter {
           return; // Ignore and continue.
         }
         settings['S_UseScriptCallbacks'] = true;
+
+        if (settings.hasOwnProperty('S_UseLegacyCallback')) {
+          settings['S_UseLegacyCallback'] = false;
+        }
 
         // Set and resolve, BUG: will throw error, type error.
         await this.gbx.query('SetModeScriptSettings', [settings]);

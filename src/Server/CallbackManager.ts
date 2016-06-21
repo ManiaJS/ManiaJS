@@ -121,7 +121,7 @@ export class CallbackManager {
           (eventName as string[]).forEach((event) => {
             // Debug convert to event
             if (this.app.config.config.debug) {
-              this.app.log.debug(`'${callbackName}' ==> '${event}'. ! Emitting..`);
+              this.app.log.debug(`CallbackManager: '${callbackName}' ==> '${event}'. ! Emitting..`);
             }
 
             // Trigger the event on our client

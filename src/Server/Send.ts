@@ -113,8 +113,12 @@ export class Send {
     if (Array.isArray(params))
       return this.custom('TriggerModeScriptEventArray', [query, params]);
     else
-      if (params)
+      if (params) {
+        if (params === true) params = 'True';
+        if (params === false) params = 'False';
+
         return this.custom('TriggerModeScriptEvent', [query, params]);
+      }
       else
         return this.custom('TriggerModeScriptEvent', [query, '']);
   }
