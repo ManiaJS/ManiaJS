@@ -127,6 +127,12 @@ export class UIManager extends EventEmitter {
           send += '</manialink>';
 
           await this.app.server.send().custom('SendDisplayManialinkPageToLogin', [login, send, ui.timeout, ui.hideClick]).exec();
+
+          // If scripted, disable alt menu for players.
+          if (this.app.server.isScripted()) {
+            this.app.server.send().script('LibXmlRpc_DisableAltMenu', login).exec();
+          }
+
           sendData = null;
         }
       } catch (err) {
@@ -146,6 +152,14 @@ export class UIManager extends EventEmitter {
         send += '</manialink>';
 
         await this.app.server.send().custom('SendDisplayManialinkPage', [send, ui.timeout, ui.hideClick]).exec();
+
+        // If scripted, disable alt menu for all players.
+        if (this.app.server.isScripted()) {
+          Object.keys(this.app.players.list).forEach((login) => {
+            this.app.server.send().script('LibXmlRpc_DisableAltMenu', login).exec();
+          });
+        }
+
         send = null;
         data = null;
         players = null;
@@ -175,6 +189,13 @@ export class UIManager extends EventEmitter {
     // Remove from map.
     if (this.interfaces.has(id)) {
       this.interfaces.delete(id);
+    }
+
+    // Enable alt menu after closing.
+    if (logins && this.app.server.isScripted()) {
+      logins.forEach((login) => {
+        this.app.server.send().script('LibXmlRpc_EnableAltMenu', login).exec();
+      });
     }
 
     if (hide) {
