@@ -84,12 +84,54 @@ export class Send {
    * @param {array} params array of parameters.
    * @return {Send}
    */
-  public custom(query: string, params?: Array<any>): this {
+  public custom (query: string, params?: Array<any>): this {
     params = params || [];
     this.queue.push({
       query: query,
       params: params
     });
+    return this;
+  }
+
+  /**
+   * Custom query.
+   * @param query
+   * @param params
+   * @return {Send}
+   */
+  public call (query: string, params?: Array<any>): this {
+    return this.custom(query, params);
+  }
+
+  /**
+   * Send Script call to server.
+   * @param query
+   * @param params
+   */
+  public script (query: string, params?: any): this {
+    params = params || null;
+    if (Array.isArray(params))
+      return this.custom('TriggerModeScriptEventArray', [query, params]);
+    else
+      if (params)
+        return this.custom('TriggerModeScriptEvent', [query, params]);
+      else
+        return this.custom('TriggerModeScriptEvent', [query, '']);
+  }
+
+  /**
+   * Subscribe on any callback (useful for script query)
+   * @param event
+   * @param callback
+   */
+  public subscribe (event: string, callback: Function): this {
+    // When first letter is capital, register on raw messages too!
+    if (/[A-Z]/.test(event[0]))
+      this.app.server.gbx.once(event, callback);
+
+    // Register on callback manager.
+    this.app.server.once(event, callback);
+
     return this;
   }
 

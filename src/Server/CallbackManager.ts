@@ -152,6 +152,16 @@ export class CallbackManager {
 
       default: return;
     }
+
+    // TODO: Remove test.
+    if (name == 'maniaplanet') {
+      setTimeout(() => {
+        console.log('list callbacks');
+        this.app.server.send().script('LibXmlRpc_ListCallbacks').subscribe('script.callbacks', (callbacks) => {
+          console.log(callbacks);
+        }).exec();
+      }, 1000);
+    }
   }
 
   /**
