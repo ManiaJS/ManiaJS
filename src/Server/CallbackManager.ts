@@ -41,6 +41,8 @@ export class CallbackManager {
   private app: App;
   private client: Client;
 
+  private prepared: boolean; // Is script client prepared?
+
   constructor(facade: Server.Facade) {
     this.app = facade.app;
     this.client = facade.client;
@@ -140,6 +142,9 @@ export class CallbackManager {
    * @param {boolean} script Is scripted?
    */
   public loadSet(name: string, script: boolean) {
+    if (script && ! this.prepared)
+      this.prepareScriptedCallbacks();
+
     switch(name) {
       case 'maniaplanet': script ? ManiaPlanetScriptCalls(this) : ManiaPlanetLegacyCalls(this); break;
       case 'trackmania' : script ? TrackManiaScriptCalls(this)  : TrackManiaLegacyCalls(this);  break;
@@ -147,5 +152,18 @@ export class CallbackManager {
 
       default: return;
     }
+  }
+
+  /**
+   * Prepare by registering the modescript callbacks to myself.
+   */
+  private prepareScriptedCallbacks() {
+    this.prepared = true;
+    this.client.gbx.on('ManiaPlanet.ModeScriptCallback', (rawParams) => {
+      this.client.gbx.emit(rawParams[0], [rawParams[1]]);
+    });
+    this.client.gbx.on('ManiaPlanet.ModeScriptCallbackArray', (rawParams) => {
+      this.client.gbx.emit(rawParams[0], rawParams[1]);
+    });
   }
 }

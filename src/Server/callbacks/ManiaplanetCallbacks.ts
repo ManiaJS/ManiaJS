@@ -231,11 +231,6 @@ export function legacy (manager: CallbackManager) {
       cmdParam: 3
     }
   });
-
-
-  // custom script callbacks.
-  // TODO: ModeScriptCallback + ModeScriptCallbackArray
-
 }
 
 export function script (manager: CallbackManager) {
@@ -244,7 +239,292 @@ export function script (manager: CallbackManager) {
 
   manager.register({
     callback: 'LibXmlRpc_BeginServer',
-    event: 'script.beginserver',
-    
-  })
+    event: 'script.server.begin'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginServerStop',
+    event: 'script.server.begin.stop'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginMatch',
+    event: 'script.match.begin',
+    parameters: {
+      matchNumber: 0, // Match Number
+      restarted: 1 // Is restarted?
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginMatchStop',
+    event: 'script.match.begin.stop',
+    parameters: {
+      matchNumber: 0, // Match Number
+      restarted: 1 // Is restarted?
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_LoadingMap',
+    event: 'script.map.loading',
+    parameters: {
+      number: 0,
+      uid: 1,
+      restarted: 2
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginMap',
+    event: 'script.map.begin',
+    parameters: {
+      number: 0,
+      uid: 1,
+      restarted: 2
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginMapStop',
+    event: 'script.map.begin.stop',
+    parameters: {
+      number: 0,
+      uid: 1,
+      restarted: 2
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginSubmatch',
+    event: 'script.submatch.begin',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginSubmatchStop',
+    event: 'script.submatch.begin.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginRound',
+    event: 'script.round.begin',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginRoundStop',
+    event: 'script.round.begin.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginTurn',
+    event: 'script.turn.begin',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginTurnStop',
+    event: 'script.turn.begin.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginPlaying',
+    event: 'script.playing.begin'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndPlaying',
+    event: 'script.playing.end'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndTurn',
+    event: 'script.turn.end',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndTurnStop',
+    event: 'script.turn.end.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndRound',
+    event: 'script.round.end',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndRoundStop',
+    event: 'script.round.end.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndSubmatch',
+    event: 'script.submatch.end',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndSubmatchStop',
+    event: 'script.submatch.end.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndMap',
+    event: 'script.map.end',
+    parameters: {
+      number: 0,
+      uid: 1
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndMapStop',
+    event: 'script.map.end.stop',
+    parameters: {
+      number: 0,
+      uid: 1
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_UnloadingMap',
+    event: 'script.map.unloading',
+    parameters: {
+      number: 0,
+      uid: 1
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndMatch',
+    event: 'script.match.end',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndMatchStop',
+    event: 'script.match.end.stop',
+    parameters: {
+      number: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndServer',
+    event: 'script.server.end'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndServerStop',
+    event: 'script.server.end.stop'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginPodium',
+    event: 'script.podium.begin'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndPodium',
+    event: 'script.podium.end'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginWarmUp',
+    event: 'script.warmup.begin'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_EndWarmUp',
+    event: 'script.warmup.end'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_Pause',
+    event: 'script.pause',
+    parameters: {
+      pause: 0
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_ScoresReady',
+    event: 'script.scores.ready'
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_Callbacks',
+    event: 'script.callbacks',
+    parse (raw) {
+      return raw;
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_CallbackHelp',
+    event: 'script.callbacks.help',
+    parse (raw) {
+      return raw;
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_BlockedCallbacks',
+    event: 'script.callbacks.blocked',
+    parse (raw) {
+      return raw;
+    }
+  });
+
+  manager.register({
+    callback: 'UI_Properties',
+    event: 'script.ui.properties',
+    parse (raw) {
+      return raw;
+    }
+  });
+
+  manager.register({
+    callback: 'LibXmlRpc_WarmUp',
+    event: 'script.warmup',
+    parameters: {
+      warmup: 0
+    }
+  });
+
 }
