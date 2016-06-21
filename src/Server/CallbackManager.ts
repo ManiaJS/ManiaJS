@@ -9,12 +9,13 @@ import {App} from './../App';
 import {Client, Game} from './Client';
 import {Server} from './index';
 
-import ManiaPlanetCalls from './callbacks/ManiaplanetCallbacks';
-import TrackManiaCalls from './callbacks/TrackmaniaCallbacks';
+import {legacy as ManiaPlanetLegacyCalls, script as ManiaPlanetScriptCalls} from './callbacks/ManiaPlanetCallbacks';
+import {legacy as TrackManiaLegacyCalls,  script as TrackManiaScriptCalls} from './callbacks/TrackManiaCallbacks';
+import {legacy as ShootManiaLegacyCalls,  script as ShootManiaScriptCalls} from './callbacks/ShootManiaCallbacks';
 
 export interface CallbackOptions {
   callback: string;
-  event: string;
+  event: string | string[];
   parameters?: {[s: string]: number};
 
   game?: Game[];
@@ -113,8 +114,17 @@ export class CallbackManager {
       // Promise the flow.
       flow(this.app, params)
         .then(() => {
-          // Trigger the event on our client
-          this.client.emit(eventName, params);
+          if (! Array.isArray(eventName)) eventName = [(eventName as string)];
+
+          (eventName as string[]).forEach((event) => {
+            // Debug convert to event
+            if (this.app.config.config.debug) {
+              this.app.log.debug(`'${callbackName}' ==> '${event}'. ! Emitting..`);
+            }
+
+            // Trigger the event on our client
+            this.client.emit(event, params);
+          });
         })
         .catch((err) => {
           this.app.log.warn(err.stack);
@@ -126,12 +136,14 @@ export class CallbackManager {
   /**
    * Load Set from specific prefixed sets.
    *
-   * @param {string} name For example: 'maniaplanet'
+   * @param {string} name For example: 'maniaplanet'.
+   * @param {boolean} script Is scripted?
    */
-  public loadSet(name) {
+  public loadSet(name: string, script: boolean) {
     switch(name) {
-      case 'maniaplanet': ManiaPlanetCalls(this); break;
-      case 'trackmania' : TrackManiaCalls(this);  break;
+      case 'maniaplanet': script ? ManiaPlanetScriptCalls(this) : ManiaPlanetLegacyCalls(this); break;
+      case 'trackmania' : script ? TrackManiaScriptCalls(this)  : TrackManiaLegacyCalls(this);  break;
+      case 'shootmania' : script ? ShootManiaScriptCalls(this)  : ShootManiaLegacyCalls(this);  break;
 
       default: return;
     }

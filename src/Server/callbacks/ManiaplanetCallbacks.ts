@@ -12,7 +12,7 @@ import {CallbackManager} from '../CallbackManager';
  * @param {CallbackManager} manager
  * @param {function} manager.register
  */
-export default function (manager: CallbackManager) {
+export function legacy (manager: CallbackManager) {
 
   /**
    * PLAYER EVENTS
@@ -236,4 +236,15 @@ export default function (manager: CallbackManager) {
   // custom script callbacks.
   // TODO: ModeScriptCallback + ModeScriptCallbackArray
 
+}
+
+export function script (manager: CallbackManager) {
+  // First register legacy calls.
+  legacy(manager);
+
+  manager.register({
+    callback: 'LibXmlRpc_BeginServer',
+    event: 'script.beginserver',
+    
+  })
 }

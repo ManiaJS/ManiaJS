@@ -36,6 +36,8 @@ export class Client extends EventEmitter {
   public ports: {port?: number, P2PPort?: number};
   public playerId: string; // TODO: Number?
 
+  public scriptSettings: any;
+
   public paths: {
     data: string,
     maps: string,
@@ -171,17 +173,12 @@ export class Client extends EventEmitter {
         if (! settings.hasOwnProperty('S_UseScriptCallbacks')) {
           return; // Ignore and continue.
         }
-
         settings['S_UseScriptCallbacks'] = true;
-
-        // TODO: Floats.
-        console.log(settings);
 
         // Set and resolve, BUG: will throw error, type error.
         await this.gbx.query('SetModeScriptSettings', [settings]);
 
-        let newSettings = await this.gbx.query('GetModeScriptSettings', []);
-        // TODO
+        this.scriptSettings = await this.gbx.query('GetModeScriptSettings', []);
       }
     } catch (err) {
       this.app.log.fatal(err);
@@ -200,10 +197,8 @@ export class Client extends EventEmitter {
     this.callback = new CallbackManager(this.facade);
     this.command = new CommandManager(this.facade);
 
-    this.callback.loadSet('maniaplanet');
-
-    if (this.app.config.config.server.game === 'trackmania')
-      this.callback.loadSet('trackmania');
+    this.callback.loadSet('maniaplanet', this.isScripted());
+    this.callback.loadSet(this.app.config.config.server.game, this.isScripted());
   }
 
   /**
@@ -236,7 +231,6 @@ export class Client extends EventEmitter {
     }
     return this.game.CurrentGameInfos.GameMode;
   }
-
 
   /**
    * Get Options of server.

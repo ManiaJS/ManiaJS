@@ -10,7 +10,7 @@ import {CallbackManager} from '../CallbackManager';
  * @param {CallbackManager} manager
  * @param {function} manager.register
  */
-export default function (manager: CallbackManager) {
+export function legacy (manager: CallbackManager) {
 
   manager.register({
     callback: 'TrackMania.PlayerCheckpoint',
@@ -42,4 +42,8 @@ export default function (manager: CallbackManager) {
       login: 1
     }
   });
+}
+
+export function script (manager: CallbackManager) {
+  legacy(manager);
 }
