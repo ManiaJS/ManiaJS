@@ -3,14 +3,12 @@ let fs = require('fs-promise');// import * as fs from 'fs-promise';
 import * as path from 'path';
 import * as glob from 'glob';
 
+import {Plugin} from './index';
+
 import {App} from '../App';
 import {Sequelize} from 'sequelize';
 import {BaseFacade} from '../Util/Facade';
 import {DepGraph} from '@tomvlk/dependency-graph';
-
-export class ModulePlugin {
-  // TODO: Define in interface project
-}
 
 /**
  * Plugin class.
@@ -30,7 +28,7 @@ export class PluginManager {
   /**
    * Construct plugin manager.
    */
-  constructor(facade: BaseFacade) {
+  constructor(facade: Plugin.Facade) {
     this.facade = facade;
     this.app = facade.app;
 

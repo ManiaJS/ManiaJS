@@ -29,6 +29,7 @@ declare module '@maniajs/plugin' {
         databaseFacade: Database.Facade;
         pluginFacade: Core.Plugin.Facade;
         gameFacade: Game.Facade;
+        settingFacade: Setting.Facade;
         uiFacade: UI.Facade;
         utilFacade: Util.Facade;
 
@@ -44,6 +45,7 @@ declare module '@maniajs/plugin' {
         server: Server.Client;
         models: { [s: string]: any };
         plugins: { [s: string]: any };
+        settings: ManiaJS.Core.Setting.SettingManager;
 
         configuration: Util.Configuration;
       }
@@ -117,6 +119,7 @@ declare module '@maniajs/plugin' {
       namespace Plugin {
         interface Facade extends Util.BaseFacade {
           manager: Core.Plugin.PluginManager;
+          pluginManager: Core.Plugin.PluginManager;
         }
 
         interface PluginManager {
@@ -128,6 +131,43 @@ declare module '@maniajs/plugin' {
            * @param options
            */
           emitAll(event: string, params?: any, options?: any)
+        }
+      }
+
+
+      namespace Setting {
+        interface Facade extends Util.BaseFacade {
+          settingManager: Core.Setting.SettingManager;
+        }
+
+        interface SettingManager {
+          isDefined (context: any): Promise<boolean>;
+          defineSettings (context: any, schema: SettingSchema): Promise<any>;
+
+          getAllSettings (context: any): Promise<Setting[]>;
+          setAllSettings (context: any, settings: Setting[]): Promise<any>;
+
+          setSetting (context: any, key: string, value: any): Promise<any>;
+          getSetting (context: any, key?: string): Promise<Setting>;
+          replaceSetting (context: any, setting: Setting): Promise<any>;
+          removeSetting (context: any, setting: Setting | string): Promise<any>;
+          clearSettings (context: any, keys?: string[]): Promise<any>;
+        }
+
+        interface SettingSchema {
+          categories: string[],
+          settings: Setting[]
+        }
+
+        interface Setting {
+          key: string,
+          name: string,
+          description?: string,
+          type: string, // 'text', 'boolean', 'enum', 'largetext', etc
+          enumeration?: string[],
+          value?: any,
+          category?: any,
+          visible?: boolean
         }
       }
 
