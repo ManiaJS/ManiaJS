@@ -11,7 +11,7 @@ import { sprintf } from 'sprintf-js';
 export function stringTime (input) {
   let min = Math.floor(input / (1000 * 60));
   let sec = Math.floor((input - min * 60 * 1000) / 1000);
-  let msec = (input + "").substr((input + "").length - 3);
+  let msec = input % 1000;
 
   if(msec) {
     if(min > 9) {
