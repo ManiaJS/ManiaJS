@@ -1,7 +1,6 @@
 
-import {BaseFacade} from '../util/facade';
+import {BaseFacade} from '../Util/facade';
 import {Client} from './Client';
-import {Configuration} from '../Util/Configuration';
 import {App} from '../App';
 
 export module Database {

@@ -66,7 +66,11 @@ let schema = {
         host: Joi.string().required(),
         port: Joi.number().required()
       },
-      mariadb: {
+      mssql: {
+        host: Joi.string().required(),
+        port: Joi.number().required()
+      },
+      postgres: {
         host: Joi.string().required(),
         port: Joi.number().required()
       },

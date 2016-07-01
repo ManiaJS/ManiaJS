@@ -6,7 +6,7 @@ import {Sequelize as SequelizeInstance} from 'sequelize';
 
 import {App} from '../app';
 import {Database} from './index';
-import {DatabaseDialect} from './../util/configuration';
+import {DatabaseDialect} from './../Util/Configuration';
 
 
 export class Client {
