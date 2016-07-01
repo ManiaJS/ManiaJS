@@ -6,8 +6,6 @@ import {Sequelize as SequelizeInstance} from 'sequelize';
 
 import {App} from '../app';
 import {Database} from './index';
-import {DatabaseDialect} from './../Util/Configuration';
-
 
 export class Client {
 
@@ -25,13 +23,14 @@ export class Client {
     let config = facade.config.config.config.db;
     this.sequelize = null;
 
-    let options = {
-      pool: config.pool
+    let options: any = {
+      pool: config.pool,
+      dialectOptions: {}
     };
 
-    if (config.dialect ===  DatabaseDialect.mysql
-      || config.dialect === DatabaseDialect.mssql
-      || config.dialect === DatabaseDialect.postgres) {
+    // MySQL/MariaDB and Postgres requires only host and port.
+    if (config.dialect ===  'mysql'
+      || config.dialect === 'postgres') {
 
       Object.assign(options, {
         host: config[config.dialect].host,
@@ -40,7 +39,27 @@ export class Client {
       });
     }
 
-    if (config.dialect === DatabaseDialect.sqlite) {
+    // MsSQL Requires special config, can contain only port or only instance name.
+    if (config.dialect === 'mssql') {
+      let mssqlOptions: any = {
+        dialect: config.dialect,
+        host: config[config.dialect].host
+      };
+
+      // When instance is provided, we will not fill in the port!
+      if (! config[config.dialect].port && config[config.dialect].instance) {
+        mssqlOptions.dialectOptions = {instanceName: config[config.dialect].instance};
+      } else if (config[config.dialect].port && ! config[config.dialect].instance) {
+        mssqlOptions.port = config[config.dialect].port;
+      } else {
+        throw new Error('For the MSSQL dialect is a port OR a instance name required, not both!');
+      }
+      // Copy the MsConfig parts to the options object.
+      Object.assign(options, mssqlOptions);
+    }
+
+    // SQLite requires a storage path.
+    if (config.dialect === 'sqlite') {
       Object.assign(options, {
         dialect: 'sqlite',
         storage: (
@@ -52,14 +71,12 @@ export class Client {
       });
     }
 
+    // Logging settings.
+    options.logging = false;
     if (this.app.config.config.db.debug) {
-      Object.assign(options, {
-        logging: (input) => {this.app.log.debug(input);}
-      });
-    } else {
-      Object.assign(options, {
-        logging: false
-      });
+      options.logging = (input) => {
+        this.app.log.debug(input);
+      };
     }
 
     this.options = options;

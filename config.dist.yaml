@@ -42,8 +42,14 @@ config:
       port: 3306
 
     mssql:
+      # Make sure you have the SQL Server Browser service running. Start it with the SQL Server Configuration Manager.
+      # Also enable the TCP/IP for the instance Network Configuration (you can configure this in the same manager tool).
+      # More information: https://manuel-rauber.com/2015/11/08/connect-to-ms-sql-using-node-js-and-sequelizejs/
       host: '127.0.0.1'
+      # Make sure you fill in 0 when using an instance
       port: 1433
+      # Make sure you leave this as empty when using port.
+      instance: 'SQLEXPRESS'
 
     postgres:
       host: '127.0.0.1'

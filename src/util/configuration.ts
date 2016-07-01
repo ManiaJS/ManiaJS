@@ -3,7 +3,6 @@ import * as directory from './Directory'
 
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import {Game} from '../Server/Client';
 import * as Package from 'pjson';
 
 /**
@@ -68,7 +67,8 @@ let schema = {
       },
       mssql: {
         host: Joi.string().required(),
-        port: Joi.number().required()
+        port: Joi.number().optional(),
+        instance: Joi.string().optional()
       },
       postgres: {
         host: Joi.string().required(),
@@ -102,7 +102,7 @@ export interface AppConfig {
   },
   masteradmins?: string[],
   db: {
-    dialect: DatabaseDialect,
+    dialect: string,
     database: string,
     authentication: {
       username: string,
@@ -130,11 +130,4 @@ export interface AppConfig {
 
 export interface PluginConfig {
 
-}
-
-export enum DatabaseDialect {
-  mssql,
-  mysql,
-  sqlite,
-  postgres
 }
