@@ -19,7 +19,7 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "preinstall": "npm i -g typescript typings grunt-cli typedoc && typings install",
+    "preinstall": "npm i -g typescript typings grunt-cli && typings install",
     "ts": "grunt ts",
     "watch": "grunt watch",
     "start": "node ./maniajs.js",
