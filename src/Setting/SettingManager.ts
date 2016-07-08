@@ -108,6 +108,36 @@ export class SettingManager extends EventEmitter {
   }
 
   /**
+   * Set setting (with foreign key) value.
+   * @param context
+   * @param key
+   * @param value
+   */
+  public async setSettingWithForeignKey (context: any, key: string, value: any, foreignKey: number): Promise<any> {
+    let setting = await this.settingModel.findOne({
+      where: { $and: [
+        {context: { $eq: this.getContextString(context) }},
+        {key: { $eq: key }},
+        {foreignKey: { $eq: foreignKey }}
+      ]}
+    });
+
+    if (setting == null) {
+      await this.settingModel.create({
+        context: this.getContextString(context),
+        key: key,
+        foreignKey: foreignKey,
+        name: '',
+        type: '',
+        value: value
+      });
+    } else {
+      setting.set('value', value);
+      await setting.save();
+    }
+  }
+
+  /**
    * Get setting.
    * @param context
    * @param key
@@ -117,6 +147,22 @@ export class SettingManager extends EventEmitter {
       where: { $and: [
         {context: { $eq: this.getContextString(context) }},
         {key: { $eq: key }}
+      ]}
+    });
+    return this.parseSetting(setting);
+  }
+
+  /**
+   * Get setting (with foreign key).
+   * @param context
+   * @param key
+   */
+  public async getSettingWithForeignKey (context: any, key: string, foreignKey: number): Promise<Setting> {
+    let setting = await this.settingModel.findOne({
+      where: { $and: [
+        {context: { $eq: this.getContextString(context) }},
+        {key: { $eq: key }},
+        {foreignKey: { $eq: foreignKey }}
       ]}
     });
     return this.parseSetting(setting);

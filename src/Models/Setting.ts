@@ -14,6 +14,10 @@ export default function (sequelize: Sequelize, DataTypes: DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
+    foreignKey: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false
