@@ -72,7 +72,7 @@ export class SettingManager extends EventEmitter {
   }
 }
 
-interface Setting {
+export interface Setting {
   key: string,
   name?: string,
   foreignKey?: number,

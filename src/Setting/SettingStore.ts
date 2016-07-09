@@ -1,7 +1,7 @@
 
 
 import {App} from '../App';
-import {SettingManager} from './SettingManager';
+import {SettingManager, Setting} from './SettingManager';
 
 import {Model} from 'sequelize';
 
@@ -31,9 +31,8 @@ export class SettingStore {
    * @param {string} key
    * @return {Promise<any>}
    */
-  public async get(key: string) {
-    return this.get(key, null);
-  }
+  public async get(key: string): Promise<Setting>;
+  public async get(key: string, foreignKey?: number): Promise<Setting>;
 
   /**
    * Get setting by key and foreignKey.
@@ -64,24 +63,33 @@ export class SettingStore {
    * @param {any} value
    * @return {Promise<boolean>}
    */
-  public async set(key: string, value: any) {
-    return this.set(key, null, value);
-  }
+  public async set(key: string, value: any);
+  public async set(key: string, foreignKeyOrValue: number | any, value?: any);
 
   /**
    * Set setting value (will create when not yet existing).
    *
    * @param {string} key
-   * @param {number} foreignKey
+   * @param {number|any} foreignKeyOrValue
    * @param {any} value
    *
    * @return {Promise<boolean>}
    */
-  public async set(key: string, foreignKey: number, value: any) {
+  public async set(key: string, foreignKeyOrValue: number | any, value?: any) {
+    var realValue: any;
+    var realForeignKey: number = null;
+
+    if (typeof foreignKeyOrValue === 'number') {
+      realForeignKey = foreignKeyOrValue;
+      realValue = value;
+    } else {
+      realValue = foreignKeyOrValue;
+    }
+
     let where: any = {$and: [
       {context: {$eq: this.contextString}},
       {key: {$eq: key}},
-      {foreignKey: {$eq: foreignKey}}
+      {foreignKey: {$eq: realForeignKey}}
     ]};
 
     let [setting, created] = await this.model.findOrBuild({
@@ -89,13 +97,13 @@ export class SettingStore {
       defaults: {
         context: this.contextString,
         key,
-        foreignKey,
-        value
+        foreignKey: realForeignKey,
+        realValue
       }
     });
 
     if (! created) {
-      setting.set('value', value);
+      setting.set('value', realValue);
       await setting.save();
     }
     return true;
