@@ -7,6 +7,7 @@ import {App} from '../App';
 import {Model} from 'sequelize';
 import {Instance} from 'sequelize';
 
+// todo: Rework so you can have an instance only for one context.
 export class SettingManager extends EventEmitter {
 
   private app: App;
@@ -34,30 +35,6 @@ export class SettingManager extends EventEmitter {
     this.clearSettings(this.app);
     this.clearSettings(this.app.plugins['@maniajs/plugin-karma']);
     return;
-  }
-
-  public async isDefined (context: any): Promise<boolean> {
-    let settings = await this.settingModel.findAndCount({
-      where: {
-        context: { $eq: this.getContextString(context) }
-      }
-    });
-    return settings && settings.count > 0;
-  }
-
-  /**
-   * Define settings for context (plugin or core/app).
-   * @param context
-   * @param schema
-   */
-  public async defineSettings (context: any, schema: SettingSchema) {
-    context = this.getContextString(context);
-
-    // Prepare all settings in database.
-    for (let setting of schema.settings) {
-      setting.value = null;
-      await this.settingModel.create(setting);
-    }
   }
 
   /**
@@ -94,33 +71,33 @@ export class SettingManager extends EventEmitter {
    * @param value
    */
   public async setSetting (context: any, key: string | {key: string, foreignKey?: number}, value: any): Promise<any> {
-    let where: any = {$and: []};
-    where.$and.push({
-      context: {$eq: this.getContextString(context)}
-    });
+    let context: string = this.getContextString(context);
+    var realKey: string;
+    var foreignKey: number;
 
-    if (typeof key === 'string') {
-      where.$and.push({
-        key: {$eq: key}
-      });
-    } else {
-      where.$and.push({
-        key: {$eq: key.key}
-      });
-      if (key.foreignKey) {
-        where.$and.push({
-          foreignKey: {$eq: key.foreignKey}
-        });
+    if (typeof key === 'object') {
+      foreignKey = key.foreignKey;
+      realKey = key.key;
+    } else if (typeof key === 'string') {
+      foreignKey = null;
+      realKey = key;
+    }
+
+    let where: any = {$and: [{
+      context: {$eq: this.getContextString(context)},
+      key: {$eq: realKey},
+      foreignKey: {$eq: foreignKey}
+    }]};
+
+    let setting = await this.settingModel.findOrCreate({
+      where,
+      defaults: {
+        context: this.getContextString(context),
+        key: realKey,
+        foreignKey,
+        value: value
       }
-    }
-
-    let setting = await this.settingModel.findOne({
-      where
     });
-
-    if (! setting) {
-      throw new Error('Setting key is not yet defined in the context store!');
-    }
 
     setting.set('value', value);
     await setting.save();
@@ -134,25 +111,23 @@ export class SettingManager extends EventEmitter {
    *            'key' and 'foreignKey' in it.
    */
   public async getSetting (context: any, key?: string | {key: string, foreignKey?: number}): Promise<Setting> {
-    let where: any = {$and : []};
-    where.$and.push({
-      context: { $eq: this.getContextString(context) }
-    });
+    let context: string = this.getContextString(context);
+    var realKey: string;
+    var foreignKey: number;
 
-    if (typeof key === 'string') {
-      where.$and.push({
-        key: {$eq: key}
-      });
-    } else {
-      where.$and.push({
-        key: {$eq: key.key}
-      });
-      if (key.foreignKey) {
-        where.$and.push({
-          foreignKey: {$eq: key.foreignKey}
-        });
-      }
+    if (typeof key === 'object') {
+      foreignKey = key.foreignKey;
+      realKey = key.key;
+    } else if (typeof key === 'string') {
+      foreignKey = null;
+      realKey = key;
     }
+
+    let where: any = {$and: [{
+      context: {$eq: this.getContextString(context)},
+      key: {$eq: realKey},
+      foreignKey: {$eq: foreignKey}
+    }]};
 
     let setting = await this.settingModel.findOne({
       where
@@ -172,7 +147,7 @@ export class SettingManager extends EventEmitter {
         {key: { $eq: setting.key }}
       ]}
     });
-    if (! instance) throw new Error('Setting key is not yet defined in the context store! (\''+setting.key+'\')');
+    if (! instance) throw new Error('Setting key is not yet saved before! (\''+setting.key+'\')');
 
     instance.set(setting);
 
@@ -183,7 +158,7 @@ export class SettingManager extends EventEmitter {
    * Remove setting.
    * @param context
    * @param setting key or setting instance.
-   */
+   */ // todo: Add foreign key support
   public async removeSetting (context: any, setting: Setting | string): Promise<any> {
     let instance: Instance<any> = await this.settingModel.findOne({
       where: { $and: [
@@ -202,7 +177,7 @@ export class SettingManager extends EventEmitter {
    * Clear all settings in context.
    * @param context
    * @param [keys] Optional, only the following keys.
-   */
+   */ // todo: Add foreign key support
   public async clearSettings (context: any, keys?: string[]): Promise<any> {
     let where: any = { $and: [
       {context: { $eq: this.getContextString(context) }}
