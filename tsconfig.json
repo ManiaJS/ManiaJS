@@ -1,67 +1,33 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "commonjs",
-        "moduleResolution": "classic",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "sourceMap": true,
-        "removeComments": false,
-        "noImplicitAny": false,
-        "outDir": "./lib"
-    },
-    "exclude": [
-        "node_modules",
-        "./typings/*/**.d.ts"
-    ],
-    "filesGlob": [
-        "./src/**/*.ts",
-        "./src/*.ts",
-        "./test/**/*.ts",
-        "!./node_modules/**/*.ts"
-    ],
-    "awesomeTypescriptLoaderOptions": {
-        "resolveGlobs": true,
-        "forkChecker": true
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "atom": {
-        "rewriteTsconfig": false
-    },
-    "files": [
-        "src/App.ts",
-        "src/Boot.ts",
-        "src/Database/Client.ts",
-        "src/Database/index.ts",
-        "src/Game/index.ts",
-        "src/Game/Maps.ts",
-        "src/Game/Players.ts",
-        "src/Models/Map.ts",
-        "src/Models/Player.ts",
-        "src/Models/Setting.ts",
-        "src/Plugin/index.ts",
-        "src/Plugin/PluginManager.ts",
-        "src/Server/CallbackManager.ts",
-        "src/Server/callbacks/ManiaplanetCallbacks.ts",
-        "src/Server/callbacks/ShootManiaCallbacks.ts",
-        "src/Server/callbacks/TrackmaniaCallbacks.ts",
-        "src/Server/Client.ts",
-        "src/Server/CommandManager.ts",
-        "src/Server/index.ts",
-        "src/Server/Send.ts",
-        "src/Setting/index.ts",
-        "src/Setting/SettingManager.ts",
-        "src/UI/Generic/ListView.ts",
-        "src/UI/GenericInterface.ts",
-        "src/UI/index.ts",
-        "src/UI/Interface.ts",
-        "src/UI/UIManager.ts",
-        "src/Util/configuration.ts",
-        "src/Util/directory.ts",
-        "src/Util/Facade.ts",
-        "src/Util/index.ts",
-        "src/Util/Logger.ts",
-        "src/Util/Times.ts"
-    ]
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "classic",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "noImplicitAny": false,
+    "outDir": "./lib"
+  },
+  "exclude": [
+    "node_modules",
+    "./typings/*/**.d.ts"
+  ],
+  "filesGlob": [
+    "!./node_modules/**/*.ts"
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "resolveGlobs": true,
+    "forkChecker": true
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": {
+    "rewriteTsconfig": false
+  },
+  "fun": [
+    "./src/**.ts",
+    "./test/**/*.ts"
+  ]
 }

@@ -2,15 +2,21 @@
 
 module.exports = {
   default: {
-    tsconfig: true
+    tsconfig: true,
 
+    files: [
+      {
+        src: ['src/**.ts'],
+        dest: 'lib'
+      }
+    ]
   }
 };
 
 let t = {
   files: [
     {
-      src: ['src/*/**.ts', 'src/*.ts'],
+      src: ['src/**.ts'],
       dest: 'lib'
     },
     // { src: 'test/**.ts' , dest: 'lib/test' }
