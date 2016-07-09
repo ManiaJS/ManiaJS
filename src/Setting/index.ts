@@ -21,14 +21,8 @@ export module Setting {
       this.settingManager = new SettingManager(this);
     }
 
-    public async init() {
-      await this.settingManager.loadSettings();
-    }
-
-    public async run () {
-      await this.settingManager.startSettings();
-    }
-
+    public async init() {}
+    public async run () {}
     public async stop() {}
   }
 }

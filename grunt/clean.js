@@ -2,7 +2,7 @@
 
 module.exports = {
   default: [
-    'lib/*'
+    'lib/**'
   ],
   test: [
     'config-mysql.yaml',
