@@ -25,9 +25,5 @@
   "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": false
-  },
-  "fun": [
-    "./src/**.ts",
-    "./test/**/*.ts"
-  ]
+  }
 }
