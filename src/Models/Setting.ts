@@ -52,7 +52,7 @@ export default function (sequelize: Sequelize, DataTypes: DataTypes) {
     indexes: [
       {
         unique: true,
-        fields: ['context', 'key']
+        fields: ['context', 'key', 'foreignKey']
       }
     ],
     hooks: {
