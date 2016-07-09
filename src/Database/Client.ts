@@ -4,7 +4,7 @@ import * as glob from 'glob';
 import * as Sequelize from 'sequelize';
 import {Sequelize as SequelizeInstance} from 'sequelize';
 
-import {App} from '../app';
+import {App} from '../App';
 import {Database} from './index';
 
 export class Client {
