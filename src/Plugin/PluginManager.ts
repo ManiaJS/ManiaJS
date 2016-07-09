@@ -149,13 +149,17 @@ export class PluginManager {
     for (let id of Object.keys(this.plugins)) {
       let plugin: any = this.plugins[id];
       if (plugin.hasOwnProperty('dependencies')) {
-        let dependencies = plugin.dependencies;
-        if (dependencies.length > 0) {
-          // Parse, add node and go on.
-          this.graph.addDependency(plugin);
+        plugin.dependencies.forEach((dep) => {
+          try {
+            this.graph.addDependency(id, dep);
+          } catch (err) {
+            this.app.log.fatal(
+              `Can't start plugin '${id}'! Dependency to plugin '${dep}' not met. Please install the
+               other plugin too, or contact the owner if you think this is an issue with the plugin (${id}).`, err);
+            process.exit(1);
+          }
 
-          // TODO: Test dependencies loading!
-        }
+        });
       }
     }
 
