@@ -663,6 +663,7 @@ declare module '@maniajs/plugin' {
         public plugins: any;
         public ui: ManiaJS.Core.UI.Facade;
         public models: {[s: string]: any};
+        public settings: ManiaJS.Core.Setting.SettingStore;
 
         /**
          * Make sure you don't use any of the app or other local properties yet. Only fill in the details about the
