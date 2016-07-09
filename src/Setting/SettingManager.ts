@@ -87,7 +87,8 @@ export class SettingManager extends EventEmitter {
 
   /**
    * Set setting value.
-   * @param context
+   * @param context Please provide the Plugin instance, or another core instance, this is dependent and will
+   *                specify your unique store environment
    * @param key Provide the string key, or if you want to supply the foreignKey too, supply an object with
    *            'key' and 'foreignKey' in it.
    * @param value
@@ -127,9 +128,10 @@ export class SettingManager extends EventEmitter {
 
   /**
    * Get setting.
-   * @param context
-   * @param key
-   * @param foreignKey
+   * @param context Please provide the Plugin instance, or another core instance, this is dependent and will
+   *                specify your unique store environment
+   * @param key Provide the string key, or if you want to supply the foreignKey too, supply an object with
+   *            'key' and 'foreignKey' in it.
    */
   public async getSetting (context: any, key?: string | {key: string, foreignKey?: number}): Promise<Setting> {
     let where: any = {$and : []};
