@@ -82,8 +82,13 @@ export class PluginManager {
           }
         }
 
-        // Inject App, options and child logger.
-        this.plugins[pluginId].inject(this.app, config, this.app.log.child({plugin: pluginId}));
+        // Inject several properties.
+        this.plugins[pluginId].inject({
+          app: this.app,
+          config,
+          log: this.app.log.child({plugin: pluginId}),
+          settingStore: this.app.settings.getStore(this.plugins[pluginId])
+        });
 
         // Register node
         this.graph.addNode(pluginId);
