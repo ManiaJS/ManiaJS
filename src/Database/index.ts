@@ -1,5 +1,5 @@
 
-import {BaseFacade} from '../Util/facade';
+import {BaseFacade} from '../Util/Facade';
 import {Client} from './Client';
 import {App} from '../App';
 
