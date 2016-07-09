@@ -35,4 +35,12 @@ module.exports = function (grunt) {
     'copy:default',
     'watch'
   ]);
+
+  grunt.registerTask('test', [
+    'clean:default',
+    'copy:test',
+    'ts:default',
+    'copy:default',
+    // '' TODO: Add test framework. Decide which framework we are going to use.
+  ]);
 };

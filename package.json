@@ -25,7 +25,8 @@
     "start": "node ./maniajs.js",
     "dev": "npm run build && node ./maniajs.js",
     "build": "grunt build",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "grunt test"
   },
   "dependencies": {
     "@maniajs/gbxparser": "^0.1.2",
