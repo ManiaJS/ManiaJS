@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "6"
+  - "5"
+
+before_install:
+  - npm install -g typescript typings grunt-cli
+  - npm install
+  - typings install

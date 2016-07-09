@@ -1,0 +1,75 @@
+# Configuration for ManiaJS and Plugins.
+# DO NOT CHANGE WHEN THE CONTROLLER IS RUNNING! CLOSE CONTROLLER AND REFRESH THE FILE!
+
+config:
+  debug: true
+  unittest: true # ONLY USE THIS IN UNITTESTS!!
+
+  # ManiaPlanet Dedicated Server
+  server:
+    game: 'trackmania' # Could be 'trackmania' or 'shootmania'
+    address: '127.0.0.1'
+    port: 5000
+    authentication:
+      username: 'SuperAdmin'
+      password: 'SuperAdmin'
+
+  # The users (logins) bellow will have masteradmin rights on start, when having those rights you could give others rights with the commands.
+  masteradmins:
+  - login
+
+  # Database Settings
+  db:
+    dialect: 'mysql' # Can be mysql, sqlite, mssql, postgres.
+    # ! ==> SQLite3 Requires compilation, this means that you have to get build-essentials on linux, Visual Studio on Windows or XCode on Mac OS X.
+    # When not having build tools, you will get warnings when starting for the first time or run the installation script.
+    # You can ignore this, but can't use the dialects then!
+    # To recompile run 'npm install sqlite3' in root
+
+    # Global Non-driver-dependent settings:
+    debug: false
+    database: 'maniajs'
+    authentication:
+      username: 'root'
+      password: ''
+    pool:
+      max: 5
+      min: 0
+      idle: 10000
+
+    # Driver settings
+    mysql:
+      host: '127.0.0.1'
+      port: 3306
+
+    mssql:
+      # Make sure you have the SQL Server Browser service running. Start it with the SQL Server Configuration Manager.
+      # Also enable the TCP/IP for the instance Network Configuration (you can configure this in the same manager tool).
+      # More information: https://manuel-rauber.com/2015/11/08/connect-to-ms-sql-using-node-js-and-sequelizejs/
+      host: '127.0.0.1'
+      # Make sure you fill in 0 when using an instance
+      port: 1433
+      # Make sure you leave this as empty when using port.
+      instance: 'SQLEXPRESS'
+
+    postgres:
+      host: '127.0.0.1'
+      port: 5432
+
+    sqlite:
+      storage: './database.sqlite' # Path, relative to root of ManiaJS.
+
+# Plugin Configuration
+plugins:
+  #'@maniajs/plugin-help':
+
+  #'@maniajs/plugin-localrecords':
+#    recordlimit: 100
+#    displaylimit: 50
+
+#  '@maniajs/plugin-welcome':
+
+#  '@maniajs/plugin-dedimania':
+#    login: ****
+#    dedimaniacode: ****
+#    displaylimit: 50
