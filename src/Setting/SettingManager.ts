@@ -60,7 +60,7 @@ export class SettingManager extends EventEmitter {
    * @param setting
    * @return {any}
    */
-  public parseSetting (setting): any {
+  public parseSetting (setting): Setting {
     if (! setting) return null;
     try {
       setting.value = JSON.parse(setting.value);

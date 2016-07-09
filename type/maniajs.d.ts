@@ -141,33 +141,25 @@ declare module '@maniajs/plugin' {
         }
 
         interface SettingManager {
-          isDefined (context: any): Promise<boolean>;
-          defineSettings (context: any, schema: SettingSchema): Promise<any>;
+          getStore (context: any): SettingStore;
 
-          getAllSettings (context: any): Promise<Setting[]>;
-          setAllSettings (context: any, settings: Setting[]): Promise<any>;
-
-          setSetting (context: any, key: string, value: any): Promise<any>;
-          getSetting (context: any, key?: string): Promise<Setting>;
-          replaceSetting (context: any, setting: Setting): Promise<any>;
-          removeSetting (context: any, setting: Setting | string): Promise<any>;
-          clearSettings (context: any, keys?: string[]): Promise<any>;
+          getContextString (context: any): string;
+          parseSetting (setting: any): Setting;
         }
 
-        interface SettingSchema {
-          categories: string[],
-          settings: Setting[]
+        interface SettingStore {
+          get(key: string): Promise<Setting>;
+          get(key: string, foreignKey?: number): Promise<Setting>;
+
+          set(key: string, value: any);
+          set(key: string, foreignKeyOrValue: number | any, value?: any);
         }
 
         interface Setting {
           key: string,
-          name: string,
-          description?: string,
-          type: string, // 'text', 'boolean', 'enum', 'largetext', etc
-          enumeration?: string[],
-          value?: any,
-          category?: any,
-          visible?: boolean
+          foreignKey?: number,
+          name?: string,
+          value?: any
         }
       }
 
