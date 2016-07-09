@@ -87,16 +87,35 @@ export class SettingManager extends EventEmitter {
 
   /**
    * Set setting value.
-   * @param context
-   * @param key
+   * @param context Please provide the Plugin instance, or another core instance, this is dependent and will
+   *                specify your unique store environment
+   * @param key Provide the string key, or if you want to supply the foreignKey too, supply an object with
+   *            'key' and 'foreignKey' in it.
    * @param value
    */
-  public async setSetting (context: any, key: string, value: any): Promise<any> {
+  public async setSetting (context: any, key: string | {key: string, foreignKey?: number}, value: any): Promise<any> {
+    let where: any = {$and: []};
+    where.$and.push({
+      context: {$eq: this.getContextString(context)}
+    });
+
+    if (typeof key === 'string') {
+      where.$and.push({
+        key: {$eq: key}
+      });
+    } else {
+      where.$and.push({
+        key: {$eq: key.key}
+      });
+      if (key.foreignKey) {
+        where.$and.push({
+          foreignKey: {$eq: key.foreignKey}
+        });
+      }
+    }
+
     let setting = await this.settingModel.findOne({
-      where: { $and: [
-        {context: { $eq: this.getContextString(context) }},
-        {key: { $eq: key }}
-      ]}
+      where
     });
 
     if (! setting) {
@@ -109,15 +128,34 @@ export class SettingManager extends EventEmitter {
 
   /**
    * Get setting.
-   * @param context
-   * @param key
+   * @param context Please provide the Plugin instance, or another core instance, this is dependent and will
+   *                specify your unique store environment
+   * @param key Provide the string key, or if you want to supply the foreignKey too, supply an object with
+   *            'key' and 'foreignKey' in it.
    */
-  public async getSetting (context: any, key?: string): Promise<Setting> {
+  public async getSetting (context: any, key?: string | {key: string, foreignKey?: number}): Promise<Setting> {
+    let where: any = {$and : []};
+    where.$and.push({
+      context: { $eq: this.getContextString(context) }
+    });
+
+    if (typeof key === 'string') {
+      where.$and.push({
+        key: {$eq: key}
+      });
+    } else {
+      where.$and.push({
+        key: {$eq: key.key}
+      });
+      if (key.foreignKey) {
+        where.$and.push({
+          foreignKey: {$eq: key.foreignKey}
+        });
+      }
+    }
+
     let setting = await this.settingModel.findOne({
-      where: { $and: [
-        {context: { $eq: this.getContextString(context) }},
-        {key: { $eq: key }}
-      ]}
+      where
     });
     return this.parseSetting(setting);
   }
@@ -232,6 +270,7 @@ interface Setting {
   key: string,
   name: string,
   type: string, // 'text', 'boolean', 'enum', 'largetext', etc
+  foreignKey?: number,
   enumeration?: string[],
   description?: string,
   value?: any,
