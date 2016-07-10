@@ -5,5 +5,5 @@ node_js:
 
 before_install:
   - npm install -g typescript typings grunt-cli
-  - npm install
   - typings install
+  - npm install
