@@ -169,11 +169,12 @@ export function legacy (manager: CallbackManager) {
     parse: (raw) => {
       return raw[0];
     },
-    flow: (app, params) => {
+    async flow (app, params) {
       // Update Infos and map list.
-      return app.serverFacade.client.updateInfos()
-        .then(() => app.gameFacade.maps.begin(params.UId))
-        .then(() => app.pluginFacade.manager.begin());
+      await app.serverFacade.client.refreshInfos();
+      await app.gameFacade.maps.begin(params.UId);
+      await app.gameFacade.mode.begin(params.UId);
+      await app.pluginFacade.manager.begin();
     }
   });
 
@@ -184,8 +185,6 @@ export function legacy (manager: CallbackManager) {
       map: 0
     }
   });
-
-  // TODO: ManiaPlanet.StatusChanged
 
   /**
    * OTHER EVENTS
@@ -526,5 +525,7 @@ export function script (manager: CallbackManager) {
       warmup: 0
     }
   });
+
+  // mode.change will be called on change of gamemode!
 
 }
