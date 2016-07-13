@@ -63,10 +63,12 @@ export module UI {
 
       // Determinate if running from plugin.
       var plugin = false;
+      var contextName = 'core';
       var baseDirectory = __dirname + '/view/';
 
       if (context.hasOwnProperty('directory')) {
         plugin = context;
+        contextName = context.name || 'unknown';
         baseDirectory = context.directory + '/view/';
       }
 
@@ -74,7 +76,12 @@ export module UI {
         viewName += '.hbs';
       }
 
-      return new Interface(this, path.normalize(baseDirectory + viewName), plugin, version, idSuffix);
+      let ui = new Interface(this, path.normalize(baseDirectory + viewName), plugin, version, idSuffix);
+
+      // Make sure we register the UI at the ui manager with the contextstring.
+      this.manager.registerContextInterface (context, ui);
+
+      return ui;
     }
 
 
