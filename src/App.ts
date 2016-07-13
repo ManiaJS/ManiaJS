@@ -106,6 +106,10 @@ export class App {
 
       this.log.info('Controller Ready!');
       await this.server.send().chat(`$o$f90Mania$o$f90JS$z$fff$s: Controller ready! $n(${this.version})`).exec();
+      await this.server.send().chat('$6DFThis server is running $f90Mania$f90JS$6DF, ' +
+        'the next generation, enormous fast and plugin based ManiaPlanet server controller.').exec();
+      await this.server.send().chat('$6DFMore information about $f90Mania$f90JS$6DF ' +
+        'is available on our site $lmaniajs.github.io$l').exec();
     } catch (err) {
       this.log.fatal(err);
     }
