@@ -60,6 +60,8 @@ export class Client {
 
     // SQLite requires a storage path.
     if (config.dialect === 'sqlite') {
+      let location = process.cwd();
+
       Object.assign(options, {
         dialect: 'sqlite',
         storage: (
