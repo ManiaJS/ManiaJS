@@ -4,10 +4,10 @@
  * The export will expose a base class for the plugin itself and some useful utils.
  */
 export {Sandbox} from './Plugin/Sandbox';
-
+export {Plugin} from './Plugin/Plugin';
 
 /**
- * This will be used to start the ManiaJS via programmatic method.
+ * Use Start for starting ManiaJS programmatically.
  */
 export function Start() {
   require('./Boot');
