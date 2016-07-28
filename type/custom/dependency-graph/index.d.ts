@@ -1,6 +1,6 @@
 
 declare module '@tomvlk/dependency-graph' {
-  /*export class DepGraph {
+  export class DepGraph {
     constructor();
     addNode (node: any, data?: any);
     removeNode (node: any);
@@ -17,5 +17,5 @@ declare module '@tomvlk/dependency-graph' {
     dependantsOf (node: any, leavesOnly?: boolean): Array<any>;
 
     overallOrder (leavesOnly?: boolean) : Array<any>;
-  }*/
+  }
 }
