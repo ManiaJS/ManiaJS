@@ -1,4 +1,4 @@
-
+//
 
 import {BaseFacade} from '../Util/Facade';
 import {PluginManager} from './PluginManager';
