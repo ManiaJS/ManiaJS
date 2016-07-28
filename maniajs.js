@@ -4,4 +4,4 @@
  * @license ICS {LICENSE file}
  * @author ManiaJS
  */
-require('./src/Boot');
+require('./').Start();
