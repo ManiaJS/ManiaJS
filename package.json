@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/ManiaJS/ManiaJS/issues"
   },
-  "main": "maniajs.js",
+  "main": "src/Export.js",
   "license": "ISC",
   "repository": "ManiaJS/ManiaJS",
   "engines": {
