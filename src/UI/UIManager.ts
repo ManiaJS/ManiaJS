@@ -22,6 +22,7 @@ export class UIManager extends EventEmitter {
   private facade: UI.Facade;
   private app: App;
   private interfaces: Map<string, Interface>;
+  private contextInterfaces: Map<string, Array<string>>;
 
   private interval: any;
 
@@ -33,6 +34,7 @@ export class UIManager extends EventEmitter {
     this.app = facade.app;
 
     this.interfaces = new Map();
+    this.contextInterfaces = new Map();
 
     // Update Interval
     this.interval = null;
@@ -219,5 +221,64 @@ export class UIManager extends EventEmitter {
       this.emit(params.answer, params);
     }
     return Promise.resolve();
+  }
+
+  /**
+   * INTERNALLY, register the UI for the context.
+   *
+   * @param context
+   * @param ui
+   */
+  public registerContextInterface(context:any, ui:Interface) {
+    let contextString = this.getContextString(context);
+    if (! contextString)
+      throw new Error('Context is invalid! Please give a Plugin instance when creating/building the UI!');
+
+    if (! this.contextInterfaces[contextString])
+      this.contextInterfaces[contextString] = [];
+
+    this.contextInterfaces[contextString].push(ui.id);
+  }
+
+
+  /**
+   * Destroy context interfaces.
+   * @param context
+   */
+  public async destroyContextInterfaces (context:any) {
+    if (typeof context !== 'string')
+      context = this.getContextString(context);
+
+    if (! this.contextInterfaces[context]) return;
+
+    for (let uiId of this.contextInterfaces[context]) {
+      if (! this.interfaces.has(uiId)) continue;
+      let ui: Interface = this.interfaces.get(uiId);
+
+      this.app.log.debug(`Destroy UI '${ui.id}' of context '${context}'`);
+
+      await ui.destroy();
+    }
+
+    // Clear the context interfaces.
+    this.contextInterfaces[context] = [];
+  }
+
+  /**
+   * Context to String converter.
+   *
+   * @param context
+   * @return {string}
+   */
+  private getContextString (context: any): string {
+    return context.hasOwnProperty('name') ?
+      context.name
+      :
+      (
+        context.hasOwnProperty('serverFacade') ?
+          'maniajs'
+          :
+          null
+      );
   }
 }

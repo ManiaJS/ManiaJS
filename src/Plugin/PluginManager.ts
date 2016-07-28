@@ -21,6 +21,13 @@ export class PluginManager {
   private graph: any;
 
   private plugins: {[s: string]: any};
+
+  // Contains incompatible plugins (disabled by system).
+  private incompatible: {[s: string]: any};
+
+  // Contains manually disabled plugins.
+  private disabled: {[s: string]: any}; // Contains all disabled plugins.
+
   private order: Array<string>; // Order of plugin UID's.
 
   private facade: BaseFacade;
@@ -36,6 +43,9 @@ export class PluginManager {
 
     // ObjectArray
     this.plugins = {};
+    this.disabled = {};
+    this.incompatible = {};
+
     // Array of plugin ids in order for starting.
     this.order = [];
   }
@@ -47,6 +57,9 @@ export class PluginManager {
    * @returns {Promise}
    */
   public async loadPlugins() {
+    // Register for Mode Changes and Script Changes
+    this.app.server.on('mode.change', (transition) => { this.onGameChange('mode', transition); });
+
     this.app.log.debug('Loading plugins from configuration...');
 
     // Get plugins from config.
@@ -66,40 +79,57 @@ export class PluginManager {
         var PluginClass: any = require(pluginId).default;
 
         // Save plugin details to plugin array.
-        this.plugins[pluginId] = new PluginClass();
-
-        // Is Plugin suited for the Game (trackmania/shootmania)
-        if (this.plugins[pluginId].hasOwnProperty('game') && this.plugins[pluginId].game.hasOwnProperty('games')) {
-          if (this.plugins[pluginId].game.games.indexOf(this.app.serverFacade.client.gameName) > -1
-            || this.plugins[pluginId].game.games.length === 0) {
-            // All Right! Let's continue.
-          } else {
-            // Don't load! Unload from local properties, throw warning.
-            delete this.plugins[pluginId];
-            this.app.log.warn('Plugin \'' + pluginId + '\' is not suited for the current game! Plugin unloaded!');
-
-            continue; // Stop current loop.
-          }
-        }
+        let plugin = new PluginClass();
+        this.plugins[pluginId] = plugin;
 
         // Inject several properties.
-        this.plugins[pluginId].inject({
+        plugin.inject({
           app: this.app,
           config,
           log: this.app.log.child({plugin: pluginId}),
-          settingStore: this.app.settings.getStore(this.plugins[pluginId])
+          settingStore: this.app.settings.getStore(plugin)
         });
 
-        // Register node
-        this.graph.addNode(pluginId);
+        // Is Plugin suited for the Game (trackmania/shootmania)
+        var compatible = true;
 
+
+
+        if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('games')) {
+          if (plugin.game.games.indexOf(this.app.serverFacade.client.gameName) > -1
+           || plugin.game.games.length === 0) {
+            // All Right! Let's continue.
+          } else {
+            compatible = false;
+          }
+        }
+
+        if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes')) {
+          if (plugin.game.modes.indexOf(this.app.serverFacade.client.currentMode()) > -1
+           || plugin.game.modes.length === 0) {
+            // All Right! Let's continue.
+          } else {
+            compatible = false;
+          }
+        }
+
+        if (! compatible) {
+          // Don't load! Unload from local properties, throw warning.
+          this.incompatible[pluginId] = this.plugins[pluginId];
+
+          delete this.plugins[pluginId];
+          this.app.log.warn('Plugin \'' + pluginId + '\' is not suited for the current game or mode! Plugin disabled!');
+        } else {
+          // Register node
+          this.graph.addNode(pluginId);
+        }
       } catch (err) {
         this.app.log.error(`Plugin ${pluginId} could not be loaded, error: `, err);
       }
-
-      // Set plugins to app plugins.
-      this.app.plugins = this.plugins;
     }
+
+    // Set plugins to app plugins.
+    this.app.plugins = this.plugins;
   }
 
   /**
@@ -107,16 +137,38 @@ export class PluginManager {
    * Will also disable plugins when not compatible with game mode.
    */
   public async begin() {
+    // this.pluginChecks()
+  }
+
+  /**
+   * Check each plugin if it needs to be (re)started or stopped based on gameMode and game.
+   */
+  private async pluginChecks () {
+    let currentMode = this.app.serverFacade.client.currentMode();
+
+    // Check if we need to disable plugins.
     for (let pluginId of Object.keys(this.plugins)) {
       let plugin:any = this.plugins[pluginId];
 
       if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes') && plugin.game.modes.length > 0) {
-        if (plugin.game.modes.indexOf(this.app.serverFacade.client.currentMode()) > -1) {
-          // All OK!
-        } else {
+        if (plugin.game.modes.indexOf(currentMode) === -1) {
           // Stop!
-          // TODO: Stop plugin.
+          await this.disable (pluginId, true);
         }
+      }
+    }
+
+    // Check if we need to enable plugins.
+    for (let pluginId of Object.keys(this.incompatible)) {
+      let plugin:any = this.incompatible[pluginId];
+
+      if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes') && plugin.game.modes.length > 0) {
+        if (plugin.game.modes.indexOf(currentMode) > -1) {
+          // All OK!
+          await this.enable (pluginId, true);
+        }
+      } else {
+        await this.enable (pluginId, true);
       }
     }
   }
@@ -139,13 +191,109 @@ export class PluginManager {
     }
   }
 
+  /**
+   * Disable plugin.
+   * @param pluginId
+   */
+  public async disable (pluginId: string);
+  public async disable (pluginId: string, incompatible?: boolean);
+
+  /**
+   * Disable Plugin.
+   * @param pluginId
+   * @param [incompatible]
+   */
+  public async disable (pluginId: string, incompatible?: boolean) {
+    incompatible = incompatible || false;
+    let plugin: any = this.plugins[pluginId];
+    if (! plugin) throw new Error('Plugin ID not found in current enabled plugins!');
+
+    this.app.log.info(`Disabling plugin ${pluginId}...`);
+
+    // If the plugin has a stop function, we call it. We think it's a promise. so await.
+    if (plugin.hasOwnProperty('stop') && typeof plugin.stop === 'function') {
+      let stop = plugin.stop();
+      if (stop.hasOwnProperty('then'))
+        await stop;
+    }
+
+    // Make sure we stop all the UI elements the plugin was ever using!
+    await this.app.uiFacade.manager.destroyContextInterfaces(plugin);
+
+    // Move to disabled plugins.
+    if (incompatible)
+      this.incompatible[pluginId] = plugin;
+    else
+      this.disabled[pluginId] = plugin;
+
+    // Remove from order list
+    let orderNr = this.order.indexOf(pluginId);
+    if (orderNr >= 0)
+      delete this.order[orderNr];
+
+    delete this.plugins[pluginId];
+  }
+
+  /**
+   * Enable Plugin that has been disabled before.
+   * @param pluginId
+   */
+  public async enable (pluginId: string);
+  public async enable (pluginId: string, forceIncompatible?: boolean);
+
+  /**
+   * Enable plugin that has been disabled/unloaded before.
+   * @param pluginId
+   * @param forceIncompatible
+   */
+  public async enable (pluginId: string, forceIncompatible?: boolean) {
+    var plugin: any;
+
+    if (forceIncompatible && this.incompatible[pluginId])
+      plugin = this.incompatible[pluginId];
+    else if (this.disabled[pluginId])
+      plugin = this.disabled[pluginId];
+
+    if (! plugin) throw new Error('Plugin is not loaded so can not be enabled!');
+
+    if (plugin.hasOwnProperty('game') && plugin.game.hasOwnProperty('modes') && plugin.game.modes.length > 0) {
+      if (plugin.game.modes.indexOf(this.app.serverFacade.client.currentMode()) === -1) {
+        // Stop loading, it isn't compatible!
+        throw new Error('Plugin that is being enabled is not compatible with current Game Mode!');
+      }
+    }
+
+    this.app.log.info(`Enable plugin ${pluginId}...`);
+
+    // Move it to the enabled plugins.
+    this.plugins[pluginId] = plugin;
+
+    // Remove from source.
+    if (forceIncompatible && this.incompatible[pluginId]) delete this.incompatible[pluginId];
+    else if (this.disabled[pluginId])                     delete this.disabled[pluginId];
+
+    // (Re)import models
+    await this.loadPluginModels(plugin, pluginId, this.app.databaseFacade.client.sequelize);
+
+    // Start the plugin Init command.
+    await this.plugins[pluginId].init();
+  }
+
+  /**
+   * On Gamemode Change.
+   * @param type
+   * @param transition
+   */
+  private onGameChange (type: string, transition: Array<any>) {
+    // Check if plugins needs to be disabled/enabled.
+    this.pluginChecks();
+  }
+
 
   /**
    * Determinate start order.
    */
   private determinateOrder() {
-    let ids = Object.keys(this.plugins);
-
     for (let id of Object.keys(this.plugins)) {
       let plugin: any = this.plugins[id];
       if (plugin.hasOwnProperty('dependencies')) {
@@ -180,39 +328,49 @@ export class PluginManager {
     }
 
     for (let id of this.order) {
-      if (this.plugins[id].directory) {
-        var modelDirectory = path.normalize(this.plugins[id].directory + '/models/');
-        var exists = await fs.exists(modelDirectory);
-        if (! exists) {
-          modelDirectory = path.normalize(this.plugins[id].directory + '/Models/');
-          exists = await fs.exists(modelDirectory);
-          if (! exists) continue;
-        }
+      await this.loadPluginModels (this.plugins[id], id, sequelize);
+    }
+  }
 
-        try {
-          let list = glob.sync(modelDirectory + '*.js');
+  /**
+   * Load all models for specific plugin.
+   * @param plugin
+   * @param id
+   * @param sequelize
+   */
+  private async loadPluginModels (plugin: any, id: string, sequelize: Sequelize) {
+    if (plugin.directory) {
+      var modelDirectory = path.normalize(plugin.directory + '/models/');
+      var exists = await fs.exists(modelDirectory);
+      if (! exists) {
+        modelDirectory = path.normalize(plugin.directory + '/Models/');
+        exists = await fs.exists(modelDirectory);
+        if (! exists) return;
+      }
 
-          if (list.length > 0) {
-            for (let file of list) {
-              // Import sequelize model.
-              let model: any = sequelize.import(file);
+      try {
+        let list = glob.sync(modelDirectory + '*.js');
 
-              // Set in the plugin.
-              if (! this.plugins[id].models) {
-                this.plugins[id].models = {};
-              }
-              this.plugins[id].models[model.name] = model;
+        if (list.length > 0) {
+          for (let file of list) {
+            // Import sequelize model.
+            let model: any = sequelize.import(file);
 
-              // Set in the global models.
-              if (! this.app.models.hasOwnProperty(id)) {
-                this.app.models[id] = {};
-              }
-              this.app.models[id][model.name] = model;
+            // Set in the plugin.
+            if (! plugin.models) {
+              plugin.models = {};
             }
+            plugin.models[model.name] = model;
+
+            // Set in the global models.
+            if (! this.app.models.hasOwnProperty(id)) {
+              this.app.models[id] = {};
+            }
+            this.app.models[id][model.name] = model;
           }
-        } catch (err) {
-          this.app.log.warn('Warning, can\'t load models for plugin ' + id, err.stack);
         }
+      } catch (err) {
+        this.app.log.warn('Warning, can\'t load models for plugin ' + id, err.stack);
       }
     }
   }

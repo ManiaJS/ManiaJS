@@ -1,7 +1,7 @@
 /**
  * Client Manager - Will connect to the maniaplanet server
  */
-declare var GbxClient; // TODO: Propper fix gbxremote loading..
+declare var GbxClient;
 
 import {Client as GbxClient} from 'gbxremote';
 
@@ -34,8 +34,9 @@ export class Client extends EventEmitter {
   public path: string;
   public ip: string;
   public ports: {port?: number, P2PPort?: number};
-  public playerId: string; // TODO: Number?
+  public playerId: string;
 
+  public scriptName: string;
   public scriptSettings: any;
 
   public paths: {
@@ -191,6 +192,16 @@ export class Client extends EventEmitter {
   }
 
   /**
+   * Run this to refresh some details, server settings and gamemode settings.
+   */
+  public async refreshInfos() {
+    await this.getGameInfos();
+    await this.getServerOptions();
+
+    this.app.log.debug('Refresh server infos done!');
+  }
+
+  /**
    * Register the Callbacks.
    *
    * @return {Promise}
@@ -203,17 +214,9 @@ export class Client extends EventEmitter {
 
     this.callback.loadSet('maniaplanet', this.isScripted());
     this.callback.loadSet(this.app.config.config.server.game, this.isScripted());
-  }
 
-  /**
-   * Update information about the server.
-   *
-   * @return {Promise}
-   */
-  public async updateInfos() {
-    // Update
-    return this.getServerOptions()
-      .then(() => this.getGameInfos());
+    // Refresh all infos every 2 minutes for sure.
+    setTimeout(() => {this.refreshInfos();}, 2 * 60000);
   }
 
   /**
@@ -226,14 +229,20 @@ export class Client extends EventEmitter {
   }
 
   /**
-   * Get Current Mode Integer, try to convert script name to game mode integer.
+   * Get Current Mode Integer. Will be 0 on scripted mode.
    * @returns {number}
    */
   public currentMode(): number {
-    if (this.isScripted()) {
-      // TODO: Script => legacy integers.
-    }
     return this.game.CurrentGameInfos.GameMode;
+  }
+
+  /**
+   * Get current script name.
+   * @return {string|null}
+   */
+  public currentScript(): Promise<string> {
+    if (! this.isScripted()) return null;
+    // TODO: Fetch + return script name.
   }
 
   /**
