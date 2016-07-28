@@ -4,4 +4,4 @@
  * @license ICS {LICENSE file}
  * @author ManiaJS
  */
-require('./lib/Boot');
+require('./src/Boot');

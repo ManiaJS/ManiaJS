@@ -6,8 +6,7 @@ module.exports = {
 
     files: [
       {
-        src: ['src/**.ts', 'src/*/**.ts'],
-        dest: 'lib'
+        src: ['src/**.ts', 'src/*/**.ts']
       }
     ]
   }

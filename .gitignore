@@ -22,7 +22,7 @@ tmp/*
 .tscache
 
 typings/*
-!typings/custom
+!type/custom
 
 type/typings/*
 !type/typings/custom
@@ -51,10 +51,10 @@ database.sqlite
 /log/*
 !/log/.gitkeep
 
-
-
 ### Develop
 /plugins
 
 ### Babel/Typescript Output
 /lib/
+/src/**/*.js
+/src/**/*.js.map

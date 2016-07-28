@@ -23,7 +23,7 @@
     "ts": "grunt ts",
     "watch": "grunt watch",
     "start": "node ./maniajs.js",
-    "dev": "npm run build && node ./maniajs.js",
+    "dev": "tsc && node ./maniajs.js",
     "build": "grunt build",
     "prepublish": "npm run build",
     "test": "grunt test"

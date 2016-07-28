@@ -1,28 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "es6",
     "module": "commonjs",
-    "moduleResolution": "classic",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": true,
-    "removeComments": false,
+    "moduleResolution": "node",
     "noImplicitAny": false,
-    "outDir": "./lib"
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "isolatedModules": false,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": false
   },
   "exclude": [
     "node_modules",
-    "./typings/*/**.d.ts"
+    "type",
+    "typings"
   ],
-  "filesGlob": [
-    "!./node_modules/**/*.ts"
-  ],
-  "awesomeTypescriptLoaderOptions": {
-    "resolveGlobs": true,
-    "forkChecker": true
-  },
-  "compileOnSave": false,
-  "buildOnSave": false,
+  "compileOnSave": true,
   "atom": {
     "rewriteTsconfig": false
   }

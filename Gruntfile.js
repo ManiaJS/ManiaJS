@@ -16,15 +16,13 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:default',
     'tslint:default',
-    'ts:default',
-    'copy:default'
+    'ts:default'
   ]);
 
   grunt.registerTask('dev', [
     'clean:default',
     'tslint:default',
     'ts:default',
-    'copy:default',
     'watch'
   ]);
 
@@ -32,7 +30,6 @@ module.exports = function (grunt) {
     'clean:default',
     'tslint:default',
     'ts:default',
-    'copy:default',
     'watch'
   ]);
 
@@ -40,7 +37,6 @@ module.exports = function (grunt) {
     'clean:default',
     'copy:test',
     'ts:default',
-    'copy:default',
     // '' TODO: Add test framework. Decide which framework we are going to use.
   ]);
 };
