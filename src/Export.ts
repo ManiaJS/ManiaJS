@@ -5,6 +5,7 @@
  */
 export {Sandbox} from './Plugin/Sandbox';
 export {Plugin} from './Plugin/Plugin';
+export {Inject} from './Util/Decorators'
 
 /**
  * Use Start for starting ManiaJS programmatically.
