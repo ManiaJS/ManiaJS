@@ -2,22 +2,8 @@
   "name": "maniajs",
   "globalDependencies": {
     "@tomvlk/dependency-graph": "file:./type/custom/dependency-graph/typings.json",
-    "async": "registry:dt/async#1.4.2+20160602152629",
-    "bunyan": "registry:dt/bunyan#0.0.0+20160412155112",
-    "bunyan-prettystream": "registry:dt/bunyan-prettystream#0.0.0+20160316155526",
-    "commander": "registry:dt/commander#2.3.0+20160317120654",
     "gbxremote": "file:type/custom/gbxremote/typings.json",
-    "glob": "registry:dt/glob#5.0.10+20160317120654",
-    "handlebars": "registry:dt/handlebars#3.0.3+20160317120654",
-    "joi": "registry:dt/joi#9.0.0+20160626220651",
-    "js-yaml": "registry:dt/js-yaml#3.5.2+20160316171810",
-    "lodash": "registry:dt/lodash#3.10.0+20160720001309",
-    "minimatch": "registry:dt/minimatch#2.0.8+20160317120654",
-    "node": "registry:dt/node#6.0.0+20160720070758",
-    "pjson": "file:./type/custom/pjson/typings.json",
-    "sequelize": "registry:dt/sequelize#3.4.1+20160720065448",
-    "sprintf-js": "registry:dt/sprintf-js#0.0.0+20160317120654",
-    "validator": "registry:dt/validator#4.5.1+20160316155526"
+    "pjson": "file:./type/custom/pjson/typings.json"
   },
   "devDependencies": {},
   "dependencies": {}
