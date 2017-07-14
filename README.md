@@ -1,5 +1,9 @@
 # ManiaJS
 
+# This project has been discontinued. Please check PyPlanet as an alternative: http://pypla.net
+
+http://pypla.net
+
 [![Join the chat at https://gitter.im/ManiaJS/ManiaJS](https://badges.gitter.im/ManiaJS/ManiaJS.svg)](https://gitter.im/ManiaJS/ManiaJS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Dependency Status](https://www.versioneye.com/user/projects/56bc63ef2a29ed0034380562/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56bc63ef2a29ed0034380562)
@@ -9,7 +13,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/544e53fcf34f40b3abe97536d400db81)](https://www.codacy.com/app/tomvalk/ManiaJS?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ManiaJS/ManiaJS&amp;utm_campaign=Badge_Grade)
 [![Code Climate](https://codeclimate.com/github/ManiaJS/ManiaJS/badges/gpa.svg)](https://codeclimate.com/github/ManiaJS/ManiaJS)
 
-**Note, the controller is in heavy development right now!**
 
 # Requirements
 
